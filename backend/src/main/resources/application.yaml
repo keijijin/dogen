@@ -1,0 +1,113 @@
+# 既定 + プロファイル（%dev / %prod / %compose）
+# CORS: 「headers」を列挙するとプリフライトでブラウザが付けるヘッダー不足で失敗しやすい。
+#       未指定時は Quarkus 既定でリクエストヘッダーは実質すべて許可（公式ガイド参照）。
+quarkus:
+  application:
+    name: dogen-chat
+  http:
+    port: 8081
+    cors:
+      enabled: true
+      # localhost / 127.0.0.1 / [::1] の任意ポート（列挙より漏れにくい）
+      origins: '/https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?/'
+      methods: GET,POST,OPTIONS,HEAD
+      exposed-headers: X-Session-Id,X-User-Message-Id,X-Assistant-Message-Id
+  datasource:
+    db-kind: postgresql
+  flyway:
+    migrate-at-start: true
+    locations: db/migration
+  oidc:
+    enabled: false
+
+llama:
+  stack:
+    base-url: http://127.0.0.1:8321
+
+dogen:
+  chat:
+    # Llama Stack starter は provider 接頭辞が必要なことが多い（例: openai/…, ollama/…）
+    default-model: openai/gpt-4o-mini
+    # ブラウザの OIDC アクセストークンは Llama に転送しない（こちらを常に付与）
+    upstream-authorization: Bearer fake
+    rag:
+      enabled: false
+      top-k: 5
+      embedding-model: text-embedding-3-small
+    web-search:
+      enabled: false
+      max-results: 4
+
+"%test":
+  dogen:
+    chat:
+      rag:
+        enabled: false
+      web-search:
+        enabled: false
+
+"%dev":
+  quarkus:
+    http:
+      cors:
+        # ローカル（Cursor プレビュー等・オリジン不定）でも動かす
+        origins: '/.*/'
+    datasource:
+      devservices:
+        enabled: true
+      username: dogen
+      password: dogen
+
+"%prod":
+  quarkus:
+    datasource:
+      jdbc:
+        url: "${JDBC_URL}"
+      username: "${JDBC_USER}"
+      password: "${JDBC_PASSWORD}"
+
+"%compose":
+  quarkus:
+    http:
+      host: 0.0.0.0
+      cors:
+        # ローカル Compose 専用。本番は別デプロイで QUARKUS_HTTP_CORS_ORIGINS 等を明示すること
+        origins: '/.*/'
+    datasource:
+      devservices:
+        enabled: false
+      db-kind: postgresql
+      jdbc:
+        url: "${JDBC_URL}"
+      username: "${JDBC_USER}"
+      password: "${JDBC_PASSWORD}"
+  llama:
+    stack:
+      base-url: "${LLAMA_STACK_URL:http://llama-stack:8321}"
+  dogen:
+    chat:
+      default-model: "${DOGEN_CHAT_DEFAULT_MODEL:openai/gpt-4o-mini}"
+      upstream-authorization: "${DOGEN_CHAT_UPSTREAM_AUTHORIZATION:Bearer fake}"
+      rag:
+        enabled: true
+        top-k: 5
+        embedding-model: "${DOGEN_CHAT_EMBEDDING_MODEL:text-embedding-3-small}"
+      web-search:
+        enabled: ${DOGEN_CHAT_WEB_SEARCH_ENABLED:false}
+        max-results: 4
+
+"%oidc":
+  quarkus:
+    oidc:
+      enabled: true
+      auth-server-url: ${OIDC_AUTH_SERVER_URL}
+      application-type: service
+    http:
+      auth:
+        permission:
+          health-permit:
+            paths: /api/v1/health,/q/health
+            policy: permit
+          api-auth:
+            paths: /api/v1/chat,/api/v1/sessions,/api/v1/feedback
+            policy: authenticated

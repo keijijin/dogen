@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" role="img" aria-labelledby="ct cd">
+  <title id="ct">摩訶般若波羅蜜：四コマ学習図</title>
+  <desc id="cd">第二巻の要点を四コマで示す学習用図。本文の代替ではありません。</desc>
+  <rect width="800" height="200" fill="#f7f4ed" />
+  <g font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif">
+    <rect x="8" y="8" width="190" height="184" fill="#fff" stroke="#d4cdc0" />
+    <text x="103" y="36" text-anchor="middle" font-size="11" fill="#6b5344">1</text>
+    <text x="16" y="58" font-size="10" fill="#1a1a18">照見として見る</text>
+    <text x="16" y="78" font-size="10" fill="#4a4844">五蘊、五般若</text>
+    <text x="16" y="98" font-size="10" fill="#4a4844">色即是空</text>
+    <circle cx="100" cy="150" r="28" fill="#ebe6dc" stroke="#6b5344" />
+    <text x="100" y="155" text-anchor="middle" font-size="9" fill="#1a1a18">見取り</text>
+
+    <rect x="206" y="8" width="190" height="184" fill="#fff" stroke="#d4cdc0" />
+    <text x="301" y="36" text-anchor="middle" font-size="11" fill="#6b5344">2</text>
+    <text x="214" y="58" font-size="10" fill="#1a1a18">枚数として数える</text>
+    <text x="214" y="78" font-size="10" fill="#1a1a18">十二・十八、さらに展開</text>
+    <text x="214" y="102" font-size="10" fill="#4a4844">雑学ではなく修辞の地図</text>
+    <text x="214" y="126" font-size="10" fill="#4a4844">本文の列挙に沿う</text>
+
+    <rect x="404" y="8" width="190" height="184" fill="#fff" stroke="#d4cdc0" />
+    <text x="499" y="36" text-anchor="middle" font-size="11" fill="#6b5344">3</text>
+    <text x="412" y="58" font-size="10" fill="#1a1a18">苾蒭の疑念</text>
+    <text x="412" y="80" font-size="10" fill="#4a4844">無生と施設の両立</text>
+    <text x="412" y="102" font-size="10" fill="#4a4844">緊張を平坦化しない</text>
+    <text x="412" y="126" font-size="10" fill="#4a4844">問答はゆっくり読む</text>
+
+    <rect x="602" y="8" width="190" height="184" fill="#fff" stroke="#d4cdc0" />
+    <text x="697" y="36" text-anchor="middle" font-size="11" fill="#6b5344">4</text>
+    <text x="610" y="62" font-size="10" fill="#1a1a18">虚空に学ぶ</text>
+    <text x="610" y="84" font-size="10" fill="#4a4844">虚無のニヒリズムではない</text>
+    <text x="610" y="104" font-size="10" fill="#4a4844">碍無の学び方</text>
+    <text x="610" y="124" font-size="10" fill="#4a4844">経文の言葉へ戻る</text>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+# PostgreSQL バックアップを毎日 0:30（深夜）に実行する例。
+# 手順:
+#   1. 下記のパスをリポジトリの実パスに置き換える
+#   2. crontab -e を開き、1 行を追記する
+#
+# 分 時 日 月 曜
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+30 0 * * * /bin/bash -lc '/ABSOLUTE/PATH/TO/dogen/deploy/local/scripts/postgres-backup.sh >>/ABSOLUTE/PATH/TO/dogen/deploy/local/backups/backup-cron.log 2>&1'

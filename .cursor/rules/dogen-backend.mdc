@@ -1,0 +1,12 @@
+---
+description: dogen Quarkus / Camel バックエンド実装
+globs: backend/**/*.java,backend/**/pom.xml,backend/**/application*.yml,backend/**/application*.yaml
+alwaysApply: false
+---
+
+# backend/
+
+- **構成**: `doc/DESIGN.md` 4 章のディレクトリ案に沿う。REST（`api`）と Camel ルート（`integration`）をパッケージ分離する。
+- **API**: `/api/v1` プレフィックス。OpenAPI を維持する。チャットは `doc/DESIGN.md` 7 章の契約に合わせ、`citations` を返却可能にする。
+- **Camel**: Llama Stack への HTTP はタイムアウト・429/5xx の再試行上限を設定。機密はログに出さない。
+- **DB**: Flyway でスキーマ管理。エンティティは `doc/DESIGN.md` 8 章の表を起点にする。

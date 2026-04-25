@@ -1,0 +1,13 @@
+---
+description: dogen 静的 Web（web/）の編集方針
+globs: web/**/*
+alwaysApply: false
+---
+
+# web/
+
+- **プラン整合**: `doc/PLAN.md` 2 章（サイトマップ・教育・漫画の位置づけ）に沿う。漫画は本文の補助であり、必ず本文・用語へ戻す導線を付ける。
+- **パス**: ルートは `web/index.html`。サブページは相対パスで `css/` / `js/` / 相互リンクを維持する。
+- **巻ページ量産**: `tools/gen_web_volumes.py` で一覧とスタブを生成する。**`web/volumes/75-01/index.html` はスクリプトが上書きしない**（手編集サンプル）。
+- **著作**: 長大な引用は避け、抜粋は学習サンプル分量にとどめる。出典・権利は `site/index.html` の方針に合わせる。
+- **漫画**: ラスタは外注・制作ツールで `web/img/` に配置。エージェントだけで手早く置く場合は **SVG**（例: `web/img/genjo-intro-comic.svg`）も可。

@@ -1,0 +1,203 @@
+/* 全ページ共通 · 右下チャットドック */
+#dogen-dock-root {
+  font-family: var(--font-sans, "Hiragino Sans", sans-serif);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+#dogen-dock-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 120;
+  border: 1px solid var(--line, #d4cdc0);
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  background: var(--accent, #6b5344);
+  color: #fdfcfa;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(26, 26, 24, 0.18);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+#dogen-dock-fab:hover {
+  filter: brightness(1.06);
+}
+
+#dogen-dock-panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 4.25rem;
+  z-index: 119;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(70vh, 32rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper, #f7f4ed);
+  border: 1px solid var(--line, #d4cdc0);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(26, 26, 24, 0.15);
+  overflow: hidden;
+}
+
+#dogen-dock-panel[hidden] {
+  display: none !important;
+}
+
+.dogen-dock__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--line, #d4cdc0);
+  background: rgba(235, 230, 220, 0.65);
+}
+
+.dogen-dock__head h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-body, serif);
+}
+
+#dogen-dock-close {
+  border: none;
+  background: transparent;
+  color: var(--ink-muted, #4a4844);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+}
+
+.dogen-dock__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line, #d4cdc0);
+  align-items: center;
+}
+
+#dogen-session-select {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: 0.35rem 0.4rem;
+  font: inherit;
+  border: 1px solid var(--line, #d4cdc0);
+  border-radius: 4px;
+  background: #fff;
+}
+
+#dogen-new-session {
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  border: 1px solid var(--line, #d4cdc0);
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+#dogen-new-session:hover {
+  background: var(--paper-deep, #ebe6dc);
+}
+
+#dogen-dock-vol {
+  width: 100%;
+  padding: 0.35rem 0.45rem;
+  font: inherit;
+  border: 1px solid var(--line, #d4cdc0);
+  border-radius: 4px;
+}
+
+#dogen-messages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 6rem;
+  max-height: 38vh;
+  background: rgba(253, 252, 250, 0.9);
+}
+
+.dogen-msg {
+  max-width: 95%;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.dogen-msg--user {
+  align-self: flex-end;
+  background: var(--accent-soft, #a38b78);
+  color: #1a1a18;
+}
+
+.dogen-msg--assistant {
+  align-self: flex-start;
+  background: var(--paper-deep, #ebe6dc);
+  border: 1px solid var(--line, #d4cdc0);
+}
+
+.dogen-msg__meta {
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.75;
+  margin-bottom: 0.2rem;
+}
+
+#dogen-dock-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem 0.65rem;
+  border-top: 1px solid var(--line, #d4cdc0);
+}
+
+#dogen-dock-input {
+  width: 100%;
+  min-height: 3.2rem;
+  resize: vertical;
+  padding: 0.45rem;
+  font: inherit;
+  border: 1px solid var(--line, #d4cdc0);
+  border-radius: 4px;
+}
+
+#dogen-dock-send {
+  align-self: flex-end;
+  padding: 0.4rem 0.85rem;
+  font: inherit;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent, #6b5344);
+  color: #fdfcfa;
+  cursor: pointer;
+}
+
+#dogen-dock-send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#dogen-dock-err {
+  padding: 0 0.75rem 0.45rem;
+  font-size: 0.82rem;
+  color: #8b2942;
+  min-height: 1.1em;
+}
+
+@media (max-width: 480px) {
+  #dogen-dock-panel {
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+    bottom: 3.75rem;
+  }
+}

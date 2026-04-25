@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>認証の流れ（OIDC）— 正法眼蔵読解</title>
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="../index.html">正法眼蔵読解</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
+        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
+          <a href="../guide/index.html">学習ガイド</a>
+          <a href="../volumes/index.html">巻一覧</a>
+          <a href="../chat/index.html">問答 Bot</a>
+          <a href="../site/index.html">サイト情報</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <article class="prose">
+        <h1>認証の流れ（OIDC と API）</h1>
+        <p>
+          このサイトは静的 HTML です。<strong>ログイン画面は IdP（Keycloak 等の OpenID プロバイダ）が表示</strong>し、ブラウザは
+          <strong>PKCE</strong> で認可コードを取り、<strong>トークンエンドポイント</strong>でアクセストークンを受け取ります。問答
+          API（Quarkus）へは、その <strong>アクセストークンを Authorization: Bearer</strong> で付けて呼びます。
+        </p>
+
+        <h2>アカウントとログイン画面はどこ？</h2>
+        <p>
+          <strong>ログインアカウント（ユーザ登録・パスワード・メール等）</strong>は、このサイトの管理画面にはありません。
+          選んだ <strong>IdP（Keycloak 等）の管理コンソール</strong>でユーザを作成し、必要ならグループやロールを付けます。dogen 側はトークンの
+          <code>sub</code>（主体 ID）だけを DB の <code>chat_session.client_subject</code> に保存する想定です（ユーザマスタテーブルは別途ありません）。
+        </p>
+        <p>
+          <strong>ログイン画面</strong>も、このリポジトリ内の「ログイン専用ページ」としては置いていません。
+          <code>web/js/oidc-config.js</code> で OIDC を有効にすると、各ページナビに <strong>ログイン</strong>が出ます。クリックすると
+          <strong>IdP が表示する認証画面</strong>（ブランド付きのログインフォーム）へブラウザが移動します。認可後に戻るのが
+          <code>web/auth/callback.html</code>（トークンを <code>localStorage</code> に保存するだけのページ）です。
+        </p>
+
+        <h2>構成（ざっくり）</h2>
+        <ol>
+          <li>
+            <strong>ブラウザ（このサイト）</strong> … <code>web/js/oidc-config.js</code> で IdP の Issuer（<code>authority</code>）とクライアント
+            ID を指定。<code>ログイン</code>で IdP へリダイレクト。
+          </li>
+          <li>
+            <strong>IdP</strong> … ユーザー認証後、登録済みの <code>…/auth/callback.html</code> へ認可コードを返す。
+          </li>
+          <li>
+            <strong>コールバック</strong> … <code>web/auth/callback.html</code> がコードをトークンに交換し、<code>localStorage.dogen_bearer_token</code> に保存。
+          </li>
+          <li>
+            <strong>dogen-api（Quarkus）</strong> … プロファイル <code>compose,oidc</code> 等で <code>quarkus-oidc</code> を有効にすると、
+            <code>Authorization: Bearer …</code> を検証。Llama Stack 用のヘッダは API 側の設定（<code>dogen.chat.upstream-authorization</code>）に分離。
+          </li>
+        </ol>
+
+        <h2>あなたが用意するもの（チェックリスト）</h2>
+        <ul>
+          <li>IdP で <strong>公開クライアント（SPA）</strong> を作成。</li>
+          <li>
+            リダイレクト URI に <code>https://あなたのサイトのオリジン/auth/callback.html</code>（ローカルなら
+            <code>http://127.0.0.1:8080/auth/callback.html</code> 等）を<strong>完全一致</strong>で登録。
+          </li>
+          <li>
+            <strong>CORS</strong> … ブラウザからトークンエンドポイントへ POST するため、サイトのオリジンを IdP 側で許可（Keycloak なら Web Origins 等）。
+          </li>
+          <li>
+            <strong>スコープ</strong> … 既定は <code>openid profile email offline_access</code>（<code>oidc-config.js</code>）。
+            IdP やクライアント設定で必須スコープが決まっている場合は、フロントの <code>scope</code> と Quarkus の期待を揃えてください。
+          </li>
+          <li>
+            API 側の <code>OIDC_AUTH_SERVER_URL</code> は、フロントの <code>authority</code> と<strong>同じ Issuer</strong>にします。
+          </li>
+        </ul>
+
+        <h2>設定ファイル</h2>
+        <p>
+          <code>web/js/oidc-config.js</code> で <code>enabled: true</code> にすると、各ページのナビ末尾に
+          <strong>ログイン / ログアウト</strong>が出ます（<code>nav.js</code> が <code>oidc-pkce.js</code> と <code>oidc-ui.js</code> を読み込みます）。
+        </p>
+        <p class="notice">
+          ページごとに <code>data-dogen-oidc="0"</code> を <code>nav.js</code> の script タグへ付けると、OIDC 用スクリプトの読み込みを止められます。
+        </p>
+
+        <p><a href="../chat/index.html">問答 Bot ページへ</a> · <a href="../index.html">ホーム</a></p>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p><a href="../index.html">ホーム</a> · 正法眼蔵読解</p>
+    </footer>
+    <script src="../js/nav.js" defer></script>
+  </body>
+</html>

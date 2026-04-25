@@ -1,0 +1,148 @@
+# Podman Compose / Docker Compose (local dev)
+# Llama Stack image: distribution-starter v0.7.1 (pin). Use tag "latest" on image line to float.
+#
+# Start: cd deploy/local && podman compose --env-file .env up -d --build
+#
+# OpenShift: map services to Deployment/Secret; expose Quarkus via Route, keep Llama Stack internal.
+
+name: dogen-local
+
+services:
+  postgres:
+    image: docker.io/library/postgres:16-bookworm
+    container_name: dogen-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-llamastack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-llamastack}
+      POSTGRES_DB: ${POSTGRES_DB:-llamastack}
+    ports:
+      - "${POSTGRES_PUBLISH_PORT:-5432}:5432"
+    volumes:
+      - dogen_pgdata:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-llamastack} -d ${POSTGRES_DB:-llamastack}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.5
+    container_name: dogen-keycloak
+    command: ["start-dev", "--import-realm"]
+    ports:
+      - "${KEYCLOAK_PUBLISH_PORT:-8180}:8080"
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HEALTH_ENABLED: "true"
+      KC_HTTP_ENABLED: "true"
+      # ブラウザが辿る公開 URL（リダイレクトや管理コンソールのリンク生成に使用）
+      # 既定は host 側で 8180 を公開している前提。
+      KC_HOSTNAME_URL: ${KEYCLOAK_PUBLIC_URL:-http://127.0.0.1:8180}
+      KC_HOSTNAME_ADMIN_URL: ${KEYCLOAK_PUBLIC_URL:-http://127.0.0.1:8180}
+      KC_HOSTNAME_STRICT: "false"
+      KC_PROXY: edge
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    restart: unless-stopped
+
+  qdrant:
+    image: docker.io/qdrant/qdrant:v1.13.5
+    container_name: dogen-qdrant
+    ports:
+      - "${QDRANT_PUBLISH_PORT:-6333}:6333"
+    volumes:
+      - dogen_qdrant_data:/qdrant/storage
+    # 公式イメージに curl/wget が無いためヘルスチェックは省略。起動順は service_started のみ。
+    restart: unless-stopped
+
+  llama-stack:
+    image: docker.io/llamastack/distribution-starter:0.7.1
+    container_name: dogen-llama-stack
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    ports:
+      - "${LLAMA_STACK_PORT:-8321}:8321"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?set OPENAI_API_KEY in .env}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OLLAMA_URL: ${OLLAMA_URL:-}
+      # Llama Stack starter（Postgres ストア）: KV / SQL メタ用。ベクトル I/O は Qdrant（remote::qdrant）
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-llamastack}
+      POSTGRES_USER: ${POSTGRES_USER:-llamastack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-llamastack}
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+      # PGVECTOR_* は未設定のまま（pgvector プロバイダを登録しない）
+      TAVILY_SEARCH_API_KEY: ${TAVILY_SEARCH_API_KEY:-}
+      BRAVE_SEARCH_API_KEY: ${BRAVE_SEARCH_API_KEY:-}
+      FILES_STORAGE_DIR: ${FILES_STORAGE_DIR:-/data/llama-files}
+      SQLITE_STORE_DIR: ${SQLITE_STORE_DIR:-/data/llama-sqlite}
+    volumes:
+      - dogen_llama_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8321/v1/health | grep -q OK"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+  dogen-api:
+    build:
+      context: ../..
+      dockerfile: backend/Containerfile
+    image: ${DOGEN_API_IMAGE:-localhost/dogen-api:latest}
+    container_name: dogen-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      llama-stack:
+        condition: service_healthy
+    ports:
+      - "${CHAT_API_PORT:-8081}:8081"
+    environment:
+      # Keycloak を前提に Bearer 検証を有効化（不要なら QUARKUS_PROFILE=compose のみにする）
+      QUARKUS_PROFILE: ${QUARKUS_PROFILE:-compose,oidc}
+      JDBC_URL: jdbc:postgresql://postgres:5432/dogen_app
+      JDBC_USER: ${POSTGRES_USER:-llamastack}
+      JDBC_PASSWORD: ${POSTGRES_PASSWORD:-llamastack}
+      LLAMA_STACK_URL: http://llama-stack:8321
+      DOGEN_CHAT_DEFAULT_MODEL: ${DOGEN_CHAT_DEFAULT_MODEL:-openai/gpt-4o-mini}
+      DOGEN_CHAT_UPSTREAM_AUTHORIZATION: ${DOGEN_CHAT_UPSTREAM_AUTHORIZATION:-Bearer fake}
+      # Web 検索: .env に DOGEN_CHAT_WEB_SEARCH_API_KEY（Tavily）と DOGEN_CHAT_WEB_SEARCH_ENABLED=true（空キーは設定しない）
+      DOGEN_CHAT_WEB_SEARCH_ENABLED: ${DOGEN_CHAT_WEB_SEARCH_ENABLED:-false}
+      # Issuer（内部）: Keycloak コンテナ名 keycloak を使う
+      OIDC_AUTH_SERVER_URL: ${OIDC_AUTH_SERVER_URL:-http://keycloak:8080/realms/dogen}
+      # CORS は application.yaml の %compose（origins: /.*/）に任せる。上書き例: QUARKUS_HTTP_CORS_ORIGINS
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:8081/api/v1/health | grep -q UP"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    restart: unless-stopped
+
+  # 静的サイト（web/）。バインドマウントは compose ファイルからの相対パス（cd deploy/local から起動すること）
+  web:
+    image: docker.io/library/nginx:1.27-alpine
+    container_name: dogen-web
+    ports:
+      - "${WEB_PUBLISH_PORT:-8080}:80"
+    volumes:
+      - ../../web:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+volumes:
+  dogen_pgdata:
+  dogen_qdrant_data:
+  dogen_llama_data:

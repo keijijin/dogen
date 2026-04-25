@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 200" width="680" height="200" role="img" aria-labelledby="skt skd">
+  <title id="skt">即心是佛：学習用スケッチ</title>
+  <desc id="skd">心と仏の相即（相互の名付け）を、固定的な二物にしないためのメモ図。</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e8f4ff" />
+      <stop offset="1" stop-color="#f5f0e6" />
+    </linearGradient>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#744210" />
+    </marker>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#sky)" />
+  <text x="340" y="28" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="15" fill="#1a2a3a">即心是佛 — 学習スケッチ</text>
+  <ellipse cx="200" cy="110" rx="72" ry="56" fill="#fff" stroke="#2c5282" stroke-width="2" />
+  <text x="200" y="100" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="13" fill="#2c5282">心</text>
+  <text x="200" y="122" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="11" fill="#4a5568">私物の固定観にしない</text>
+  <ellipse cx="480" cy="110" rx="72" ry="56" fill="#fff" stroke="#276749" stroke-width="2" />
+  <text x="480" y="100" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="13" fill="#276749">仏</text>
+  <text x="480" y="122" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="11" fill="#4a5568">ラベルだけにしない</text>
+  <path d="M272 110 L408 110" stroke="#744210" stroke-width="2" marker-end="url(#arr)" />
+  <path d="M408 100 L272 100" stroke="#744210" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.7" />
+  <text x="340" y="168" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="12" fill="#2d3748">原文の相互の名付けを追う。自己啓発へ平坦化しない。</text>
+</svg>

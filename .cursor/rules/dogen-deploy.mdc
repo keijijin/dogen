@@ -1,0 +1,12 @@
+---
+description: dogen の Podman Compose / OpenShift デプロイ
+globs: deploy/**/*
+alwaysApply: false
+---
+
+# deploy/
+
+- **ローカル**: `deploy/local/compose.yaml` と `env.example` を正とする（**`web`** = nginx で `web/` を配信。compose は `cd deploy/local` から実行してバインドマウントを解決）。Llama Stack イメージはタグを**ピン留め**（必要時のみ `latest`）。`OPENAI_API_KEY` は `.env` のみ。
+- **Podman**: `podman compose --env-file .env` を前提。手順は `deploy/README.md`。
+- **OpenShift**: Route は Quarkus 側。Llama Stack は ClusterIP。Secret でキーと DB パスワード。手順・対応表は `deploy/README.md` と `doc/DESIGN.md` 12 章を参照。
+- **Compose 変更時**: ポート・ボリューム名の衝突、`healthcheck` の curl 有無を確認する。

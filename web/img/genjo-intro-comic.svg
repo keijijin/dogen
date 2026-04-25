@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 280" width="840" height="280" role="img" aria-labelledby="t d">
+  <title id="t">現成公案入門・四コマ（図）</title>
+  <desc id="d">学習用の概念マンガ。本文の代替ではありません。</desc>
+  <defs>
+    <style type="text/css"><![CDATA[
+      .panel { fill: #faf8f4; stroke: #1a1a18; stroke-width: 2.5; }
+      .tone { fill: #e8e4dc; opacity: 0.45; }
+      .bubble { fill: #fffef9; stroke: #1a1a18; stroke-width: 1.6; }
+      .tail { fill: #fffef9; stroke: #1a1a18; stroke-width: 1.6; }
+      .txt { font-family: "Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif; font-size: 12px; fill: #1a1a18; }
+      .lbl { font-family: "Hiragino Sans",sans-serif; font-size: 11px; fill: #6b5344; font-weight: 600; }
+      .ground { stroke: #a38b78; stroke-width: 1.2; opacity: 0.6; }
+      .ink { fill: none; stroke: #1a1a18; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    ]]></style>
+  </defs>
+
+  <!-- コマ1 -->
+  <g transform="translate(8,8)">
+    <rect class="panel" width="200" height="264" rx="3"/>
+    <rect class="tone" x="8" y="160" width="184" height="88" rx="2"/>
+    <text class="lbl" x="10" y="22">1</text>
+    <path class="bubble" d="M12 34 h176 a8 8 0 0 1 8 8 v48 a8 8 0 0 1 -8 8 H48 L36 106 36 98 H12 a8 8 0 0 1 -8 -8 V42 a8 8 0 0 1 8 -8z"/>
+    <text class="txt" x="22" y="58">「公案って、</text>
+    <text class="txt" x="22" y="76">　クイズの答え</text>
+    <text class="txt" x="22" y="94">　合わせ？」</text>
+    <line class="ground" x1="20" y1="218" x2="180" y2="218"/>
+    <g class="ink" transform="translate(100,168)">
+      <circle cx="0" cy="-42" r="16"/>
+      <path d="M0 -26 v52 M-22 8 h44 M0 26 l-16 48 M0 26 l16 48"/>
+      <path d="M-6 -50 q6 -4 12 0"/>
+    </g>
+  </g>
+
+  <!-- コマ2 -->
+  <g transform="translate(220,8)">
+    <rect class="panel" width="200" height="264" rx="3"/>
+    <rect class="tone" x="8" y="160" width="184" height="88" rx="2"/>
+    <text class="lbl" x="10" y="22">2</text>
+    <path class="bubble" d="M12 30 h176 a8 8 0 0 1 8 8 v76 a8 8 0 0 1 -8 8 H52 L40 130 40 122 H12 a8 8 0 0 1 -8 -8 V38 a8 8 0 0 1 8 -8z"/>
+    <text class="txt" x="20" y="54">道元の「現成</text>
+    <text class="txt" x="20" y="72">公案」は、</text>
+    <text class="txt" x="20" y="90">いまここに</text>
+    <text class="txt" x="20" y="108">そなわる理を</text>
+    <text class="txt" x="20" y="126">言い表すのに</text>
+    <text class="txt" x="20" y="144">使う言葉だよ。</text>
+    <line class="ground" x1="20" y1="218" x2="180" y2="218"/>
+    <g class="ink" transform="translate(100,172)">
+      <ellipse cx="0" cy="-38" rx="18" ry="20"/>
+      <path d="M0 -18 v56 M-24 10 h48 M0 28 l-14 46 M0 28 l14 46"/>
+      <path d="M-14 -48 h28"/>
+      <rect x="-28" y="2" width="56" height="38" rx="4"/>
+    </g>
+  </g>
+
+  <!-- コマ3 -->
+  <g transform="translate(432,8)">
+    <rect class="panel" width="200" height="264" rx="3"/>
+    <rect class="tone" x="8" y="160" width="184" height="88" rx="2"/>
+    <text class="lbl" x="10" y="22">3</text>
+    <path class="bubble" d="M12 34 h176 a8 8 0 0 1 8 8 v44 a8 8 0 0 1 -8 8 H48 L36 102 36 94 H12 a8 8 0 0 1 -8 -8 V42 a8 8 0 0 1 8 -8z"/>
+    <text class="txt" x="22" y="58">じゃあ、勉強</text>
+    <text class="txt" x="22" y="76">しなくていい</text>
+    <text class="txt" x="22" y="94">の？</text>
+    <line class="ground" x1="20" y1="218" x2="180" y2="218"/>
+    <g class="ink" transform="translate(100,168)">
+      <circle cx="0" cy="-42" r="16"/>
+      <path d="M0 -26 v52 M-22 8 h44 M0 26 l-16 48 M0 26 l16 48"/>
+      <circle cx="-5" cy="-46" r="2" fill="#1a1a18"/><circle cx="6" cy="-46" r="2" fill="#1a1a18"/>
+    </g>
+  </g>
+
+  <!-- コマ4 -->
+  <g transform="translate(644,8)">
+    <rect class="panel" width="200" height="264" rx="3"/>
+    <rect class="tone" x="8" y="150" width="184" height="98" rx="2"/>
+    <text class="lbl" x="10" y="22">4</text>
+    <path class="bubble" d="M12 28 h176 a8 8 0 0 1 8 8 v100 a8 8 0 0 1 -8 8 H50 L38 144 38 136 H12 a8 8 0 0 1 -8 -8 V36 a8 8 0 0 1 8 -8z"/>
+    <text class="txt" x="18" y="52">学びは要る。</text>
+    <text class="txt" x="18" y="70">でも「欠けた</text>
+    <text class="txt" x="18" y="88">自分」からしか</text>
+    <text class="txt" x="18" y="106">始められない、</text>
+    <text class="txt" x="18" y="124">とは限らない、</text>
+    <text class="txt" x="18" y="142">という含みも。</text>
+    <line class="ground" x1="20" y1="218" x2="180" y2="218"/>
+    <g class="ink" transform="translate(100,176)">
+      <ellipse cx="0" cy="-38" rx="18" ry="20"/>
+      <path d="M0 -18 v56 M-24 10 h48 M0 28 l-14 46 M0 28 l14 46"/>
+      <path d="M-14 -48 h28"/>
+      <rect x="-28" y="2" width="56" height="38" rx="4"/>
+    </g>
+  </g>
+</svg>

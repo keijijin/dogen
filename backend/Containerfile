@@ -1,0 +1,19 @@
+# Podman / Docker 用（ビルドコンテキストはリポジトリルート — 親 POM `pom.xml` が必要）
+FROM docker.io/maven:3.9.9-eclipse-temurin-21-alpine AS build
+WORKDIR /build
+COPY pom.xml .
+COPY backend/pom.xml backend/
+COPY backend/src backend/src
+WORKDIR /build/backend
+RUN mvn -q -e -B package -DskipTests
+
+FROM docker.io/eclipse-temurin:21-jre-alpine
+RUN apk add --no-cache curl
+WORKDIR /work
+RUN addgroup -S quarkus && adduser -S quarkus -G quarkus
+COPY --from=build /build/backend/target/quarkus-app/ ./
+RUN chown -R quarkus:quarkus /work
+USER quarkus
+ENV QUARKUS_HTTP_HOST=0.0.0.0
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "quarkus-run.jar"]

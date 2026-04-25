@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>サイト情報 — 正法眼蔵読解</title>
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="../index.html">正法眼蔵読解</a>
+        <button type="button" class="nav-toggle" aria-expanded="false">メニュー</button>
+        <nav class="site-nav" aria-label="主要ナビゲーション">
+          <a href="../guide/index.html">学習ガイド</a>
+          <a href="../volumes/index.html">巻一覧</a>
+          <a href="../themes/index.html">テーマ</a>
+          <a href="../glossary/index.html">用語</a>
+          <a href="../chat/index.html">問答 Bot</a>
+          <a href="index.html">サイト情報</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <article class="prose">
+        <h1>サイト情報</h1>
+
+        <h2>利用テキスト</h2>
+        <p>
+          開発用リポジトリ内の <code>doc/正法眼蔵.txt</code> および全訳 PDF（中村宗一訳）を参照しています。原文の参照元:
+          <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>。
+          公開・複製の範囲は著作権と利用許諾に従ってください。
+        </p>
+
+        <h2>プライバシー（案）</h2>
+        <p>
+          問答 Bot 接続後は、会話の保存方針・保持期間をここに明示します（設計上はアプリ DB にメタデータと監査のみを残す想定です。詳細は <code>doc/DESIGN.md</code>）。
+        </p>
+
+        <h2>技術・ドキュメント</h2>
+        <ul>
+          <li><code>doc/PLAN.md</code> — プロダクト方針</li>
+          <li><code>doc/DESIGN.md</code> — システム設計</li>
+          <li><code>AGENTS.md</code> — コントリビュータ向け入口</li>
+          <li><a href="../auth/index.html">認証の流れ（OIDC）</a> — フロントの PKCE ログインと API との関係</li>
+        </ul>
+
+        <h2>図解・画像の方針（拡張）</h2>
+        <p>
+          巻ページの<strong>図・4コマ</strong>は原則 <code>web/img/*.svg</code> のベクタで置き、拡大しても劣化しないようにします。ラスタ画像が必要なときは、編集者が許諾のある素材を <code>web/img/</code> に追加する運用とします。
+        </p>
+        <p>
+          <strong>画像生成 LLM の利用</strong>（任意拡張）：バックエンドに「プロンプトを受け取り画像 API（OpenAI Images、他社モデル等）を呼ぶ」エンドポイントを増やし、編集者用またはキャッシュ済みアセット生成に限定する形が安全です。公開ページから任意ユーザーに生成させる場合は、レート制限・コンテンツポリシー・著作権表記を必須とします。現状リポジトリにはその API は含めていません。
+        </p>
+
+        <p><a href="../index.html">ホームへ</a></p>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>正法眼蔵読解（構築中）</p>
+    </footer>
+    <script src="../js/nav.js" defer></script>
+  </body>
+</html>

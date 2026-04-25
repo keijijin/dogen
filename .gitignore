@@ -1,0 +1,46 @@
+# ---- OS / Editor ----
+.DS_Store
+.AppleDouble
+Thumbs.db
+
+.idea/
+.vscode/
+*.iml
+
+# ---- Secrets / local env ----
+.env
+**/.env
+*.pem
+*.key
+
+# ---- Logs ----
+*.log
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# ---- Node ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---- Java / Maven / Quarkus ----
+**/target/
+**/.classpath
+**/.project
+**/.settings/
+
+# ---- Docker / Compose ----
+**/.env.local
+
+# ---- Project-specific ----
+/doc/*.pdf
+

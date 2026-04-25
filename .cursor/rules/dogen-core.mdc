@@ -1,0 +1,13 @@
+---
+description: dogen プロジェクト共通（アーキテクチャ・秘密・RAG）
+alwaysApply: true
+---
+
+# dogen — コア
+
+- **正**: `doc/PLAN.md`（方針）と `doc/DESIGN.md`（構築設計）。アーキテクチャや境界を変える変更では両方を更新または差分理由を明記する。
+- **スタック**: JDK 21、Quarkus、Apache Camel 4、Llama Stack（OpenAI 互換）、OpenAI 推論、PostgreSQL（アプリ DB）、**Qdrant**（Llama Stack `remote::qdrant`、ローカル Compose 同梱）。
+- **秘密**: `.env` や API キーをリポジトリに含めない。クライアントに OpenAI キーを渡さない。
+- **RAG / Bot**: 回答には**出典（巻・チャンク）**を可能な限り付ける。根拠が取れないときは推測と明示するか拒否する。コーパスは**権利処理済み**の範囲のみ索引・公開する。
+- **実装境界**: RAG オーケストレーションは Llama Stack に寄せ、Quarkus は API・認可・監査、Camel は外部 I/O・再試行・変換（`doc/DESIGN.md` 3〜6 章）。
+- **変更の粒度**: 依頼と無関係な広いリファクタは避け、設計に沿った最小差分にする。

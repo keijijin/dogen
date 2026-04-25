@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" role="img" aria-labelledby="t d">
+  <title id="t">摩訶般若波羅蜜：概念図（第二巻）</title>
+  <desc id="d">照見（五蘊）から枚数の展開、疑念、虚空に学ぶまでの骨格。</desc>
+  <rect width="720" height="320" fill="#f7f4ed" />
+  <text x="360" y="28" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="15" fill="#1a1a18">摩訶般若波羅蜜（第二）— 概念マップ</text>
+
+  <rect x="24" y="52" width="200" height="100" rx="6" fill="#ebe6dc" stroke="#6b5344" />
+  <text x="124" y="82" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="12" fill="#1a1a18">照見</text>
+  <text x="124" y="102" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="11" fill="#4a4844">五蘊</text>
+  <text x="124" y="128" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">色即是空（一行の要点）</text>
+
+  <path d="M224 102 L268 102" stroke="#6b5344" stroke-width="2" marker-end="url(#a)" />
+
+  <rect x="268" y="52" width="220" height="100" rx="6" fill="#fdfcfa" stroke="#6b5344" />
+  <text x="378" y="78" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="11" fill="#1a1a18">枚数（法数の修辞）</text>
+  <text x="378" y="98" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">十二入・十八界 等</text>
+  <text x="378" y="118" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">教相の地図（雑学化しない）</text>
+  <text x="378" y="138" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">一行が何に答えるか</text>
+
+  <path d="M488 102 L532 102" stroke="#6b5344" stroke-width="2" marker-end="url(#a)" />
+
+  <rect x="532" y="52" width="164" height="100" rx="6" fill="#ebe6dc" stroke="#6b5344" />
+  <text x="614" y="82" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="11" fill="#1a1a18">疑念（苾蒭）</text>
+  <text x="614" y="102" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">苾蒭（比丘）の心行</text>
+  <text x="614" y="122" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">無生と施設の両立の悩み</text>
+  <text x="614" y="142" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">早合点で潰さない</text>
+
+  <rect x="24" y="180" width="330" height="120" rx="6" fill="#fdfcfa" stroke="#a38b78" />
+  <text x="189" y="208" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="12" fill="#1a1a18">帝釈と善現（守護の問答）</text>
+  <text x="36" y="232" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">守る「対象」を捕まえようとしない</text>
+  <text x="36" y="252" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">説く・受持するが守護</text>
+  <text x="36" y="278" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">問答は原文のままゆっくり</text>
+
+  <rect x="366" y="180" width="330" height="120" rx="6" fill="#fdfcfa" stroke="#a38b78" />
+  <text x="531" y="208" text-anchor="middle" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="12" fill="#1a1a18">虚空に学ぶ（学般若）</text>
+  <text x="378" y="238" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">碍無としての学び方</text>
+  <text x="378" y="258" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">空虚な否定でもない</text>
+  <text x="378" y="286" font-family="Hiragino Sans,Yu Gothic UI,Yu Gothic,Meiryo,sans-serif" font-size="10" fill="#4a4844">経典の言い回しへ戻る</text>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#6b5344" />
+    </marker>
+  </defs>
+</svg>
