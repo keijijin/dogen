@@ -1,0 +1,4 @@
+# 静的サイト（OpenShift restricted 向け: 非特権・既定 LISTEN 8080）
+# nginx の server 定義は OpenShift では ConfigMap dogen-web-nginx-site で上書きする。
+FROM docker.io/nginxinc/nginx-unprivileged:1.27-alpine
+COPY web/ /usr/share/nginx/html/

@@ -1,12 +1,59 @@
 (function () {
   var API_BASE = window.DOGEN_CHAT_API_BASE || "http://127.0.0.1:8081";
   var TOKEN_KEY = "dogen_bearer_token";
-  function bearer() {
-    var t = null;
+  var TOKEN_ID_KEY = "dogen_id_token";
+  function oidcEnabled() {
+    var c = window.DOGEN_OIDC || {};
+    return !!(c.enabled === true && c.authority && c.client_id);
+  }
+  function oidcRequiredForChat() {
+    if (oidcEnabled()) return true;
     try {
-      t = localStorage.getItem(TOKEN_KEY);
+      if (window.location.protocol !== "https:") return false;
+      var b = window.DOGEN_CHAT_API_BASE;
+      if (!b || !String(b).trim()) return false;
+      var u = String(b).trim();
+      if (!/^https:\/\//i.test(u)) return false;
+      if (/^https:\/\/(127\.0\.0\.1|localhost)\b/i.test(u)) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  function rawAccessToken() {
+    try {
+      var t = localStorage.getItem(TOKEN_KEY);
+      return t && t.trim() ? t.trim() : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function rawTokenForApi() {
+    var at = rawAccessToken();
+    if (at) return at;
+    try {
+      var id = localStorage.getItem(TOKEN_ID_KEY);
+      if (id && id.trim()) return id.trim();
     } catch (e) {}
-    return t && t.trim() ? "Bearer " + t.trim() : "Bearer fake";
+    return null;
+  }
+  function bearer() {
+    var tok = rawTokenForApi();
+    if (oidcRequiredForChat()) {
+      return tok ? "Bearer " + tok : null;
+    }
+    return tok ? "Bearer " + tok : "Bearer fake";
+  }
+  function apiAuthMessage(statusText) {
+    var m = String(statusText || "");
+    if (!oidcRequiredForChat()) return m;
+    if ((/^401\b|^403\b/.test(m) || m.indexOf("401 ") === 0 || m.indexOf("403 ") === 0) && !rawTokenForApi()) {
+      return "ログインが必要です。ナビの「ログイン」からサインインしてください。（" + m + "）";
+    }
+    if (/^401\b|^403\b/.test(m) || m.indexOf("401 ") === 0 || m.indexOf("403 ") === 0) {
+      return "API がトークンを拒否しました。ログアウトして再度ログインしてください。（" + m + "）";
+    }
+    return m;
   }
   var form = document.getElementById("chat-form");
   var out = document.getElementById("chat-out");
@@ -25,12 +72,12 @@
     };
     if (vol) body.volumeScope = vol;
 
+    var headers = { "Content-Type": "application/json" };
+    var b = bearer();
+    if (b) headers.Authorization = b;
     fetch(API_BASE + "/api/v1/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: bearer(),
-      },
+      headers: headers,
       body: JSON.stringify(body),
     })
       .then(function (res) {
@@ -67,7 +114,7 @@
           hint +=
             " API が起動しているか（`8081`）、URL が `http://…` でブロックされていないか確認してください。CORS で落ちる場合は `application.yaml` の `quarkus.http.cors` を確認（Compose は `%compose` で全オリジン許可）。";
         }
-        err.textContent = hint;
+        err.textContent = apiAuthMessage(hint);
       });
   });
 })();

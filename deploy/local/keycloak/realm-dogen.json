@@ -2,6 +2,9 @@
   "realm": "dogen",
   "enabled": true,
   "displayName": "dogen",
+  "accessTokenLifespan": 28800,
+  "ssoSessionIdleTimeout": 28800,
+  "ssoSessionMaxLifespan": 28800,
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
   "resetPasswordAllowed": true,
@@ -24,7 +27,8 @@
         "http://localhost:8080"
       ],
       "attributes": {
-        "pkce.code.challenge.method": "S256"
+        "pkce.code.challenge.method": "S256",
+        "access.token.header.type.rfc9068": "false"
       }
     }
   ],

@@ -71,7 +71,8 @@
             <strong>CORS</strong> … ブラウザからトークンエンドポイントへ POST するため、サイトのオリジンを IdP 側で許可（Keycloak なら Web Origins 等）。
           </li>
           <li>
-            <strong>スコープ</strong> … 既定は <code>openid profile email offline_access</code>（<code>oidc-config.js</code>）。
+            <strong>スコープ</strong> … 既定は <code>openid profile email</code>（<code>oidc-config.js</code>）。オフライン用の
+            <code>offline_access</code> は Keycloak でクライアントに許可が無いとエラーになるため含めていません。
             IdP やクライアント設定で必須スコープが決まっている場合は、フロントの <code>scope</code> と Quarkus の期待を揃えてください。
           </li>
           <li>

@@ -1,26 +1,120 @@
 (function () {
   var LS_KEY = "dogen_chat_session_id";
   var TOKEN_KEY = "dogen_bearer_token";
-  var API_BASE = window.DOGEN_CHAT_API_BASE || "http://127.0.0.1:8081";
-
-  function bearer() {
-    var t = null;
+  function apiBase() {
+    var b = null;
     try {
-      t = localStorage.getItem(TOKEN_KEY);
+      b = window.DOGEN_CHAT_API_BASE;
     } catch (e) {}
-    return t && t.trim() ? "Bearer " + t.trim() : "Bearer fake";
+    if (b && String(b).trim()) {
+      var u = String(b).trim().replace(/\/+$/, "");
+      try {
+        if (window.location.protocol === "https:" && /^http:\/\/(127\.0\.0\.1|localhost)\b/i.test(u)) {
+          return null;
+        }
+      } catch (e2) {}
+      return u;
+    }
+    try {
+      if (window.location.protocol === "https:") {
+        return null;
+      }
+    } catch (e3) {}
+    return "http://127.0.0.1:8081";
+  }
+
+  function misconfiguredApiBaseMessage() {
+    return (
+      "API の URL が未設定か、HTTPS ページから http://127.0.0.1 を指しています（ブラウザがブロックします）。OpenShift では ./deploy/openshift/07-patch-web-api-url.sh で runtime-config.js を更新し、ページを再読み込みしてください。"
+    );
+  }
+
+  /** OIDC 有効（nav.js で oidc-config 読み込み済みであること） */
+  function oidcEnabled() {
+    var c = window.DOGEN_OIDC || {};
+    return !!(c.enabled === true && c.authority && c.client_id);
+  }
+
+  /**
+   * HTTPS の本番ドメインで API も https のとき、oidc-config.js が誤って enabled:false でも
+   * compose,oidc の API には Bearer fake を送らない（403 の原因になる）。
+   */
+  function oidcRequiredForChat() {
+    if (oidcEnabled()) return true;
+    try {
+      if (window.location.protocol !== "https:") return false;
+      var b = window.DOGEN_CHAT_API_BASE;
+      if (!b || !String(b).trim()) return false;
+      var u = String(b).trim();
+      if (!/^https:\/\//i.test(u)) return false;
+      if (/^https:\/\/(127\.0\.0\.1|localhost)\b/i.test(u)) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  var TOKEN_ID_KEY = "dogen_id_token";
+
+  function rawAccessToken() {
+    try {
+      var t = localStorage.getItem(TOKEN_KEY);
+      return t && t.trim() ? t.trim() : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** Bearer は access_token を優先。古い保存データ互換のため id_token もフォールバックで許可。 */
+  function rawTokenForApi() {
+    var at = rawAccessToken();
+    if (at) return at;
+    try {
+      var id = localStorage.getItem(TOKEN_ID_KEY);
+      if (id && id.trim()) return id.trim();
+    } catch (e) {}
+    return null;
+  }
+
+  /**
+   * OIDC 有効時はアクセストークンが無いと Authorization を付けない（Bearer fake は 403 の原因になる）。
+   * OIDC 無効時は従来どおり匿名で Bearer fake。
+   */
+  function bearer() {
+    var tok = rawTokenForApi();
+    if (oidcRequiredForChat()) {
+      return tok ? "Bearer " + tok : null;
+    }
+    return tok ? "Bearer " + tok : "Bearer fake";
   }
 
   function headersJson() {
-    return {
+    var h = {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: bearer(),
     };
+    var b = bearer();
+    if (b) h.Authorization = b;
+    return h;
   }
 
   function headersGet() {
-    return { Accept: "application/json", Authorization: bearer() };
+    var h = { Accept: "application/json" };
+    var b = bearer();
+    if (b) h.Authorization = b;
+    return h;
+  }
+
+  function apiAuthMessage(statusText) {
+    var m = String(statusText || "");
+    if (!oidcRequiredForChat()) return m;
+    if ((/^401\b|^403\b/.test(m) || m.indexOf("401 ") === 0 || m.indexOf("403 ") === 0) && !rawTokenForApi()) {
+      return "ログインが必要です。ナビの「ログイン」からサインインしてください。（" + m + "）";
+    }
+    if (/^401\b|^403\b/.test(m) || m.indexOf("401 ") === 0 || m.indexOf("403 ") === 0) {
+      return "API がトークンを拒否しました。ログアウトして再度ログインしてください。OpenShift では ./deploy/openshift/09-configure-oidc.sh を再実行し、API を再デプロイしたうえで試してください。（" + m + "）";
+    }
+    return m;
   }
 
   var root = document.createElement("div");
@@ -134,7 +228,11 @@
   }
 
   function fetchJSON(url, options) {
-    return fetch(url, options).then(function (res) {
+    var o = Object.assign(
+      { mode: "cors", credentials: "omit", cache: "no-store" },
+      options || {}
+    );
+    return fetch(url, o).then(function (res) {
       return res.text().then(function (t) {
         if (!res.ok) throw new Error(res.status + " " + t);
         try {
@@ -147,7 +245,11 @@
   }
 
   function refreshSessions() {
-    return fetchJSON(API_BASE + "/api/v1/sessions?limit=80", {
+    var base = apiBase();
+    if (!base) {
+      return Promise.reject(new Error(misconfiguredApiBaseMessage()));
+    }
+    return fetchJSON(base + "/api/v1/sessions?limit=80", {
       method: "GET",
       headers: headersGet(),
     }).then(function (list) {
@@ -180,12 +282,19 @@
       } else {
         syncSelect();
       }
+    }).catch(function (e) {
+      errEl.textContent = apiAuthMessage(e.message || String(e));
+      return Promise.reject(e);
     });
   }
 
   function loadSessionMessages(id) {
     if (!id) return Promise.resolve();
-    return fetchJSON(API_BASE + "/api/v1/sessions/" + id + "/messages", {
+    var base = apiBase();
+    if (!base) {
+      return Promise.reject(new Error(misconfiguredApiBaseMessage()));
+    }
+    return fetchJSON(base + "/api/v1/sessions/" + id + "/messages", {
       method: "GET",
       headers: headersGet(),
     }).then(function (rows) {
@@ -198,10 +307,14 @@
     if (open) {
       panel.removeAttribute("hidden");
       fab.setAttribute("aria-expanded", "true");
-      refreshSessions().then(function () {
-        var sid = sel.value || sessionId;
-        if (sid) loadSessionMessages(sid);
-      });
+      refreshSessions()
+        .then(function () {
+          var sid = sel.value || sessionId;
+          if (sid) loadSessionMessages(sid);
+        })
+        .catch(function (e) {
+          errEl.textContent = apiAuthMessage((e && e.message) || String(e));
+        });
       input.focus();
     } else {
       panel.setAttribute("hidden", "");
@@ -231,7 +344,7 @@
     }
     setSession(v);
     loadSessionMessages(v).catch(function (e) {
-      errEl.textContent = e.message || String(e);
+      errEl.textContent = apiAuthMessage(e.message || String(e));
     });
   });
 
@@ -240,6 +353,11 @@
     clearErr();
     var text = input.value.trim();
     if (!text) return;
+    var base = apiBase();
+    if (!base) {
+      errEl.textContent = misconfiguredApiBaseMessage();
+      return;
+    }
     sendBtn.disabled = true;
     appendBubble("user", text);
     input.value = "";
@@ -251,8 +369,11 @@
     if (vs) body.volumeScope = vs;
     if (sessionId) body.sessionId = sessionId;
 
-    fetch(API_BASE + "/api/v1/chat", {
+    fetch(base + "/api/v1/chat", {
       method: "POST",
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store",
       headers: headersJson(),
       body: JSON.stringify(body),
     })
@@ -280,7 +401,14 @@
         syncSelect();
       })
       .catch(function (e) {
-        errEl.textContent = e.message || "送信に失敗しました";
+        var raw = e.message || String(e);
+        var hint = raw;
+        if (raw === "Failed to fetch" || (e && e.name === "TypeError")) {
+          hint =
+            raw +
+            "（HTTPS では API の URL 未設定・混在コンテンツ・CORS の可能性があります。07-patch-web-api-url.sh と dogen-api の CORS を確認してください。）";
+        }
+        errEl.textContent = apiAuthMessage(hint);
       })
       .finally(function () {
         sendBtn.disabled = false;

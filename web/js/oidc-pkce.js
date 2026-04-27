@@ -47,6 +47,35 @@
     return u ? u.replace(/\/+$/, "") : "";
   }
 
+  /** HTTPS ページから http の Issuer を取ると Mixed Content で fetch が失敗する */
+  function normalizeAuthority(authority) {
+    if (!authority) return authority;
+    try {
+      if (String(global.location.protocol) === "https:" && /^http:\/\//i.test(authority)) {
+        return authority.replace(/^http:\/\//i, "https://");
+      }
+    } catch (e) {}
+    return authority;
+  }
+
+  function fetchJsonCors(url, init) {
+    var base = {
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store",
+    };
+    var opts = init ? Object.assign({}, base, init) : base;
+    return fetch(url, opts).catch(function (e) {
+      var m = (e && e.message) || String(e);
+      if (m === "Failed to fetch" || (e && e.name === "TypeError")) {
+        throw new Error(
+          "IdP への接続に失敗しました（Failed to fetch）。HTTPS の整合やキャッシュのほか、ブラウザの追跡防止(ITP)でクロスサイト fetch が遮断されている可能性があります。OpenShift では deploy/openshift/09-configure-oidc.sh による同一オリジン /auth/kc/ 中継を有効にしてください。"
+        );
+      }
+      throw e;
+    });
+  }
+
   function redirectUri() {
     var c = cfg();
     var path = c.redirect_path || "/auth/callback.html";
@@ -60,14 +89,46 @@
   }
 
   function discoveryUrl(authority) {
-    return trimSlash(authority) + "/.well-known/openid-configuration";
+    return trimSlash(normalizeAuthority(authority)) + "/.well-known/openid-configuration";
+  }
+
+  /**
+   * OpenShift 等: well-known は同一オリジン `/auth/kc/` 経由で取得し、
+   * fetch が必要なエンドポイントだけ Keycloak 公開 URL → プロキシ URL に差し替える（authorization はフル遷移のまま）。
+   */
+  function rewriteKeycloakFetchEndpoints(meta, c) {
+    var pub = trimSlash(normalizeAuthority(c.keycloak_public_origin || ""));
+    var prx = trimSlash(c.browser_oidc_proxy_prefix || "");
+    if (!pub || !prx) return meta;
+    function rep(u) {
+      if (!u || typeof u !== "string") return u;
+      if (u.indexOf(pub) === 0) return prx + u.substring(pub.length);
+      return u;
+    }
+    var keys = [
+      "token_endpoint",
+      "revocation_endpoint",
+      "introspection_endpoint",
+      "device_authorization_endpoint",
+      "end_session_endpoint",
+    ];
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      if (meta[k]) meta[k] = rep(meta[k]);
+    }
+    return meta;
   }
 
   function fetchDiscovery(authority) {
-    return fetch(discoveryUrl(authority)).then(function (r) {
-      if (!r.ok) throw new Error("OpenID 設定の取得に失敗しました (" + r.status + ")");
-      return r.json();
-    });
+    var a = normalizeAuthority(authority);
+    return fetchJsonCors(discoveryUrl(a))
+      .then(function (r) {
+        if (!r.ok) throw new Error("OpenID 設定の取得に失敗しました (" + r.status + ")");
+        return r.json();
+      })
+      .then(function (meta) {
+        return rewriteKeycloakFetchEndpoints(meta, cfg());
+      });
   }
 
   global.DogenOidc = {
@@ -133,7 +194,7 @@
           var params = new URLSearchParams();
           params.set("client_id", c.client_id);
           params.set("response_type", "code");
-          params.set("scope", c.scope || "openid profile email offline_access");
+          params.set("scope", c.scope || "openid profile email");
           params.set("redirect_uri", redirectUri());
           params.set("state", state);
           params.set("code_challenge", challenge);
@@ -180,7 +241,7 @@
         body.set("redirect_uri", redirectUri());
         body.set("code_verifier", verifier);
 
-        return fetch(tokenEp, {
+        return fetchJsonCors(tokenEp, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: body.toString(),

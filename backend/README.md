@@ -23,7 +23,11 @@ Quarkus 3.20 + Apache Camel 4（camel-quarkus）で、**Llama Stack** の `POST 
 
 ### マネージド IdP（`quarkus-oidc`）
 
-プロファイル **`oidc`** を追加し、**`OIDC_AUTH_SERVER_URL`** に IdP の Issuer（例: Keycloak なら `https://<ホスト>/realms/<レルム名>`）を設定すると、`/api/v1/chat`・`/sessions`・`/feedback` が **Bearer 必須**になります。例: `QUARKUS_PROFILE=compose,oidc`。静的サイトの問答パネルは `localStorage.dogen_bearer_token` にアクセストークンを入れると `Authorization` に付与します。
+プロファイル **`oidc`** を追加し、**`OIDC_AUTH_SERVER_URL`** に IdP の Issuer（例: Keycloak なら `https://<ホスト>/realms/<レルム名>`）を設定すると、`/api/v1/chat`・`/sessions`・`/feedback` が **Bearer 必須**になります。例: `QUARKUS_PROFILE=compose,oidc`。静的サイトの問答パネルは OIDC ログイン後、`localStorage.dogen_bearer_token`（access token）を `Authorization` に付与し、古い保存データとの互換のため `dogen_id_token` もフォールバックで使います。
+
+`%oidc` では `quarkus-oidc` に加えて **`quarkus-smallrye-jwt`** で Bearer JWT を検証します。`mp.jwt.verify.publickey.location` は `${OIDC_AUTH_SERVER_URL}/protocol/openid-connect/certs`（必要なら `OIDC_JWKS_URL` で上書き）、`mp.jwt.verify.issuer` は `${OIDC_AUTH_SERVER_URL}`（必要なら `OIDC_ISSUER_URL`）です。**`quarkus.oidc.token.audience=any` は付けないでください** — 設定すると `aud` に文字列 `any` が必要と解釈され、常に検証失敗する場合があります。
+
+Keycloak 26.2 ではアクセストークンの `typ` が **`at+jwt`** になる設定があり、検証ライブラリと相性が悪いことがあります。レルムの `dogen-web` クライアント属性 **`access.token.header.type.rfc9068=false`**（`09-configure-oidc.sh` と `realm-dogen.json` で設定）で従来の **`JWT`** ヘッダに寄せています。
 
 ログイン済みのとき JWT の `sub` を `chat_session.client_subject` に保存し、セッション一覧・履歴は **同一主体の行だけ**返します。匿名時は `client_subject IS NULL` のセッションのみです。
 

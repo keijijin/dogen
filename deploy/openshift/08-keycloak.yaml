@@ -1,0 +1,176 @@
+# Keycloak (dev モード) + realm 取り込み。公開 Issuer / リダイレクトは 09-configure-oidc.sh で Route に合わせる。
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-dogen
+  labels:
+    app.kubernetes.io/name: keycloak
+data:
+  dogen-realm.json: |
+    {
+      "realm": "dogen",
+      "enabled": true,
+      "displayName": "dogen",
+      "accessTokenLifespan": 28800,
+      "ssoSessionIdleTimeout": 28800,
+      "ssoSessionMaxLifespan": 28800,
+      "registrationAllowed": false,
+      "loginWithEmailAllowed": true,
+      "resetPasswordAllowed": true,
+      "clients": [
+        {
+          "clientId": "dogen-web",
+          "name": "dogen web (SPA)",
+          "enabled": true,
+          "publicClient": true,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "implicitFlowEnabled": false,
+          "frontchannelLogout": true,
+          "redirectUris": [
+            "http://127.0.0.1:8080/*",
+            "http://localhost:8080/*"
+          ],
+          "webOrigins": [
+            "http://127.0.0.1:8080",
+            "http://localhost:8080"
+          ],
+          "attributes": {
+            "pkce.code.challenge.method": "S256",
+            "access.token.header.type.rfc9068": "false"
+          }
+        }
+      ],
+      "users": [
+        {
+          "username": "demo",
+          "enabled": true,
+          "emailVerified": true,
+          "firstName": "Demo",
+          "lastName": "User",
+          "email": "demo@example.com",
+          "credentials": [
+            { "type": "password", "value": "demo", "temporary": false }
+          ]
+        }
+      ]
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: keycloak
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      enableServiceLinks: false
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:26.2.5
+          imagePullPolicy: IfNotPresent
+          args: ["start-dev", "--import-realm"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+          env:
+            - name: KEYCLOAK_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: dogen-secrets
+                  key: KEYCLOAK_ADMIN
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dogen-secrets
+                  key: KEYCLOAK_ADMIN_PASSWORD
+            - name: KC_HTTP_ENABLED
+              value: "true"
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+            - name: KC_PROXY
+              value: edge
+            - name: KC_HTTP_RELATIVE_PATH
+              value: "/"
+          ports:
+            - containerPort: 8080
+            - name: management
+              containerPort: 9000
+              protocol: TCP
+          volumeMounts:
+            - name: kcdata
+              mountPath: /opt/keycloak/data
+            - name: import
+              mountPath: /opt/keycloak/data/import
+              readOnly: true
+            - name: kctmp
+              mountPath: /tmp
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 30
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1536Mi
+      volumes:
+        - name: kcdata
+          emptyDir: {}
+        - name: import
+          configMap:
+            name: keycloak-realm-dogen
+        - name: kctmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+spec:
+  selector:
+    app.kubernetes.io/name: keycloak
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+spec:
+  to:
+    kind: Service
+    name: keycloak
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

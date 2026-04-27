@@ -109,6 +109,10 @@ BODY_75_STARTS_1BASED = [
     9798,
 ]
 
+# 辨道話本文（1-based）。目次の「辨道話」は除き、本文見出し行から七十五巻直前の重複見出しまで。
+BENDOWA_BODY_START_1BASED = 185
+BENDOWA_BODY_NEXT_1BASED = 438
+
 # 十二巻本文見出し（1-based）＋ EOF 番兵
 BODY_12_STARTS_1BASED = [
     9798,
@@ -607,6 +611,55 @@ def main() -> None:
             )
         n_written += 1
 
+    # 辨道話（手編集 index は別ファイル。全文 HTML はコーパスと同期するため毎回生成）
+    bendowa_dir = VOL / "bendowa"
+    bendowa_dir.mkdir(parents=True, exist_ok=True)
+    full_bw = fulltext_html_block(lines, BENDOWA_BODY_START_1BASED, BENDOWA_BODY_NEXT_1BASED)
+    (bendowa_dir / "full.html").write_text(
+        f"""<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>辨道話（全文）— 正法眼蔵読解</title>
+    <link rel="stylesheet" href="../../css/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="../../index.html">正法眼蔵読解</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
+        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
+          <a href="../../guide/index.html">学習ガイド</a>
+          <a href="../index.html">巻一覧</a>
+          <a href="../../themes/index.html">テーマ</a>
+          <a href="../../glossary/index.html">用語</a>
+          <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../site/index.html">サイト情報</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <article class="prose">
+        <p class="notice">
+          <strong>注意</strong>：全文表示は権利条件に依存します。公開サイトに載せる範囲は利用許諾に従ってください。
+          出典: <code>doc/正法眼蔵.txt</code>。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
+        </p>
+        <h1>辨道話（全文）</h1>
+        <p><a href="index.html">抜粋ページへ戻る</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>
+        {full_bw}
+      </article>
+    </main>
+    <footer class="site-footer">
+      <p><a href="../../index.html">ホーム</a> · 正法眼蔵読解</p>
+    </footer>
+    <script src="../../js/nav.js" defer></script>
+  </body>
+</html>
+""",
+        encoding="utf-8",
+    )
+
     print(
         "Wrote",
         VOL / "index.html",
@@ -614,7 +667,7 @@ def main() -> None:
         n_written,
         "volume pages (hand-tuned slugs skipped:",
         ", ".join(sorted(HAND_SLUGS)),
-        ").",
+        "); bendowa/full.html",
     )
 
 

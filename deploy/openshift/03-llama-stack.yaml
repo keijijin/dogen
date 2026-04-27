@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: llama-data
+  labels:
+    app.kubernetes.io/name: dogen-llama-stack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-stack
+  labels:
+    app.kubernetes.io/name: dogen-llama-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dogen-llama-stack
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dogen-llama-stack
+    spec:
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: llama-stack
+          image: docker.io/llamastack/distribution-starter:0.7.1
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - containerPort: 8321
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dogen-secrets
+                  key: OPENAI_API_KEY
+            - name: OPENAI_BASE_URL
+              value: https://api.openai.com/v1
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: dogen-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dogen-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dogen-secrets
+                  key: POSTGRES_PASSWORD
+            - name: QDRANT_URL
+              value: http://qdrant:6333
+            - name: FILES_STORAGE_DIR
+              value: /data/llama-files
+            - name: SQLITE_STORE_DIR
+              value: /data/llama-sqlite
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - curl -sf http://127.0.0.1:8321/v1/health | grep -q OK
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: llama-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-stack
+  labels:
+    app.kubernetes.io/name: dogen-llama-stack
+spec:
+  selector:
+    app.kubernetes.io/name: dogen-llama-stack
+  ports:
+    - port: 8321
+      targetPort: 8321

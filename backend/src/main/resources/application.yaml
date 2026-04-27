@@ -97,17 +97,37 @@ dogen:
         max-results: 4
 
 "%oidc":
+  mp:
+    jwt:
+      verify:
+        # Keycloak の公開 JWKS（Route）。署名検証は smallrye-jwt で行う。
+        publickey:
+          location: ${OIDC_JWKS_URL:${OIDC_AUTH_SERVER_URL}/protocol/openid-connect/certs}
+        # Keycloak が発行する iss と合わせる。通常は OIDC_AUTH_SERVER_URL と同値（公開 URL）。
+        issuer: ${OIDC_ISSUER_URL:${OIDC_AUTH_SERVER_URL}}
   quarkus:
     oidc:
       enabled: true
       auth-server-url: ${OIDC_AUTH_SERVER_URL}
       application-type: service
+      token:
+        # Keycloak の hostname / プロキシ経路と iss がずれる OpenShift 向け
+        issuer: any
+        # access_token の署名・期限を検証する。audience は環境差で不一致が出やすいため未設定。
+        # 「audience: any」を付けると aud に文字列 "any" を要求して常に失敗するケースがあるため付けない。
+        # Pod 間と IdP の時刻差
+        lifespan-grace: 60
     http:
       auth:
         permission:
+          # ブラウザの CORS プリフライト（OPTIONS・Authorization 付き）は認証不要にする
+          api-cors-preflight:
+            paths: /api/*
+            methods: OPTIONS
+            policy: permit
           health-permit:
             paths: /api/v1/health,/q/health
             policy: permit
           api-auth:
-            paths: /api/v1/chat,/api/v1/sessions,/api/v1/feedback
+            paths: /api/v1/chat,/api/v1/sessions,/api/v1/sessions/*,/api/v1/feedback
             policy: authenticated

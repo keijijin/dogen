@@ -157,6 +157,10 @@ chmod +x deploy/local/scripts/postgres-backup.sh deploy/local/scripts/postgres-r
 
 ## OpenShift（概要）
 
+マニフェストと手順の例は **`deploy/openshift/`**（プロジェクト `dogen`、Postgres / Qdrant / Llama Stack / `dogen-api` / 静的 `dogen-web`、Route 2 本）。初回は `00-project-and-secrets.sh`（`OPENAI_API_KEY` 必須）→ 番号付き YAML の `oc apply` → バイナリビルドは **`zip` アーカイブ推奨**（macOS の `tar` はクラスタ側で展開に失敗することがあります）→ `07-patch-web-api-url.sh` でチャット用 API の Route URL を nginx に注入。
+
+OpenShift の Postgres は `deploy/openshift/scripts/postgres-backup.sh` / `postgres-restore.sh` で**ローカルファイルへ退避・復元**できる。既定バックアップ先は `deploy/openshift/backups`、保持期間は 7 日。毎日 6:30 の自動実行テンプレートは `deploy/openshift/cron/crontab.example` と `deploy/openshift/launchd/jp.dogen.openshift-postgres-backup.plist.example`。
+
 | Compose | OpenShift |
 |---------|-----------|
 | API キー等 | `Secret` + `Deployment` の env |

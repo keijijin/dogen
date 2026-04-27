@@ -1,0 +1,158 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dogen-web-runtime-config
+  labels:
+    app.kubernetes.io/name: dogen-web
+  annotations:
+    dogen.jp/oidc-configmap-note: dogen-oidc-config は 00 と 09 のみが作成・更新する（06 に含めないと apply で OIDC が消えない）。
+data:
+  runtime-config.js: |
+    /* 07-patch-web-api-url.sh で window.DOGEN_CHAT_API_BASE = "https://…" に差し替え */
+    if (typeof window.DOGEN_CHAT_API_BASE === "undefined") {
+      window.DOGEN_CHAT_API_BASE = "";
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dogen-web-nginx-site
+  labels:
+    app.kubernetes.io/name: dogen-web
+data:
+  default.conf: |
+    # 初期値。OpenShift で OIDC を有効化する場合は 09-configure-oidc.sh が /auth/kc/ 中継付きに差し替える。
+    server {
+        listen 8080;
+        listen [::]:8080;
+        server_name localhost;
+        root /usr/share/nginx/html;
+        index index.html;
+
+        location = /js/oidc-config.js {
+            add_header Cache-Control "no-store, no-cache, must-revalidate, max-age=0" always;
+            try_files $uri =404;
+        }
+
+        location = /js/runtime-config.js {
+            add_header Cache-Control "no-store, no-cache, must-revalidate, max-age=0" always;
+            try_files $uri =404;
+        }
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dogen-web
+  labels:
+    app.kubernetes.io/name: dogen-web
+  annotations:
+    image.openshift.io/triggers: |-
+      [
+        {
+          "from": {"kind":"ImageStreamTag","name":"dogen-web:latest"},
+          "fieldPath": "spec.template.spec.containers[?(@.name==\"nginx\")].image"
+        }
+      ]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dogen-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dogen-web
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: nginx
+          image: dogen-web:latest
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: runtime-config
+              mountPath: /usr/share/nginx/html/js/runtime-config.js
+              subPath: runtime-config.js
+              readOnly: true
+            - name: oidc-config
+              mountPath: /usr/share/nginx/html/js/oidc-config.js
+              subPath: oidc-config.js
+              readOnly: true
+            - name: nginx-site
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+      volumes:
+        - name: runtime-config
+          configMap:
+            name: dogen-web-runtime-config
+        - name: oidc-config
+          configMap:
+            name: dogen-oidc-config
+        - name: nginx-site
+          configMap:
+            name: dogen-web-nginx-site
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dogen-web
+  labels:
+    app.kubernetes.io/name: dogen-web
+spec:
+  selector:
+    app.kubernetes.io/name: dogen-web
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: dogen-web
+  labels:
+    app.kubernetes.io/name: dogen-web
+spec:
+  to:
+    kind: Service
+    name: dogen-web
+    weight: 100
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

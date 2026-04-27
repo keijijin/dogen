@@ -1,0 +1,55 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: dogen-api
+  labels:
+    app.kubernetes.io/name: dogen-api
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: dogen-api
+  labels:
+    app.kubernetes.io/name: dogen-api
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: dogen-api:latest
+  source:
+    type: Binary
+    binary: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: backend/Containerfile
+  triggers:
+    - type: ConfigChange
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: dogen-web
+  labels:
+    app.kubernetes.io/name: dogen-web
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: dogen-web
+  labels:
+    app.kubernetes.io/name: dogen-web
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: dogen-web:latest
+  source:
+    type: Binary
+    binary: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: deploy/openshift/Dockerfile.web
+  triggers:
+    - type: ConfigChange
