@@ -151,6 +151,42 @@
   margin-bottom: 0.2rem;
 }
 
+.dogen-msg__body--md {
+  white-space: normal;
+  line-height: 1.6;
+}
+
+.dogen-msg__body--md p {
+  margin: 0.35rem 0;
+}
+
+.dogen-msg__body--md code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.86em;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.08rem 0.24rem;
+  border-radius: 3px;
+}
+
+.dogen-msg__body--md pre {
+  margin: 0.4rem 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--line, #d4cdc0);
+}
+
+.dogen-msg__body--md pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.dogen-msg__body--md a {
+  color: var(--accent, #6b5344);
+  text-decoration: underline;
+}
+
 #dogen-dock-form {
   display: flex;
   flex-direction: column;

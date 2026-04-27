@@ -23,7 +23,7 @@ Quarkus 3.20 + Apache Camel 4（camel-quarkus）で、**Llama Stack** の `POST 
 
 ### マネージド IdP（`quarkus-oidc`）
 
-プロファイル **`oidc`** を追加し、**`OIDC_AUTH_SERVER_URL`** に IdP の Issuer（例: Keycloak なら `https://<ホスト>/realms/<レルム名>`）を設定すると、`/api/v1/chat`・`/sessions`・`/feedback` が **Bearer 必須**になります。例: `QUARKUS_PROFILE=compose,oidc`。静的サイトの問答パネルは OIDC ログイン後、`localStorage.dogen_bearer_token`（access token）を `Authorization` に付与し、古い保存データとの互換のため `dogen_id_token` もフォールバックで使います。
+プロファイル **`oidc`** を追加し、**`OIDC_AUTH_SERVER_URL`** に IdP の Issuer（例: Keycloak なら `https://<ホスト>/realms/<レルム名>`）を設定すると、`/api/v1/chat`・`/api/v1/chat/stream`・`/sessions`・`/feedback` が **Bearer 必須**になります。例: `QUARKUS_PROFILE=compose,oidc`。静的サイトの問答パネルは OIDC ログイン後、`localStorage.dogen_bearer_token`（access token）を `Authorization` に付与し、古い保存データとの互換のため `dogen_id_token` もフォールバックで使います。
 
 `%oidc` では `quarkus-oidc` に加えて **`quarkus-smallrye-jwt`** で Bearer JWT を検証します。`mp.jwt.verify.publickey.location` は `${OIDC_AUTH_SERVER_URL}/protocol/openid-connect/certs`（必要なら `OIDC_JWKS_URL` で上書き）、`mp.jwt.verify.issuer` は `${OIDC_AUTH_SERVER_URL}`（必要なら `OIDC_ISSUER_URL`）です。**`quarkus.oidc.token.audience=any` は付けないでください** — 設定すると `aud` に文字列 `any` が必要と解釈され、常に検証失敗する場合があります。
 
@@ -52,6 +52,7 @@ mvn quarkus:dev
 ## エンドポイント（`doc/DESIGN.md` 7 章）
 
 - `POST /api/v1/chat` … OpenAI Chat Completions 互換の JSON を Llama Stack に転送。新規セッション時は応答ヘッダ `X-Session-Id`。最後の user メッセージと assistant 応答を DB に保存し、`X-User-Message-Id` / `X-Assistant-Message-Id` を返す場合あり。
+- `POST /api/v1/chat/stream` … `text/event-stream` で逐次返却。**`Accept: text/event-stream`** を付ける。`event: delta` で部分テキスト、`event: done` で完了メタデータ（`sessionId` など）を返す。
 - `POST /api/v1/feedback` … `messageId`（上記ヘッダの UUID）と `rating` / `comment`。
 - `GET /api/v1/sessions` … 保存済みチャットセッション一覧（更新順）。
 - `GET /api/v1/sessions/{id}/messages` … セッションのメッセージ履歴（時系列）。`POST /chat` で `sessionId` を渡すと、送信前に DB 履歴とマージして Llama に送る。

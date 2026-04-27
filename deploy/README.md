@@ -52,6 +52,13 @@
 
 API がトークンを検証するには別途 **`QUARKUS_PROFILE=compose,oidc`** と **`OIDC_AUTH_SERVER_URL`** が必要です（上記「ユーザ管理（OIDC）と Compose」）。フロントだけ有効にすると、IdP の画面は出ますが API は匿名のままです。
 
+### 問答ドックの応答表示（stream + Markdown）
+
+- 問答ドック（`web/js/chat-dock.js`）は既定で `POST /api/v1/chat/stream`（SSE）を使って逐次表示する。
+- ブラウザ/プロキシ事情で stream が不安定な場合、同じ入力で `POST /api/v1/chat` に自動フォールバックする。
+- assistant 応答は安全な範囲で Markdown 表示（`**bold**`、`` `code` ``、`[link](https://...)`、コードブロック）。
+- stream 実装を更新した直後に表示が古い場合は、`Cmd+Shift+R` でハードリロードする。
+
 ### サービス一覧（`deploy/local/compose.yaml`）
 
 | サービス | 役割 |

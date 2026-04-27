@@ -98,6 +98,16 @@
     return h;
   }
 
+  function headersStreamJson() {
+    var h = {
+      Accept: "text/event-stream",
+      "Content-Type": "application/json",
+    };
+    var b = bearer();
+    if (b) h.Authorization = b;
+    return h;
+  }
+
   function headersGet() {
     var h = { Accept: "application/json" };
     var b = bearer();
@@ -200,7 +210,48 @@
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
-  function appendBubble(role, text) {
+  function escapeHtml(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function isSafeLink(u) {
+    return /^(https?:\/\/|mailto:)/i.test(u || "");
+  }
+
+  function renderMarkdownSafe(text) {
+    var src = String(text || "");
+    var blocks = [];
+    src = src.replace(/```([\s\S]*?)```/g, function (_m, code) {
+      var idx = blocks.length;
+      blocks.push('<pre><code>' + escapeHtml(code) + "</code></pre>");
+      return "%%CODEBLOCK_" + idx + "%%";
+    });
+
+    var html = escapeHtml(src);
+    html = html.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (_m, label, url) {
+      if (!isSafeLink(url)) return label;
+      return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + "</a>";
+    });
+    html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+    html = html.replace(/\n/g, "<br>");
+    html = html.replace(/%%CODEBLOCK_(\d+)%%/g, function (_m, i) {
+      return blocks[Number(i)] || "";
+    });
+    return html;
+  }
+
+  function setAssistantBody(bodyEl, text) {
+    bodyEl.classList.add("dogen-msg__body--md");
+    bodyEl.innerHTML = renderMarkdownSafe(text);
+  }
+
+  function createBubble(role, text) {
     var div = document.createElement("div");
     div.className = "dogen-msg dogen-msg--" + (role === "user" ? "user" : "assistant");
     var span = document.createElement("span");
@@ -208,10 +259,16 @@
     span.textContent = role === "user" ? "あなた" : "応答";
     div.appendChild(span);
     var body = document.createElement("div");
-    body.textContent = text;
+    if (role === "assistant") setAssistantBody(body, text);
+    else body.textContent = text;
     div.appendChild(body);
     messagesEl.appendChild(div);
     scrollMessages();
+    return { root: div, body: body };
+  }
+
+  function appendBubble(role, text) {
+    createBubble(role, text);
   }
 
   function clearMessages() {
@@ -242,6 +299,128 @@
         }
       });
     });
+  }
+
+  function parseSseBlock(block) {
+    var lines = String(block || "").replace(/\r/g, "").split("\n");
+    var event = "message";
+    var dataLines = [];
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i];
+      if (ln.indexOf("event:") === 0) {
+        event = ln.substring(6).trim() || "message";
+      } else if (ln.indexOf("data:") === 0) {
+        dataLines.push(ln.substring(5).trim());
+      }
+    }
+    var raw = dataLines.join("\n");
+    var parsed = null;
+    if (raw) {
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        parsed = { raw: raw };
+      }
+    }
+    return { event: event, data: parsed };
+  }
+
+  function streamChat(base, body, assistantBody) {
+    return fetch(base + "/api/v1/chat/stream", {
+      method: "POST",
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store",
+      headers: headersStreamJson(),
+      body: JSON.stringify(body),
+    }).then(function (res) {
+      var sidHeader = res.headers.get("X-Session-Id");
+      if (sidHeader) setSession(sidHeader);
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          throw new Error(res.status + " " + t);
+        });
+      }
+      if (!res.body || !res.body.getReader) {
+        return res.text().then(function (t) {
+          setAssistantBody(assistantBody, t || "（ストリーミング非対応の応答）");
+          scrollMessages();
+        });
+      }
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+      var buf = "";
+      var acc = "";
+      var gotDelta = false;
+
+      function handleBlock(block) {
+        if (!block || !block.trim()) return;
+        var evt = parseSseBlock(block);
+        if (evt.event === "delta" && evt.data && typeof evt.data.delta === "string") {
+          acc += evt.data.delta;
+          gotDelta = true;
+          setAssistantBody(assistantBody, acc);
+          scrollMessages();
+        } else if (evt.event === "done" && evt.data) {
+          if (evt.data.sessionId) setSession(evt.data.sessionId);
+        } else if (evt.event === "error") {
+          var detail = (evt.data && (evt.data.detail || evt.data.error)) || "stream error";
+          throw new Error(String(detail));
+        }
+      }
+
+      function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) {
+            if (buf.trim()) handleBlock(buf);
+            if (!gotDelta) throw new Error("stream_no_delta");
+            return { mode: "stream", hasDelta: true };
+          }
+          buf += decoder.decode(r.value, { stream: true });
+          var idx;
+          while ((idx = buf.indexOf("\n\n")) >= 0) {
+            var block = buf.slice(0, idx);
+            buf = buf.slice(idx + 2);
+            handleBlock(block);
+          }
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+
+  function fetchChatOnce(base, body) {
+    return fetch(base + "/api/v1/chat", {
+      method: "POST",
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store",
+      headers: headersJson(),
+      body: JSON.stringify(body),
+    }).then(function (res) {
+      var sidHeader = res.headers.get("X-Session-Id");
+      if (sidHeader) setSession(sidHeader);
+      return res.text().then(function (t) {
+        if (!res.ok) throw new Error(res.status + " " + t);
+        try {
+          return JSON.parse(t);
+        } catch (e) {
+          return { raw: t };
+        }
+      });
+    });
+  }
+
+  function extractAssistantFromChatJson(j) {
+    if (!j) return "";
+    if (typeof j.raw === "string") return j.raw;
+    var content =
+      j.choices &&
+      j.choices[0] &&
+      j.choices[0].message &&
+      j.choices[0].message.content;
+    return content || "";
   }
 
   function refreshSessions() {
@@ -360,6 +539,7 @@
     }
     sendBtn.disabled = true;
     appendBubble("user", text);
+    var assistantBubble = createBubble("assistant", "");
     input.value = "";
 
     var body = {
@@ -369,31 +549,23 @@
     if (vs) body.volumeScope = vs;
     if (sessionId) body.sessionId = sessionId;
 
-    fetch(base + "/api/v1/chat", {
-      method: "POST",
-      mode: "cors",
-      credentials: "omit",
-      cache: "no-store",
-      headers: headersJson(),
-      body: JSON.stringify(body),
-    })
-      .then(function (res) {
-        var sidHeader = res.headers.get("X-Session-Id");
-        if (sidHeader) setSession(sidHeader);
-        return res.text().then(function (t) {
-          if (!res.ok) throw new Error(res.status + " " + t);
-          return t;
+    streamChat(base, body, assistantBubble.body)
+      .catch(function (e) {
+        var raw = (e && e.message) || String(e);
+        var canFallback =
+          raw === "stream_no_delta" ||
+          raw.indexOf("stream_failed") >= 0 ||
+          raw.indexOf("stream error") >= 0;
+        if (!canFallback) throw e;
+        return fetchChatOnce(base, body).then(function (j) {
+          var content = extractAssistantFromChatJson(j);
+          if (content) {
+            setAssistantBody(assistantBubble.body, content);
+            scrollMessages();
+          }
         });
       })
-      .then(function (t) {
-        var j = JSON.parse(t);
-        var content =
-          j.choices &&
-          j.choices[0] &&
-          j.choices[0].message &&
-          j.choices[0].message.content;
-        if (content) appendBubble("assistant", content);
-        else appendBubble("assistant", JSON.stringify(j, null, 2));
+      .then(function () {
         return refreshSessions();
       })
       .then(function () {
@@ -401,6 +573,9 @@
         syncSelect();
       })
       .catch(function (e) {
+        if (!assistantBubble.body.textContent && !assistantBubble.body.innerText) {
+          setAssistantBody(assistantBubble.body, "（応答を受信できませんでした）");
+        }
         var raw = e.message || String(e);
         var hint = raw;
         if (raw === "Failed to fetch" || (e && e.name === "TypeError")) {

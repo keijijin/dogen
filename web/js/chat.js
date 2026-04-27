@@ -61,6 +61,22 @@
   var sessionHint = document.getElementById("session-hint");
   if (!form || !out) return;
 
+  function parseSseBlock(block) {
+    var lines = String(block || "").replace(/\r/g, "").split("\n");
+    var event = "message";
+    var data = [];
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf("event:") === 0) event = lines[i].substring(6).trim() || "message";
+      if (lines[i].indexOf("data:") === 0) data.push(lines[i].substring(5).trim());
+    }
+    var raw = data.join("\n");
+    try {
+      return { event: event, data: raw ? JSON.parse(raw) : null };
+    } catch (e) {
+      return { event: event, data: { raw: raw } };
+    }
+  }
+
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
     err.textContent = "";
@@ -75,8 +91,11 @@
     var headers = { "Content-Type": "application/json" };
     var b = bearer();
     if (b) headers.Authorization = b;
-    fetch(API_BASE + "/api/v1/chat", {
+    fetch(API_BASE + "/api/v1/chat/stream", {
       method: "POST",
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store",
       headers: headers,
       body: JSON.stringify(body),
     })
@@ -90,20 +109,39 @@
               .filter(Boolean)
               .join(" · ");
         }
-        return res.text().then(function (t) {
-          if (!res.ok) {
+        if (!res.ok) {
+          return res.text().then(function (t) {
             throw new Error(res.status + " " + t);
-          }
-          return t;
-        });
-      })
-      .then(function (text) {
-        try {
-          var j = JSON.parse(text);
-          out.textContent = JSON.stringify(j, null, 2);
-        } catch (e) {
-          out.textContent = text;
+          });
         }
+        if (!res.body || !res.body.getReader) {
+          return res.text().then(function (t) {
+            out.textContent = t;
+          });
+        }
+        var reader = res.body.getReader();
+        var decoder = new TextDecoder();
+        var buf = "";
+        var acc = "";
+        out.textContent = "";
+        function pump() {
+          return reader.read().then(function (r) {
+            if (r.done) return;
+            buf += decoder.decode(r.value, { stream: true });
+            var idx;
+            while ((idx = buf.indexOf("\n\n")) >= 0) {
+              var block = buf.slice(0, idx);
+              buf = buf.slice(idx + 2);
+              var evt = parseSseBlock(block);
+              if (evt.event === "delta" && evt.data && typeof evt.data.delta === "string") {
+                acc += evt.data.delta;
+                out.textContent = acc;
+              }
+            }
+            return pump();
+          });
+        }
+        return pump();
       })
       .catch(function (e) {
         out.textContent = "";

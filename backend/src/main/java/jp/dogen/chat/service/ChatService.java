@@ -9,6 +9,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,6 +66,9 @@ public class ChatService {
 
     @ConfigProperty(name = "dogen.chat.upstream-authorization")
     String upstreamAuthorization;
+
+    @ConfigProperty(name = "llama.stack.base-url")
+    String llamaStackBaseUrl;
 
     public Response chat(ChatRequest request, String clientSubject) {
         if (request.messages == null || request.messages.isEmpty()) {
@@ -175,6 +188,100 @@ public class ChatService {
         }
     }
 
+    public Response chatStream(ChatRequest request, String clientSubject) {
+        if (request.messages == null || request.messages.isEmpty()) {
+            throw new WebApplicationException(
+                    Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"messages_required\"}").build());
+        }
+
+        UUID sessionId = request.sessionId != null ? request.sessionId : UUID.randomUUID();
+        boolean newSession = request.sessionId == null;
+        UUID userMessageId = null;
+        String payload;
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            ensureSession(conn, sessionId, request.volumeScope, clientSubject);
+            ChatMessageDto lastUser = lastUserMessage(request.messages);
+
+            List<ChatMessageDto> forLlm = new ArrayList<>();
+            if (request.sessionId != null) {
+                forLlm.addAll(loadMessagesForModel(conn, sessionId));
+            }
+            forLlm.addAll(request.messages);
+            String lastUserText = lastUser != null ? lastUser.content : "";
+            String ragCtx = ragService.retrieveForUserQuery(lastUserText);
+            String webCtx = webSearchService.buildContextBlock(lastUserText);
+            payload = buildLlamaPayload(request.volumeScope, request.model, forLlm, ragCtx, webCtx, true);
+
+            if (lastUser != null) {
+                userMessageId = UUID.randomUUID();
+                insertMessage(conn, userMessageId, sessionId, "user", lastUser.content);
+            }
+            conn.commit();
+        } catch (Exception e) {
+            LOG.error("chat stream prepare failed", e);
+            throw upstreamFailure(e);
+        }
+
+        final UUID finalSessionId = sessionId;
+        final UUID finalUserMessageId = userMessageId;
+        final boolean finalNewSession = newSession;
+        final String finalPayload = payload;
+
+        StreamingOutput stream = out -> {
+            StringBuilder assistantText = new StringBuilder();
+            UUID assistantMessageId = null;
+            try {
+                streamFromLlama(finalPayload, out, assistantText);
+                if (!assistantText.toString().isBlank()) {
+                    assistantMessageId = UUID.randomUUID();
+                    try (Connection conn = dataSource.getConnection()) {
+                        conn.setAutoCommit(false);
+                        insertMessage(conn, assistantMessageId, finalSessionId, "assistant", assistantText.toString());
+                        ObjectNode audit = objectMapper.createObjectNode();
+                        audit.put("session", finalSessionId.toString());
+                        audit.put("mode", "stream");
+                        insertAudit(conn, "CHAT_SUCCESS", audit);
+                        conn.commit();
+                    }
+                }
+
+                ObjectNode done = objectMapper.createObjectNode();
+                done.put("sessionId", finalSessionId.toString());
+                if (finalUserMessageId != null) {
+                    done.put("userMessageId", finalUserMessageId.toString());
+                }
+                if (assistantMessageId != null) {
+                    done.put("assistantMessageId", assistantMessageId.toString());
+                }
+                writeSse(out, "done", objectMapper.writeValueAsString(done));
+            } catch (Exception e) {
+                LOG.error("chat stream failed", e);
+                auditError(formatFailureDetail(e));
+                ObjectNode err = objectMapper.createObjectNode();
+                err.put("error", "stream_failed");
+                err.put("detail", formatFailureDetail(e));
+                try {
+                    writeSse(out, "error", objectMapper.writeValueAsString(err));
+                } catch (Exception ignored) {
+                    // stream already broken
+                }
+            }
+        };
+
+        Response.ResponseBuilder rb = Response.ok(stream).type("text/event-stream; charset=utf-8");
+        rb.header("Cache-Control", "no-cache");
+        rb.header("X-Accel-Buffering", "no");
+        if (finalNewSession) {
+            rb.header("X-Session-Id", finalSessionId.toString());
+        }
+        if (finalUserMessageId != null) {
+            rb.header("X-User-Message-Id", finalUserMessageId.toString());
+        }
+        return rb.build();
+    }
+
     private WebApplicationException upstreamFailure(Throwable e) {
         Optional<HttpOperationFailedException> hop = findHttpOperationFailed(e);
         if (hop.isPresent()) {
@@ -275,6 +382,93 @@ public class ChatService {
         }
     }
 
+    private void streamFromLlama(String payload, OutputStream out, StringBuilder assistantText) throws Exception {
+        HttpClient client = HttpClient.newBuilder().build();
+        URI uri = URI.create(llamaStackBaseUrl.replaceAll("/$", "") + "/v1/chat/completions");
+        HttpRequest req = HttpRequest.newBuilder(uri)
+                .header("Content-Type", "application/json")
+                .header("Accept", "text/event-stream")
+                .header("Authorization", upstreamAuthorization)
+                .POST(HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
+                .build();
+
+        HttpResponse<InputStream> resp = client.send(req, HttpResponse.BodyHandlers.ofInputStream());
+        if (resp.statusCode() >= 400) {
+            String body = new String(resp.body().readAllBytes(), StandardCharsets.UTF_8);
+            throw new WebApplicationException(
+                    Response.status(resp.statusCode())
+                            .entity(body.isBlank() ? "{\"error\":\"upstream_http\"}" : body)
+                            .type("application/json")
+                            .build());
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resp.body(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith("data:")) {
+                    continue;
+                }
+                String data = line.substring(5).trim();
+                if (data.isEmpty()) {
+                    continue;
+                }
+                if ("[DONE]".equals(data)) {
+                    break;
+                }
+                JsonNode node = objectMapper.readTree(data);
+                String delta = extractStreamDeltaContent(node);
+                if (delta == null || delta.isEmpty()) {
+                    continue;
+                }
+                assistantText.append(delta);
+                ObjectNode ev = objectMapper.createObjectNode();
+                ev.put("delta", delta);
+                writeSse(out, "delta", objectMapper.writeValueAsString(ev));
+            }
+        }
+    }
+
+    private static void writeSse(OutputStream out, String event, String data) throws java.io.IOException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("event: ").append(event).append('\n');
+        String[] lines = data.replace("\r", "").split("\n", -1);
+        for (String ln : lines) {
+            sb.append("data: ").append(ln).append('\n');
+        }
+        sb.append('\n');
+        out.write(sb.toString().getBytes(StandardCharsets.UTF_8));
+        out.flush();
+    }
+
+    private static String extractStreamDeltaContent(JsonNode root) {
+        JsonNode choices = root.get("choices");
+        if (choices == null || !choices.isArray() || choices.isEmpty()) {
+            return null;
+        }
+        JsonNode delta = choices.get(0).get("delta");
+        if (delta == null) {
+            return null;
+        }
+        JsonNode c = delta.get("content");
+        if (c == null || c.isNull()) {
+            return null;
+        }
+        if (c.isTextual()) {
+            return c.asText();
+        }
+        if (c.isArray()) {
+            StringBuilder sb = new StringBuilder();
+            for (JsonNode part : c) {
+                JsonNode t = part.get("text");
+                if (t != null && t.isTextual()) {
+                    sb.append(t.asText());
+                }
+            }
+            return sb.toString();
+        }
+        return null;
+    }
+
     private String buildLlamaPayload(
             String volumeScope,
             String model,
@@ -282,8 +476,20 @@ public class ChatService {
             String ragContext,
             String webContext)
             throws Exception {
+        return buildLlamaPayload(volumeScope, model, messages, ragContext, webContext, false);
+    }
+
+    private String buildLlamaPayload(
+            String volumeScope,
+            String model,
+            List<ChatMessageDto> messages,
+            String ragContext,
+            String webContext,
+            boolean stream)
+            throws Exception {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("model", model != null && !model.isBlank() ? model : defaultModel);
+        root.put("stream", stream);
         ArrayNode arr = objectMapper.createArrayNode();
         if (volumeScope != null && !volumeScope.isBlank()) {
             String vs = volumeScope.replace("\"", "”").replace("\n", " ");

@@ -51,6 +51,7 @@
         <h2>API（参考）</h2>
         <ul>
           <li><code>POST /api/v1/chat</code> … 本文に <code>sessionId</code>（UUID）と <code>messages</code>（今回の user だけで可）を含めると履歴とマージされます。</li>
+          <li><code>POST /api/v1/chat/stream</code> … <code>text/event-stream</code> で逐次応答（<code>delta</code> / <code>done</code>）を受信します。</li>
           <li><code>GET /api/v1/sessions</code> … 保存済みセッション一覧。</li>
           <li><code>GET /api/v1/sessions/{id}/messages</code> … そのセッションのメッセージ履歴。</li>
         </ul>

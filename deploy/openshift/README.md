@@ -64,6 +64,11 @@ oc logs -n dogen deployment/dogen-api --tail=80
 | **HTTPS のサイトから `http://127.0.0.1:8081` を叩いている** | **混在コンテンツ**でブラウザがブロック。`07-patch-web-api-url.sh` で `runtime-config.js` に **API の HTTPS URL** を入れ、**強制再読み込み**してください。 |
 | **CORS** | `compose` プロファイルでは `quarkus.http.cors.origins` が **`/.*/`** です。`compose,oidc` のときも `%oidc` が CORS を上書きしていなければ同様です。OPTIONS が認証で弾かれる場合は API イメージ側の **`api-cors-preflight`（OPTIONS permit）** が入っているか確認してください。 |
 
+### 2.1 HTTP 406（`/api/v1/chat/stream`）
+
+`POST /api/v1/chat/stream` は `text/event-stream` 専用です。`Accept: application/json` のまま叩くと **406 Not Acceptable** になります。  
+`web/js/chat-dock.js` は `Accept: text/event-stream` を送る実装になっているため、発生時は **Web イメージ更新漏れ** または **ブラウザキャッシュ**（ハードリロード未実施）を疑ってください。
+
 ### 3. フロントの `oidc-config.js`（`dogen-oidc-config`）
 
 `enabled: false` のままだと、ローカル向けの **`Bearer fake`** 分岐に寄りやすく、API が `compose,oidc` のときに **403** になります。`06-dogen-web.yaml` から **OIDC ConfigMap を外した**ので、`06` の apply だけで `enabled` が戻ることはありません。**`09-configure-oidc.sh` 後にブラウザで `/js/oidc-config.js` を開き `enabled: true` か確認**してください。

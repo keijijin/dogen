@@ -35,6 +35,13 @@ public class ChatResource {
     }
 
     @POST
+    @Path("/chat/stream")
+    @Produces("text/event-stream")
+    public Response chatStream(ChatRequest body) {
+        return chatService.chatStream(body, clientSubject());
+    }
+
+    @POST
     @Path("/feedback")
     public Response feedback(FeedbackRequest body) {
         feedbackService.record(body);

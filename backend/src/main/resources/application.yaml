@@ -129,5 +129,5 @@ dogen:
             paths: /api/v1/health,/q/health
             policy: permit
           api-auth:
-            paths: /api/v1/chat,/api/v1/sessions,/api/v1/sessions/*,/api/v1/feedback
+            paths: /api/v1/chat,/api/v1/chat/stream,/api/v1/sessions,/api/v1/sessions/*,/api/v1/feedback
             policy: authenticated
