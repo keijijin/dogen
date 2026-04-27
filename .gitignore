@@ -43,4 +43,6 @@ pnpm-debug.log*
 
 # ---- Project-specific ----
 /doc/*.pdf
+/deploy/openshift/backups/*.sql.gz
+/deploy/openshift/backups/*.log
 
