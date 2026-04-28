@@ -19,6 +19,7 @@
 | パス | 内容 |
 |------|------|
 | `doc/PLAN.md` | 方針・サイトマップ案・フェーズ |
+| `doc/WEB_DELIVERABLES.md` | 静的 Web の実装成果（イラスト埋め込み・ファビコン・問答ドック・OpenShift 反映手順） |
 | `doc/DESIGN.md` | API・DB・Quarkus/Camel/Llama Stack の設計 |
 | `doc/正法眼蔵.txt` | 訳文テキスト（目次・各巻・辨道話等） |
 | `doc/*.pdf` | 全訳 PDF（取り扱いは権利に注意） |
@@ -61,7 +62,7 @@ podman compose --env-file .env up -d
 
 - 本体は `web/`（HTML / `css/main.css` / `js/nav.js`）。
 - プレビュー: **`deploy/local` で `podman compose --env-file .env up -d`** とし、ブラウザで `http://localhost:8080/`（サービス `web`、ポートは `WEB_PUBLISH_PORT`）を開く。手元だけなら従来どおり `python3 -m http.server -d web 8080` でも可（Python 3.14 系では `-d` をポートより前に置く）。
-- 巻一覧と各巻ページは `python3 tools/gen_web_volumes.py` で再生成する。手編集を保つスラッグは `tools/gen_web_volumes.py` の `HAND_SLUGS`（現状 75-01,02,03,04,05,20,25,46）。
+- 巻一覧と各巻ページは `python3 tools/gen_web_volumes.py` で再生成する。手編集を保つスラッグは `tools/gen_web_volumes.py` の `HAND_SLUGS`（現状 75-01,02,03,04,05,20,25,46）。巻別 PNG イラスト・ファビコン・問答 FAB 等の一覧は **`doc/WEB_DELIVERABLES.md`**。
 - **問答 Bot UI**: `web/chat/index.html` が `http://127.0.0.1:8081` の API を呼ぶ。API は **`deploy/local` の Podman Compose**（`dogen-api`）または `mvn quarkus:dev` で起動する。手順は `deploy/README.md`。
 
 ## バックエンド（問答 API）
@@ -79,3 +80,4 @@ podman compose --env-file .env up -d
 | 日付 | 内容 |
 |------|------|
 | 2026-04-24 | 初版 |
+| 2026-04-28 | `doc/WEB_DELIVERABLES.md` を追加し地図・フロント節から参照 |
