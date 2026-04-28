@@ -20,6 +20,7 @@
 |------|------|
 | `doc/PLAN.md` | 方針・サイトマップ案・フェーズ |
 | `doc/WEB_DELIVERABLES.md` | 静的 Web の実装成果（イラスト埋め込み・ファビコン・問答ドック・OpenShift 反映手順） |
+| `doc/CHAT_GUARDRAILS_PLAN.md` | 問答の無関係入力ガードレール計画・ユーザ視点の機能リスト（案） |
 | `doc/DESIGN.md` | API・DB・Quarkus/Camel/Llama Stack の設計 |
 | `doc/正法眼蔵.txt` | 訳文テキスト（目次・各巻・辨道話等） |
 | `doc/*.pdf` | 全訳 PDF（取り扱いは権利に注意） |
@@ -81,3 +82,4 @@ podman compose --env-file .env up -d
 |------|------|
 | 2026-04-24 | 初版 |
 | 2026-04-28 | `doc/WEB_DELIVERABLES.md` を追加し地図・フロント節から参照 |
+| 2026-04-28 | `doc/CHAT_GUARDRAILS_PLAN.md` を追加（問答ガード・UX リスト）、`doc/PLAN.md` 3.6 から参照 |
