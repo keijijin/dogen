@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第52　佛祖（全文）— 正法眼蔵読解</title>
+        <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
+    <link rel="icon" href="../../favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
     <link rel="stylesheet" href="../../css/main.css" />
   </head>
   <body>
@@ -29,6 +32,11 @@
         </p>
         <h1>正法眼藏第52　佛祖（全文）</h1>
         <p><a href="index.html">抜粋ページへ戻る</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>
+        <div class="reading-toggle" data-reading-toggle>
+          <button type="button" class="reading-toggle__btn is-active" data-reading-tab="original" aria-selected="true">原文</button>
+          <button type="button" class="reading-toggle__btn" data-reading-tab="modern" aria-selected="false">現代語訳</button>
+        </div>
+        <section data-reading-panel="original">
         <p>宗禮</p>
         <p>佛祖の現成は、佛祖を擧拈して奉覲するなり。過現當來のみにあらず、佛向上よりも向上なるべし。まさに佛祖の面目を保任せるを拈じて、禮拜し相見す。佛祖の功徳を現擧せしめて住持しきたり、體證しきたれり。</p>
         <p>毘婆尸佛大和尚　　　此云廣説</p>
@@ -92,11 +100,22 @@
         <p>大宋國寶慶元年乙酉夏安居時、先師天童古佛大和尚に參侍して、この佛祖を禮拜頂戴することを究盡せり。唯佛與佛なり。</p>
         <p>正法眼藏第五十二佛祖</p>
         <p>爾時仁治二年辛丑正月三日書于日本國雍州宇治縣觀音導利興聖寶林寺而示衆</p>
+        </section>
+        <section data-reading-panel="modern" hidden>
+          <p class="notice">
+            現代語訳は事前に生成した読解補助版です（閲覧時に通信しません）。
+          </p>
+        <p>わたしは、仏の存在を現前にするためには、仏を敬い、崇めることが必要だと考えています。これが過去や現在、未来にのみ当てはまるものではなく、仏を見つめることがさらに重要なのです。仏の本質を大切にし、礼拝し、互いに会うことで、仏の功徳を示し、受け止めることができます。</p>
+        <p>仏教の先人たちの教えを挙げると、毘婆尸仏は「広く説く」という意味を持ち、尸棄仏は「火」を、毘舍浮仏は「すべての慈愛」を表しています。拘留孫仏は「金の仙人」を、拘那含牟尼仏は「金色の仙人」、迦葉仏は「飲み光」を示しています。また、釈迦牟尼仏は「忍耐と静けさ」を体現しています。</p>
+        <p>多くの先師たちの名前が示すように、彼らはそれぞれ特有の教えを持っており、わたしはその教えを受け継ぎながら、仏の礼拝を深く探求してきました。このように、仏と仏との間にあるつながりを理解することに努めています。大宋国の宝慶元年の夏、先師天童古佛大和尚に仕え、仏への礼拝の意義を深く学ぶことができました。ただ、仏であることの真髄は、仏の中に仏があるということなのです。</p>
+        <p>わたしは、仁治二年の辛丑の正月三日に、日本の雇州宇治の観音導利興聖宝林寺にて、この文を書いて、みなに示しました。</p>
+        </section>
       </article>
     </main>
     <footer class="site-footer">
       <p><a href="../../index.html">ホーム</a> · 正法眼蔵読解</p>
     </footer>
     <script src="../../js/nav.js" defer></script>
+    <script src="../../js/volume-reading.js" defer></script>
   </body>
 </html>

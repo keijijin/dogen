@@ -115,6 +115,17 @@
     return h;
   }
 
+  function ensureFreshOidcToken() {
+    try {
+      if (window.DogenOidc && typeof window.DogenOidc.ensureFreshAccessToken === "function") {
+        return window.DogenOidc.ensureFreshAccessToken(90).catch(function () {
+          return null;
+        });
+      }
+    } catch (e) {}
+    return Promise.resolve(null);
+  }
+
   function apiAuthMessage(statusText) {
     var m = String(statusText || "");
     if (!oidcRequiredForChat()) return m;
@@ -127,11 +138,39 @@
     return m;
   }
 
+  /** nav.js / chat-dock.js の配置からサイトルートを推定し、アイコン URL を返す */
+  function dockFabIconSrc() {
+    try {
+      var navRef = document.querySelector('script[src*="nav.js"]');
+      if (navRef && navRef.src) {
+        return new URL("img/app-icon-dogen-32.png", new URL("..", navRef.src)).href;
+      }
+      var dockRef = document.querySelector('script[src*="chat-dock.js"]');
+      if (dockRef && dockRef.src) {
+        return new URL("img/app-icon-dogen-32.png", new URL("..", dockRef.src)).href;
+      }
+    } catch (e) {}
+    try {
+      return new URL("/img/app-icon-dogen-32.png", window.location.origin).href;
+    } catch (e2) {
+      return "/img/app-icon-dogen-32.png";
+    }
+  }
+
+  var fabIconSrc = dockFabIconSrc();
+  var fabIconEsc = String(fabIconSrc).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+
   var root = document.createElement("div");
   root.id = "dogen-dock-root";
   root.setAttribute("aria-live", "polite");
   root.innerHTML =
-    '<button type="button" id="dogen-dock-fab" aria-expanded="false" aria-controls="dogen-dock-panel">問答</button>' +
+    '<button type="button" id="dogen-dock-fab" aria-expanded="false" aria-controls="dogen-dock-panel" aria-label="問答を開く">' +
+    '<span class="dogen-dock-fab__inner">' +
+    '<img class="dogen-dock-fab__icon" src="' +
+    fabIconEsc +
+    '" width="22" height="22" alt="" decoding="async" />' +
+    '<span class="dogen-dock-fab__label">問答</span>' +
+    "</span></button>" +
     '<div id="dogen-dock-panel" hidden role="dialog" aria-label="正法眼蔵問答">' +
     '  <div class="dogen-dock__head">' +
     '    <h2>問答 Bot</h2>' +
@@ -285,18 +324,20 @@
   }
 
   function fetchJSON(url, options) {
-    var o = Object.assign(
-      { mode: "cors", credentials: "omit", cache: "no-store" },
-      options || {}
-    );
-    return fetch(url, o).then(function (res) {
-      return res.text().then(function (t) {
-        if (!res.ok) throw new Error(res.status + " " + t);
-        try {
-          return JSON.parse(t);
-        } catch (e) {
-          return t;
-        }
+    return ensureFreshOidcToken().then(function () {
+      var o = Object.assign(
+        { mode: "cors", credentials: "omit", cache: "no-store" },
+        options || {}
+      );
+      return fetch(url, o).then(function (res) {
+        return res.text().then(function (t) {
+          if (!res.ok) throw new Error(res.status + " " + t);
+          try {
+            return JSON.parse(t);
+          } catch (e) {
+            return t;
+          }
+        });
       });
     });
   }
@@ -326,13 +367,15 @@
   }
 
   function streamChat(base, body, assistantBody) {
-    return fetch(base + "/api/v1/chat/stream", {
-      method: "POST",
-      mode: "cors",
-      credentials: "omit",
-      cache: "no-store",
-      headers: headersStreamJson(),
-      body: JSON.stringify(body),
+    return ensureFreshOidcToken().then(function () {
+      return fetch(base + "/api/v1/chat/stream", {
+        method: "POST",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        headers: headersStreamJson(),
+        body: JSON.stringify(body),
+      });
     }).then(function (res) {
       var sidHeader = res.headers.get("X-Session-Id");
       if (sidHeader) setSession(sidHeader);
@@ -391,13 +434,15 @@
   }
 
   function fetchChatOnce(base, body) {
-    return fetch(base + "/api/v1/chat", {
-      method: "POST",
-      mode: "cors",
-      credentials: "omit",
-      cache: "no-store",
-      headers: headersJson(),
-      body: JSON.stringify(body),
+    return ensureFreshOidcToken().then(function () {
+      return fetch(base + "/api/v1/chat", {
+        method: "POST",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        headers: headersJson(),
+        body: JSON.stringify(body),
+      });
     }).then(function (res) {
       var sidHeader = res.headers.get("X-Session-Id");
       if (sidHeader) setSession(sidHeader);

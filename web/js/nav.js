@@ -1,3 +1,45 @@
+/**
+ * タブ用ファビコン（各ページの <head> に明示が無い場合の補完。script は /js/nav.js 基準でサイトルートを解決）
+ */
+(function installDogenIcons() {
+  try {
+    var ref = document.querySelector('script[src*="nav.js"]');
+    if (!ref || ref.getAttribute("data-dogen-icon") === "0") return;
+    var base = new URL("..", ref.src);
+    function hasIcon(href) {
+      var links = document.head ? document.head.querySelectorAll('link[rel="icon"]') : [];
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute("href") === href) return true;
+      }
+      return false;
+    }
+    var png32 = new URL("img/app-icon-dogen-32.png", base).href;
+    var ico = new URL("favicon.ico", base).href;
+    var apple = new URL("apple-touch-icon.png", base).href;
+    if (!hasIcon(png32)) {
+      var l1 = document.createElement("link");
+      l1.rel = "icon";
+      l1.type = "image/png";
+      l1.sizes = "32x32";
+      l1.href = png32;
+      document.head.appendChild(l1);
+    }
+    if (!hasIcon(ico)) {
+      var l2 = document.createElement("link");
+      l2.rel = "icon";
+      l2.href = ico;
+      l2.setAttribute("sizes", "any");
+      document.head.appendChild(l2);
+    }
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+      var a = document.createElement("link");
+      a.rel = "apple-touch-icon";
+      a.href = apple;
+      document.head.appendChild(a);
+    }
+  } catch (e) {}
+})();
+
 (function () {
   var btn = document.querySelector(".nav-toggle");
   var nav = document.querySelector(".site-nav");

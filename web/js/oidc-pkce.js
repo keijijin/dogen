@@ -131,6 +131,72 @@
       });
   }
 
+  function parseJwtPayload(token) {
+    if (!token || typeof token !== "string") return null;
+    try {
+      var parts = token.split(".");
+      if (parts.length < 2) return null;
+      var json = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+      var pad = json.length % 4;
+      if (pad) json += "====".slice(0, 4 - pad);
+      return JSON.parse(atob(json));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function nowSec() {
+    return Math.floor(Date.now() / 1000);
+  }
+
+  function getStoredAccessToken() {
+    try {
+      var t = global.localStorage.getItem(STORAGE_ACCESS);
+      return t && t.trim() ? t.trim() : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getStoredRefreshToken() {
+    try {
+      var t = global.localStorage.getItem(STORAGE_REFRESH);
+      return t && t.trim() ? t.trim() : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function accessTokenSecondsLeft() {
+    var at = getStoredAccessToken();
+    if (!at) return 0;
+    var p = parseJwtPayload(at);
+    if (!p || typeof p.exp !== "number") return 0;
+    return p.exp - nowSec();
+  }
+
+  var _refreshInFlight = null;
+  var _refreshTimer = null;
+
+  function scheduleRefreshTick() {
+    if (_refreshTimer) {
+      clearTimeout(_refreshTimer);
+      _refreshTimer = null;
+    }
+    _refreshTimer = setTimeout(function () {
+      if (!global.DogenOidc || !global.DogenOidc.isEnabled()) return;
+      var hasAt = !!getStoredAccessToken();
+      var hasRt = !!getStoredRefreshToken();
+      if (!hasAt || !hasRt) return;
+      global.DogenOidc
+        .ensureFreshAccessToken(90)
+        .catch(function () {})
+        .finally(function () {
+          scheduleRefreshTick();
+        });
+    }, 60000);
+  }
+
   global.DogenOidc = {
     isEnabled: function () {
       var c = cfg();
@@ -138,11 +204,7 @@
     },
 
     getAccessToken: function () {
-      try {
-        return global.localStorage.getItem(STORAGE_ACCESS);
-      } catch (e) {
-        return null;
-      }
+      return getStoredAccessToken();
     },
 
     clearTokens: function () {
@@ -271,10 +333,77 @@
             } catch (e2) {}
             if (!next || next.indexOf("/") !== 0) next = "/";
             if (next === "/auth/callback.html") next = "/";
+            scheduleRefreshTick();
             return next;
           });
         });
       });
+    },
+
+    refreshAccessToken: function () {
+      var c = cfg();
+      if (!this.isEnabled()) {
+        return Promise.reject(new Error("OIDC が無効です"));
+      }
+      if (_refreshInFlight) return _refreshInFlight;
+      var rt = getStoredRefreshToken();
+      if (!rt) {
+        return Promise.reject(new Error("refresh_token がありません。再ログインしてください"));
+      }
+      var self = this;
+      _refreshInFlight = fetchDiscovery(c.authority)
+        .then(function (meta) {
+          var tokenEp = meta.token_endpoint;
+          if (!tokenEp) throw new Error("token_endpoint がありません");
+          var body = new URLSearchParams();
+          body.set("grant_type", "refresh_token");
+          body.set("client_id", c.client_id);
+          body.set("refresh_token", rt);
+          return fetchJsonCors(tokenEp, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: body.toString(),
+          });
+        })
+        .then(function (r) {
+          return r.text().then(function (t) {
+            var j;
+            try {
+              j = JSON.parse(t);
+            } catch (e) {
+              throw new Error("リフレッシュ応答が JSON ではありません");
+            }
+            if (!r.ok) {
+              throw new Error(j.error_description || j.error || "トークン更新に失敗しました");
+            }
+            if (!j.access_token) throw new Error("更新応答に access_token がありません");
+            try {
+              global.localStorage.setItem(STORAGE_ACCESS, j.access_token);
+              if (j.refresh_token) global.localStorage.setItem(STORAGE_REFRESH, j.refresh_token);
+              if (j.id_token) global.localStorage.setItem(STORAGE_ID, j.id_token);
+            } catch (e2) {}
+            scheduleRefreshTick();
+            return j.access_token;
+          });
+        })
+        .catch(function (e) {
+          self.clearTokens();
+          throw e;
+        })
+        .finally(function () {
+          _refreshInFlight = null;
+        });
+      return _refreshInFlight;
+    },
+
+    ensureFreshAccessToken: function (minValidSec) {
+      var minSec = typeof minValidSec === "number" ? minValidSec : 90;
+      if (!this.isEnabled()) return Promise.resolve(getStoredAccessToken());
+      var at = getStoredAccessToken();
+      if (!at) return Promise.resolve(null);
+      var left = accessTokenSecondsLeft();
+      if (left > minSec) return Promise.resolve(at);
+      return this.refreshAccessToken();
     },
 
     logout: function () {
@@ -312,4 +441,13 @@
         });
     },
   };
+
+  if (global.DogenOidc && global.DogenOidc.isEnabled()) {
+    scheduleRefreshTick();
+    global.addEventListener("visibilitychange", function () {
+      if (global.document && global.document.visibilityState === "visible") {
+        global.DogenOidc.ensureFreshAccessToken(90).catch(function () {});
+      }
+    });
+  }
 })(window);

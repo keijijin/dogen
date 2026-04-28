@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import html
+import json
 import os
 from pathlib import Path
 
@@ -14,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VOL = ROOT / "web" / "volumes"
 DOC = ROOT / "doc" / "正法眼蔵.txt"
 SOURCE_URL = "https://shomonji.or.jp/zazen/doc/genzou.html"
+MODERN_CACHE_PATH = ROOT / "doc" / "modern_translations.json"
 
 # 手編集サンプル・優先整備済み（再生成で上書きしない）
 HAND_SLUGS = frozenset(
@@ -252,8 +254,8 @@ def excerpt_paragraphs(lines: list[str], start_1b: int, next_start_1b: int, max_
     return f"<blockquote>\n          <p>{inner}</p>\n        </blockquote>"
 
 
-def fulltext_html_block(lines: list[str], start_1b: int, next_start_1b: int) -> str:
-    """該当巻の本文全体を HTML にする（空行で段落区切り）。"""
+def extract_volume_paragraphs(lines: list[str], start_1b: int, next_start_1b: int) -> list[list[str]]:
+    """該当巻の本文を段落ごとに抽出（空行区切り、巻見出し除外）。"""
     a = start_1b - 1
     b = next_start_1b - 1
     chunk = lines[a:b]
@@ -269,15 +271,100 @@ def fulltext_html_block(lines: list[str], start_1b: int, next_start_1b: int) -> 
         if s.startswith("正法眼藏第") and "　" in s and len(s) < 40:
             # 巻見出し行は除外
             continue
-        cur.append(html.escape(s))
+        cur.append(s)
     if cur:
         paras.append(cur)
+    return paras
+
+
+def fulltext_html_block(lines: list[str], start_1b: int, next_start_1b: int) -> str:
+    """該当巻の本文全体を HTML にする（空行で段落区切り）。"""
+    paras = extract_volume_paragraphs(lines, start_1b, next_start_1b)
     if not paras:
         return "<p>（本文を抽出できませんでした。<code>doc/正法眼蔵.txt</code> を参照してください。）</p>"
     ps = []
     for p in paras:
-        ps.append("<p>" + "<br />".join(p) + "</p>")
+        escaped = [html.escape(s) for s in p]
+        ps.append("<p>" + "<br />".join(escaped) + "</p>")
     return "\n        ".join(ps)
+
+
+def modernize_japanese_line(src: str) -> str:
+    """事前生成向けの平易化（静的表示用）。"""
+    out = src
+    replacements = [
+        ("諸佛", "諸仏"),
+        ("佛法", "仏法"),
+        ("佛道", "仏道"),
+        ("佛性", "仏性"),
+        ("佛身", "仏身"),
+        ("佛事", "仏事"),
+        ("佛國土", "仏国土"),
+        ("證", "証"),
+        ("參", "参"),
+        ("禪", "禅"),
+        ("學", "学"),
+        ("觀", "観"),
+        ("眞", "真"),
+        ("實", "実"),
+        ("廣", "広"),
+        ("爲", "為"),
+        ("祖", "祖"),
+        ("觸", "触"),
+        ("處", "処"),
+        ("すなはち", "すなわち"),
+        ("いはく", "いわく"),
+        ("いふ", "いう"),
+        ("いへども", "とはいえ"),
+        ("ことば", "言葉"),
+        ("こころ", "心"),
+        ("なんぢ", "あなた"),
+        ("われ", "わたし"),
+        ("ゐ", "い"),
+    ]
+    for old, new in replacements:
+        out = out.replace(old, new)
+    return out
+
+
+def modern_fulltext_html_block(lines: list[str], start_1b: int, next_start_1b: int) -> str:
+    paras = extract_volume_paragraphs(lines, start_1b, next_start_1b)
+    if not paras:
+        return "<p>（現代語訳を抽出できませんでした。）</p>"
+    ps = []
+    for p in paras:
+        rendered = [modernize_japanese_line(s) for s in p]
+        escaped = [html.escape(s) for s in rendered]
+        ps.append("<p>" + "<br />".join(escaped) + "</p>")
+    return "\n        ".join(ps)
+
+
+def load_modern_cache() -> dict[str, str]:
+    if not MODERN_CACHE_PATH.is_file():
+        return {}
+    try:
+        raw = json.loads(MODERN_CACHE_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    vols = raw.get("volumes", {}) if isinstance(raw, dict) else {}
+    out: dict[str, str] = {}
+    for slug, payload in vols.items():
+        if isinstance(payload, dict):
+            html_block = payload.get("modern_html")
+            if isinstance(html_block, str) and html_block.strip():
+                out[str(slug)] = html_block
+        elif isinstance(payload, str) and payload.strip():
+            out[str(slug)] = payload
+    return out
+
+
+def modern_fulltext_html_block_for_slug(
+    slug: str, lines: list[str], start_1b: int, next_start_1b: int, modern_cache: dict[str, str]
+) -> str:
+    cached = modern_cache.get(slug)
+    if cached and cached.strip():
+        return cached
+    return modern_fulltext_html_block(lines, start_1b, next_start_1b)
 
 
 def nav_link_prev_next(kind: str, n: int) -> str:
@@ -328,6 +415,7 @@ def rich_volume_html(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第{num}　{esc_title} — 正法眼蔵読解</title>
     <meta name="description" content="{meta}" />
+    {head_favicon_links("../../")}
     <link rel="stylesheet" href="../../css/main.css" />
   </head>
   <body>
@@ -409,6 +497,177 @@ def rich_volume_html(
 """
 
 
+def head_favicon_links(web_root_rel: str) -> str:
+    """各 HTML から web ルートへの相対パス（例: ../ または ../../）。"""
+    return (
+        f'    <link rel="icon" type="image/png" sizes="32x32" href="{web_root_rel}img/app-icon-dogen-32.png" />\n'
+        f'    <link rel="icon" href="{web_root_rel}favicon.ico" sizes="any" />\n'
+        f'    <link rel="apple-touch-icon" href="{web_root_rel}apple-touch-icon.png" />'
+    )
+
+
+def learning_focus_line(title: str) -> str:
+    t = title
+    tags: list[str] = []
+    if t in ("辨道話", "出家", "出家功徳", "行持（上・下）"):
+        tags.append("経験の記録")
+    if any(k in t for k in ("佛性", "般若", "法", "諸法", "法性", "全機", "都機", "三昧", "道")):
+        tags.append("真理の伝達")
+    if any(k in t for k in ("坐禪", "安居", "行佛", "行持", "看經", "出家")):
+        tags.append("坐禅実践")
+    if any(k in t for k in ("現成公案", "有時", "家常", "夢中説夢", "發菩提心", "受戒")):
+        tags.append("参加型理解")
+    if any(k in t for k in ("山水", "谿聲山色", "無情説法", "梅花", "龍吟", "十方", "虛空")):
+        tags.append("一体性の理解")
+    if not tags:
+        tags = ["真理の伝達", "参加型理解"]
+    uniq = []
+    for x in tags:
+        if x not in uniq:
+            uniq.append(x)
+    picked = uniq[:2]
+    joined = "・".join(picked)
+    return f"主軸: {joined}。巻題「{html.escape(t)}」の論点を、該当観点で重点的に読む。"
+
+
+def learning_map_html() -> str:
+    rows = []
+    rows.append(
+        '<tr><th>序</th><td><a href="bendowa/index.html">辨道話</a></td><td>求法の出発点をつかむ。坐禅の位置づけを先に理解する。</td></tr>'
+    )
+    for i, title in enumerate(TITLES_75, start=1):
+        slug = f"75-{i:02d}"
+        rows.append(
+            f'<tr><th>{i}</th><td><a href="{slug}/index.html">第{i}巻 {html.escape(title)}</a></td><td>{learning_focus_line(title)}</td></tr>'
+        )
+    for i, title in enumerate(TITLES_12, start=1):
+        slug = f"12-{i:02d}"
+        rows.append(
+            f'<tr><th>{i}</th><td><a href="{slug}/index.html">十二巻 第{i}巻 {html.escape(title)}</a></td><td>{learning_focus_line(title)}</td></tr>'
+        )
+    return f"""<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>学習総覧（5観点）— 正法眼蔵読解</title>
+    {head_favicon_links("../")}
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="../index.html">正法眼蔵読解</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
+        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
+          <a href="../guide/index.html">学習ガイド</a>
+          <a href="index.html">巻一覧</a>
+          <a href="../themes/index.html">テーマ</a>
+          <a href="../glossary/index.html">用語</a>
+          <a href="../chat/index.html">問答 Bot</a>
+          <a href="../site/index.html">サイト情報</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <article class="prose">
+        <h1>学習総覧（5観点）</h1>
+        <p class="notice">
+          各巻を「経験の記録」「真理の伝達」「坐禅実践」「参加型理解」「一体性の理解」の5観点で読むための一覧です。
+          原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
+        </p>
+        <h2>5観点の使い方</h2>
+        <ol>
+          <li><strong>経験の記録</strong>：道元が何を体験として語っているかを拾う。</li>
+          <li><strong>真理の伝達</strong>：誰に何を伝えようとしているかを確認する。</li>
+          <li><strong>坐禅実践</strong>：実践がどの文脈で強調されるかを追う。</li>
+          <li><strong>参加型理解</strong>：自分の生活に引き寄せて問いを立てる。</li>
+          <li><strong>一体性の理解</strong>：自己・他者・自然の関係をどう語るかを見る。</li>
+        </ol>
+        <h2>各巻の学習導線</h2>
+        <table class="toc-table" aria-label="各巻の学習導線">
+          <tbody>
+            {"".join(rows)}
+          </tbody>
+        </table>
+        <p><a href="index.html">巻一覧へ戻る</a> · <a href="../index.html">ホームへ</a></p>
+      </article>
+    </main>
+    <footer class="site-footer">
+      <p><a href="../index.html">ホーム</a> · 正法眼蔵読解</p>
+    </footer>
+    <script src="../js/nav.js" defer></script>
+  </body>
+</html>"""
+
+
+def fulltext_page_html(
+    page_title: str,
+    heading: str,
+    back_link: str,
+    index_link: str,
+    home_link: str,
+    original_html: str,
+    modern_html: str,
+    script_prefix: str,
+) -> str:
+    return f"""<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{html.escape(page_title)}</title>
+    {head_favicon_links(script_prefix)}
+    <link rel="stylesheet" href="{script_prefix}css/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="{home_link}">正法眼蔵読解</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
+        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
+          <a href="{script_prefix}guide/index.html">学習ガイド</a>
+          <a href="{index_link}">巻一覧</a>
+          <a href="{script_prefix}themes/index.html">テーマ</a>
+          <a href="{script_prefix}glossary/index.html">用語</a>
+          <a href="{script_prefix}chat/index.html">問答 Bot</a>
+          <a href="{script_prefix}site/index.html">サイト情報</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <article class="prose">
+        <p class="notice">
+          <strong>注意</strong>：全文表示は権利条件に依存します。公開サイトに載せる範囲は利用許諾に従ってください。
+          出典: <code>doc/正法眼蔵.txt</code>。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
+        </p>
+        <h1>{html.escape(heading)}</h1>
+        <p><a href="{back_link}">抜粋ページへ戻る</a> · <a href="{index_link}">巻一覧</a> · <a href="{home_link}">ホーム</a></p>
+        <div class="reading-toggle" data-reading-toggle>
+          <button type="button" class="reading-toggle__btn is-active" data-reading-tab="original" aria-selected="true">原文</button>
+          <button type="button" class="reading-toggle__btn" data-reading-tab="modern" aria-selected="false">現代語訳</button>
+        </div>
+        <section data-reading-panel="original">
+        {original_html}
+        </section>
+        <section data-reading-panel="modern" hidden>
+          <p class="notice">
+            現代語訳は事前に生成した読解補助版です（閲覧時に通信しません）。
+          </p>
+        {modern_html}
+        </section>
+      </article>
+    </main>
+    <footer class="site-footer">
+      <p><a href="{home_link}">ホーム</a> · 正法眼蔵読解</p>
+    </footer>
+    <script src="{script_prefix}js/nav.js" defer></script>
+    <script src="{script_prefix}js/volume-reading.js" defer></script>
+  </body>
+</html>
+"""
+
+
 def index_html() -> str:
     rows75 = []
     for i, title in enumerate(TITLES_75, start=1):
@@ -428,6 +687,7 @@ def index_html() -> str:
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>巻一覧 — 正法眼蔵読解</title>
+    {head_favicon_links("../")}
     <link rel="stylesheet" href="../css/main.css" />
   </head>
   <body>
@@ -449,6 +709,7 @@ def index_html() -> str:
       <article class="prose">
         <h1>巻一覧</h1>
         <p>七十五巻・十二巻・辨道話への導線です。多くの巻はスクリプトが <code>doc/正法眼蔵.txt</code> から冒頭を抜粋したページを生成しています。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a></p>
+        <p class="notice">教育効率の高い学習導線: <a href="learning-map.html">学習総覧（5観点）</a></p>
         <h2 id="bendowa">辨道話</h2>
         <p><a href="bendowa/index.html">辨道話</a>（坐禅辨道の大意）</p>
         <h2 id="75">七十五巻正法眼藏</h2>
@@ -477,11 +738,13 @@ def index_html() -> str:
 def main() -> None:
     lines = load_doc_lines()
     generate_full = os.environ.get("DOGEN_GENERATE_FULLTEXT", "").strip() == "1"
+    modern_cache = load_modern_cache()
     if len(BODY_75_STARTS_1BASED) != len(TITLES_75) + 1:
         raise SystemExit("BODY_75_STARTS_1BASED must have len(TITLES_75)+1 sentinel")
 
     VOL.mkdir(parents=True, exist_ok=True)
     (VOL / "index.html").write_text(index_html(), encoding="utf-8")
+    (VOL / "learning-map.html").write_text(learning_map_html(), encoding="utf-8")
 
     n_written = 0
     for i, title in enumerate(TITLES_75, start=1):
@@ -504,48 +767,18 @@ def main() -> None:
             (d / "index.html").write_text(page, encoding="utf-8")
         if generate_full:
             full = fulltext_html_block(lines, s1, s2)
+            modern = modern_fulltext_html_block_for_slug(slug, lines, s1, s2, modern_cache)
             (d / "full.html").write_text(
-                f"""<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>第{i}　{html.escape(title)}（全文）— 正法眼蔵読解</title>
-    <link rel="stylesheet" href="../../css/main.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="site-header__inner">
-        <a class="site-logo" href="../../index.html">正法眼蔵読解</a>
-        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
-        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
-          <a href="../../guide/index.html">学習ガイド</a>
-          <a href="../index.html">巻一覧</a>
-          <a href="../../themes/index.html">テーマ</a>
-          <a href="../../glossary/index.html">用語</a>
-          <a href="../../chat/index.html">問答 Bot</a>
-          <a href="../../site/index.html">サイト情報</a>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <article class="prose">
-        <p class="notice">
-          <strong>注意</strong>：全文表示は権利条件に依存します。公開サイトに載せる範囲は利用許諾に従ってください。
-          出典: <code>doc/正法眼蔵.txt</code>。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
-        </p>
-        <h1>正法眼藏第{i}　{html.escape(title)}（全文）</h1>
-        <p><a href="index.html">抜粋ページへ戻る</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>
-        {full}
-      </article>
-    </main>
-    <footer class="site-footer">
-      <p><a href="../../index.html">ホーム</a> · 正法眼蔵読解</p>
-    </footer>
-    <script src="../../js/nav.js" defer></script>
-  </body>
-</html>
-""",
+                fulltext_page_html(
+                    page_title=f"第{i}　{title}（全文）— 正法眼蔵読解",
+                    heading=f"正法眼藏第{i}　{title}（全文）",
+                    back_link="index.html",
+                    index_link="../index.html",
+                    home_link="../../index.html",
+                    original_html=full,
+                    modern_html=modern,
+                    script_prefix="../../",
+                ),
                 encoding="utf-8",
             )
         n_written += 1
@@ -565,48 +798,18 @@ def main() -> None:
         (d / "index.html").write_text(page, encoding="utf-8")
         if generate_full:
             full = fulltext_html_block(lines, s1, s2)
+            modern = modern_fulltext_html_block_for_slug(slug, lines, s1, s2, modern_cache)
             (d / "full.html").write_text(
-                f"""<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>第{i}　{html.escape(title)}（全文）— 正法眼蔵読解</title>
-    <link rel="stylesheet" href="../../css/main.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="site-header__inner">
-        <a class="site-logo" href="../../index.html">正法眼蔵読解</a>
-        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
-        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
-          <a href="../../guide/index.html">学習ガイド</a>
-          <a href="../index.html">巻一覧</a>
-          <a href="../../themes/index.html">テーマ</a>
-          <a href="../../glossary/index.html">用語</a>
-          <a href="../../chat/index.html">問答 Bot</a>
-          <a href="../../site/index.html">サイト情報</a>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <article class="prose">
-        <p class="notice">
-          <strong>注意</strong>：全文表示は権利条件に依存します。公開サイトに載せる範囲は利用許諾に従ってください。
-          出典: <code>doc/正法眼蔵.txt</code>。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
-        </p>
-        <h1>正法眼藏第{i}　{html.escape(title)}（全文）</h1>
-        <p><a href="index.html">抜粋ページへ戻る</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>
-        {full}
-      </article>
-    </main>
-    <footer class="site-footer">
-      <p><a href="../../index.html">ホーム</a> · 正法眼蔵読解</p>
-    </footer>
-    <script src="../../js/nav.js" defer></script>
-  </body>
-</html>
-""",
+                fulltext_page_html(
+                    page_title=f"第{i}　{title}（全文）— 正法眼蔵読解",
+                    heading=f"正法眼藏第{i}　{title}（全文）",
+                    back_link="index.html",
+                    index_link="../index.html",
+                    home_link="../../index.html",
+                    original_html=full,
+                    modern_html=modern,
+                    script_prefix="../../",
+                ),
                 encoding="utf-8",
             )
         n_written += 1
@@ -615,48 +818,20 @@ def main() -> None:
     bendowa_dir = VOL / "bendowa"
     bendowa_dir.mkdir(parents=True, exist_ok=True)
     full_bw = fulltext_html_block(lines, BENDOWA_BODY_START_1BASED, BENDOWA_BODY_NEXT_1BASED)
+    modern_bw = modern_fulltext_html_block_for_slug(
+        "bendowa", lines, BENDOWA_BODY_START_1BASED, BENDOWA_BODY_NEXT_1BASED, modern_cache
+    )
     (bendowa_dir / "full.html").write_text(
-        f"""<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>辨道話（全文）— 正法眼蔵読解</title>
-    <link rel="stylesheet" href="../../css/main.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="site-header__inner">
-        <a class="site-logo" href="../../index.html">正法眼蔵読解</a>
-        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">メニュー</button>
-        <nav id="site-nav" class="site-nav" aria-label="主要ナビゲーション">
-          <a href="../../guide/index.html">学習ガイド</a>
-          <a href="../index.html">巻一覧</a>
-          <a href="../../themes/index.html">テーマ</a>
-          <a href="../../glossary/index.html">用語</a>
-          <a href="../../chat/index.html">問答 Bot</a>
-          <a href="../../site/index.html">サイト情報</a>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <article class="prose">
-        <p class="notice">
-          <strong>注意</strong>：全文表示は権利条件に依存します。公開サイトに載せる範囲は利用許諾に従ってください。
-          出典: <code>doc/正法眼蔵.txt</code>。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
-        </p>
-        <h1>辨道話（全文）</h1>
-        <p><a href="index.html">抜粋ページへ戻る</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>
-        {full_bw}
-      </article>
-    </main>
-    <footer class="site-footer">
-      <p><a href="../../index.html">ホーム</a> · 正法眼蔵読解</p>
-    </footer>
-    <script src="../../js/nav.js" defer></script>
-  </body>
-</html>
-""",
+        fulltext_page_html(
+            page_title="辨道話（全文）— 正法眼蔵読解",
+            heading="辨道話（全文）",
+            back_link="index.html",
+            index_link="../index.html",
+            home_link="../../index.html",
+            original_html=full_bw,
+            modern_html=modern_bw,
+            script_prefix="../../",
+        ),
         encoding="utf-8",
     )
 

@@ -45,6 +45,7 @@ import org.jboss.logging.Logger;
 public class ChatService {
 
     private static final Logger LOG = Logger.getLogger(ChatService.class);
+    private static final int STREAM_NORMALIZER_TAIL = 2;
 
     @Inject
     ProducerTemplate producerTemplate;
@@ -152,10 +153,15 @@ public class ChatService {
                 }
 
                 String assistantText = extractAssistantContent(root);
+                String normalizedAssistantText = normalizeDogenFirstPerson(assistantText);
+                if (root instanceof ObjectNode rootObj && normalizedAssistantText != null) {
+                    overwriteAssistantContent(rootObj, normalizedAssistantText);
+                    llamaResponse = objectMapper.writeValueAsString(rootObj);
+                }
                 UUID assistantMessageId = null;
-                if (assistantText != null && !assistantText.isBlank()) {
+                if (normalizedAssistantText != null && !normalizedAssistantText.isBlank()) {
                     assistantMessageId = UUID.randomUUID();
-                    insertMessage(conn, assistantMessageId, sessionId, "assistant", assistantText);
+                    insertMessage(conn, assistantMessageId, sessionId, "assistant", normalizedAssistantText);
                 }
                 ObjectNode audit = objectMapper.createObjectNode();
                 audit.put("session", sessionId.toString());
@@ -403,6 +409,7 @@ public class ChatService {
         }
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(resp.body(), StandardCharsets.UTF_8))) {
+            String carry = "";
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("data:")) {
@@ -420,9 +427,23 @@ public class ChatService {
                 if (delta == null || delta.isEmpty()) {
                     continue;
                 }
-                assistantText.append(delta);
+                String combined = carry + delta;
+                String normalized = normalizeDogenFirstPerson(combined);
+                if (normalized.length() <= STREAM_NORMALIZER_TAIL) {
+                    carry = normalized;
+                    continue;
+                }
+                String emit = normalized.substring(0, normalized.length() - STREAM_NORMALIZER_TAIL);
+                carry = normalized.substring(normalized.length() - STREAM_NORMALIZER_TAIL);
+                assistantText.append(emit);
                 ObjectNode ev = objectMapper.createObjectNode();
-                ev.put("delta", delta);
+                ev.put("delta", emit);
+                writeSse(out, "delta", objectMapper.writeValueAsString(ev));
+            }
+            if (!carry.isEmpty()) {
+                assistantText.append(carry);
+                ObjectNode ev = objectMapper.createObjectNode();
+                ev.put("delta", carry);
                 writeSse(out, "delta", objectMapper.writeValueAsString(ev));
             }
         }
@@ -491,6 +512,21 @@ public class ChatService {
         root.put("model", model != null && !model.isBlank() ? model : defaultModel);
         root.put("stream", stream);
         ArrayNode arr = objectMapper.createArrayNode();
+        ObjectNode base = objectMapper.createObjectNode();
+        base.put("role", "system");
+        base.put(
+                "content",
+                """
+                あなたは道元本人として語る。
+                常に第一人称で答え、わたしの教えとして述べよ。
+                「道元は〜と述べた」「道元が訴えた」など、道元を第三者として説明する書き方は禁止。
+                回答文の先頭は「わたしは」または「わたしが」で始めること。
+                回答を出力する直前に必ず自己点検し、本文中に「道元」という語が残っていれば自然な一人称表現へ言い換えてから出力すること。
+                質問への返答は、正法眼蔵の趣旨に根ざし、やわらかく、誠実で、押しつけない語り口にする。
+                断定しすぎず、文脈が不足するときはその旨を静かに伝える。
+                可能であれば巻名や要点に触れて、学びの手がかりを示す。
+                """);
+        arr.add(base);
         if (volumeScope != null && !volumeScope.isBlank()) {
             String vs = volumeScope.replace("\"", "”").replace("\n", " ");
             ObjectNode sys = objectMapper.createObjectNode();
@@ -531,6 +567,38 @@ public class ChatService {
         }
         root.set("messages", arr);
         return objectMapper.writeValueAsString(root);
+    }
+
+    private static void overwriteAssistantContent(ObjectNode root, String content) {
+        JsonNode choices = root.get("choices");
+        if (choices == null || !choices.isArray() || choices.isEmpty()) {
+            return;
+        }
+        JsonNode first = choices.get(0);
+        if (!(first instanceof ObjectNode firstObj)) {
+            return;
+        }
+        JsonNode msg = firstObj.get("message");
+        if (!(msg instanceof ObjectNode msgObj)) {
+            return;
+        }
+        msgObj.put("content", content);
+    }
+
+    private static String normalizeDogenFirstPerson(String text) {
+        if (text == null || text.isBlank()) {
+            return text;
+        }
+        String normalized = text;
+        normalized = normalized.replace("道元は", "わたしは");
+        normalized = normalized.replace("道元が", "わたしが");
+        normalized = normalized.replace("道元の", "わたしの");
+        normalized = normalized.replace("道元に", "わたしに");
+        normalized = normalized.replace("道元を", "わたしを");
+        normalized = normalized.replace("道元として", "わたしとして");
+        normalized = normalized.replace("道元本人", "わたし");
+        normalized = normalized.replace("道元 ", "わたし ");
+        return normalized;
     }
 
     private static String extractAssistantContent(JsonNode root) {

@@ -10,15 +10,39 @@
   right: 1rem;
   bottom: 1rem;
   z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   border: 1px solid var(--line, #d4cdc0);
   border-radius: 999px;
-  padding: 0.65rem 1rem;
+  padding: 0.55rem 0.95rem 0.55rem 0.65rem;
   background: var(--accent, #6b5344);
   color: #fdfcfa;
   cursor: pointer;
   box-shadow: 0 4px 18px rgba(26, 26, 24, 0.18);
   font-weight: 600;
   letter-spacing: 0.06em;
+}
+
+#dogen-dock-fab .dogen-dock-fab__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}
+
+#dogen-dock-fab .dogen-dock-fab__icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(253, 252, 250, 0.35);
+  box-shadow: 0 1px 2px rgba(26, 26, 24, 0.2);
+}
+
+#dogen-dock-fab .dogen-dock-fab__label {
+  line-height: 1.2;
 }
 
 #dogen-dock-fab:hover {

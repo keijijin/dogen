@@ -44,6 +44,17 @@
     }
     return tok ? "Bearer " + tok : "Bearer fake";
   }
+
+  function ensureFreshOidcToken() {
+    try {
+      if (window.DogenOidc && typeof window.DogenOidc.ensureFreshAccessToken === "function") {
+        return window.DogenOidc.ensureFreshAccessToken(90).catch(function () {
+          return null;
+        });
+      }
+    } catch (e) {}
+    return Promise.resolve(null);
+  }
   function apiAuthMessage(statusText) {
     var m = String(statusText || "");
     if (!oidcRequiredForChat()) return m;
@@ -88,17 +99,20 @@
     };
     if (vol) body.volumeScope = vol;
 
-    var headers = { "Content-Type": "application/json" };
-    var b = bearer();
-    if (b) headers.Authorization = b;
-    fetch(API_BASE + "/api/v1/chat/stream", {
-      method: "POST",
-      mode: "cors",
-      credentials: "omit",
-      cache: "no-store",
-      headers: headers,
-      body: JSON.stringify(body),
-    })
+    ensureFreshOidcToken()
+      .then(function () {
+        var headers = { "Content-Type": "application/json" };
+        var b = bearer();
+        if (b) headers.Authorization = b;
+        return fetch(API_BASE + "/api/v1/chat/stream", {
+          method: "POST",
+          mode: "cors",
+          credentials: "omit",
+          cache: "no-store",
+          headers: headers,
+          body: JSON.stringify(body),
+        });
+      })
       .then(function (res) {
         var sid = res.headers.get("X-Session-Id");
         var uid = res.headers.get("X-User-Message-Id");

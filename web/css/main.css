@@ -458,3 +458,30 @@ main {
   margin: 1rem 0;
   color: var(--ink-muted);
 }
+
+.reading-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.5rem 0 1rem;
+}
+
+.reading-toggle__btn {
+  border: none;
+  background: #fdfcfa;
+  color: var(--ink-muted);
+  padding: 0.45rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.reading-toggle__btn + .reading-toggle__btn {
+  border-left: 1px solid var(--line);
+}
+
+.reading-toggle__btn.is-active {
+  background: var(--accent);
+  color: var(--paper);
+}

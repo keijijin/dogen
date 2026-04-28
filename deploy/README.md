@@ -59,6 +59,22 @@ API がトークンを検証するには別途 **`QUARKUS_PROFILE=compose,oidc`*
 - assistant 応答は安全な範囲で Markdown 表示（`**bold**`、`` `code` ``、`[link](https://...)`、コードブロック）。
 - stream 実装を更新した直後に表示が古い場合は、`Cmd+Shift+R` でハードリロードする。
 
+### 各巻全文の「現代語訳」事前生成（静的）
+
+- 全文ページの「現代語訳」は、`doc/modern_translations.json` に事前生成した HTML を優先表示する（閲覧時の API 呼び出しはしない）。
+- キャッシュ未作成の巻は `tools/gen_web_volumes.py` が既定の平易化変換で埋める。
+- 生成手順（OpenShift API を使う場合）:
+
+```bash
+# 例: 辨道話 + 第1/2巻のみ更新（SLUGS 未指定なら全巻）
+SLUGS="bendowa,75-01,75-02" FORCE=1 tools/gen_ai_modern_translations_openshift.sh
+
+# 全文ページを書き出し
+DOGEN_GENERATE_FULLTEXT=1 python3 tools/gen_web_volumes.py
+```
+
+- `tools/gen_ai_modern_translations_openshift.sh` は Keycloak の `dogen-web` クライアントで `directAccessGrantsEnabled` を一時的に有効化してトークン取得し、終了時に自動で無効化する。
+
 ### サービス一覧（`deploy/local/compose.yaml`）
 
 | サービス | 役割 |
@@ -159,6 +175,15 @@ chmod +x deploy/local/scripts/postgres-backup.sh deploy/local/scripts/postgres-r
    `WEB_PUBLISH_PORT` や Keycloak の公開ポートを変える場合は、`deploy/local/keycloak/realm-dogen.json` の `redirectUris` / `webOrigins` と合わせて調整する。
 
 4. `podman compose --env-file .env up -d --build` で起動（または再起動）する。
+
+   Keycloak realm の既定値は、セキュリティ寄りに次の設定:
+
+   - `accessTokenLifespan=900`（15分）
+   - `ssoSessionIdleTimeout=28800`（8時間）
+   - `ssoSessionMaxLifespan=28800`（8時間）
+   - `revokeRefreshToken=true` / `refreshTokenMaxReuse=0`（Refresh Token ローテーション）
+
+   フロントは `web/js/oidc-pkce.js` で `refresh_token` による自動更新を行い、失敗時はトークンを破棄して再ログインを要求する。
 
 補足: OIDC を無効化して匿名運用に戻す場合は、`.env` に `QUARKUS_PROFILE=compose` を設定する。
 
