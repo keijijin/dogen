@@ -8,7 +8,8 @@
   --accent-soft: #a38b78;
   --line: #d4cdc0;
   --max: 40rem;
-  --max-wide: 52rem;
+  /* トップの横長 SVG マンガ等をやや広く見せる */
+  --max-wide: 60rem;
   --font-body: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
   --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
 }
@@ -387,6 +388,17 @@ main {
 
 .home-priority-list li {
   margin-bottom: 0.35rem;
+}
+
+/* トップ: 概念マンガ（SVG）をカード幅いっぱいに拡大表示 */
+.home-comic-card {
+  overflow-x: auto;
+}
+
+.home-comic-card img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .comic-strip {
