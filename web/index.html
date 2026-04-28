@@ -9,7 +9,7 @@
     <title>正法眼蔵読解 — 道元のテキストを学び、問う</title>
     <meta
       name="description"
-      content="正法眼蔵の現代語訳を手がかりに、語彙・漫画・小テストと問答 Bot で段階的に学べるサイト（構築中）です。"
+      content="正法眼蔵の現代語訳を手がかりに、語彙・図・小テストと問答 Bot で段階的に学べるサイト（構築中）です。"
     />
     <link rel="stylesheet" href="css/main.css" />
   </head>
@@ -32,104 +32,137 @@
     </header>
 
     <main>
-      <section class="hero">
+      <!-- 1. 目的と主要アクション -->
+      <header class="hero">
         <p class="hero__label">Dōgen · Shōbōgenzō</p>
         <h1>道元『正法眼蔵』を、<br />段階的に読み解く。</h1>
         <p class="hero__lead">
-          現代語訳のテキストを中心に、語彙の足場・図解と概念マンガ・巻末の小さな確認問題で学びを支えます。問答
-          Bot には出典を付けて応答させ、いま分からないことも含めて対話できる入口を用意します（順次接続予定）。
+          語彙の足場から入り、本文の抜粋・図解・巻末の確認問題で読みを深めます。問答 Bot は出典を意識した対話の入口です（接続は環境により異なります）。
         </p>
         <div class="btn-row">
-          <a class="btn btn--primary" href="guide/index.html">はじめに読む</a>
-          <a class="btn btn--ghost" href="volumes/75-01/index.html">第一「現成公案」へ</a>
-          <a class="btn btn--ghost" href="volumes/learning-map.html">学習総覧（5観点）へ</a>
+          <a class="btn btn--primary" href="guide/index.html">学習ガイド（はじめに）</a>
+          <a class="btn btn--ghost" href="volumes/75-01/index.html">第一「現成公案」</a>
+          <a class="btn btn--ghost" href="volumes/learning-map.html">学習総覧（5観点）</a>
         </div>
+      </header>
+
+      <!-- 2. タイトル画（作品の顔） -->
+      <figure class="home-cover">
+        <img
+          src="img/表紙.png"
+          width="1280"
+          alt="道元『正法眼蔵』タイトル画"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>
+          道元『正法眼蔵』のタイトル画（学習用）です。教義の根拠は各巻の本文・語彙に従い、絵はあくまで補助として用いてください。
+        </figcaption>
+      </figure>
+
+      <!-- 3. サイト内の学習段階（教育的な「順路」） -->
+      <section class="home-steps" aria-labelledby="home-steps-heading">
+        <h2 id="home-steps-heading">このサイトでの読み方（目安の順）</h2>
+        <ol>
+          <li><strong>語彙の足場</strong> — 巻ごとの用語を先に押さえ、誤読のレールを外す。</li>
+          <li><strong>本文（冒頭抜粋）</strong> — 道元の語順・反語に触れる。</li>
+          <li><strong>図解・イラスト</strong> — 骨格や場面の視覚化（本文の代替ではありません）。</li>
+          <li><strong>深掘り・確認クイズ</strong> — 要点の言語化と振り返り。</li>
+          <li><strong>問答 Bot</strong> — 巻や用語を指定して問う（出典・免責は各ページの案内に従う）。</li>
+        </ol>
+        <p class="home-steps__note">
+          一度にすべてを終える必要はありません。心構えは<a href="guide/index.html">学習ガイド</a>にまとめています。
+        </p>
       </section>
 
-      <div style="overflow-x: auto; margin: 0 auto 2rem; max-width: var(--max-wide); padding: 0 1rem">
-        <img
-          src="img/正法眼蔵.png"
-          width="1280"
-          alt="正法眼蔵（書物・学びのイメージ）"
-          loading="lazy"
-          style="width: min(100%, 1280px); height: auto; display: block; margin: 0 auto"
-        />
-      </div>
-
+      <!-- 4. 道筋の選択：全体像 → コース -->
+      <h2 class="section-title" id="paths">学びの道筋を選ぶ</h2>
+      <p class="prose home-intro" style="max-width: var(--max); margin: 0 0 1rem">
+        まず<strong>学習総覧</strong>で自分の関心（坐禅・時間・一体性など）に近い巻を拾い、その後はコースに沿って進めてください。
+      </p>
       <div class="card" style="max-width: var(--max); margin: 0 0 1.5rem">
-        <h2 style="margin-top: 0">学習総覧（5観点）</h2>
+        <h3 style="margin-top: 0">学習総覧（5観点）</h3>
         <p>
-          「経験の記録・真理の伝達・坐禅実践・参加型理解・一体性の理解」の5つで、各巻を横断して学べる一覧です。
+          「経験の記録・真理の伝達・坐禅実践・参加型理解・一体性の理解」の五つで、七十五巻を横断して眺められます。
         </p>
         <a class="stretched" href="volumes/learning-map.html">学習総覧を開く →</a>
       </div>
 
-      <h2 class="section-title">学び方のコース（案）</h2>
-      <div class="grid-3">
+      <div class="grid-3" style="margin-top: 0">
         <article class="card">
           <span class="tag">約10分</span>
           <h3>ひと息コース</h3>
-          <p>辨道話と学習ガイドで、道元の文章の癖とこのサイトの使い方だけを押さえます。</p>
+          <p>辨道話と学習ガイドで、文体の癖とサイトの使い方だけを押さえます。</p>
           <a class="stretched" href="guide/index.html">学習ガイドへ →</a>
         </article>
         <article class="card">
           <span class="tag">1巻ずつ</span>
           <h3>じっくりコース</h3>
-          <p>各巻ページの「語彙 → 本文冒頭 → 深掘り → 小テスト」の順で読み進めます。メタ認知として、一度ですべてを解しなくてよい旨も記しています。</p>
+          <p>巻ページの「語彙 → 本文 → 図・深掘り → 小テスト」の流れで読みます。クイズは採点のたたき台として使えます。</p>
           <a class="stretched" href="volumes/index.html">巻一覧へ →</a>
         </article>
         <article class="card">
           <span class="tag">横断</span>
           <h3>テーマから入る</h3>
-          <p>坐禅・時間・自然など、キーワードから関連巻へ辿れる入口（拡張予定）です。</p>
+          <p>キーワードから関連巻へ辿る入口です（拡張予定）。</p>
           <a class="stretched" href="themes/index.html">テーマ別へ →</a>
         </article>
       </div>
 
-      <h2 class="section-title">おすすめの入り口</h2>
+      <!-- 5. 入り口（重複を減らし、役割で分類） -->
+      <h2 class="section-title" id="entries">まず立ち寄りやすいページ</h2>
       <div class="grid-3">
         <article class="card">
-          <h3>第一　現成公案</h3>
-          <p>
-            入門に読まれる一篇。冒頭は<strong>諸法の佛法なる時節</strong>と<strong>萬法われにあらざる時節</strong>の二つの姿を重ね、草木の喩で締めます。後世の「公案＝問答の題材」だけに還元すると、道元独自の語り口が見えにくくなります。
-          </p>
-          <a class="stretched" href="volumes/75-01/index.html">本文・語彙ページへ →</a>
-        </article>
-        <article class="card">
-          <h3>第二　摩訶般若波羅蜜</h3>
-          <p>心経系の一行から「枚」の般若へ展開し、守護の問答や「学虚空」へつなぐ巻。図解・4コマ付きの読解ページがあります。</p>
-          <a class="stretched" href="volumes/75-02/index.html">第二巻ページへ →</a>
-        </article>
-        <article class="card">
+          <span class="tag">出発</span>
           <h3>辨道話</h3>
-          <p>坐禅辨道の大意が述べられ、以後の各巻を読むための心構えになります。</p>
+          <p>坐禅辨道の大意があり、以後の各巻を読むための心構えになります。</p>
           <a class="stretched" href="volumes/bendowa/index.html">辨道話へ →</a>
         </article>
         <article class="card">
+          <span class="tag">入門巻</span>
+          <h3>第一　現成公案</h3>
+          <p>
+            諸法の佛法なる時節と萬法われにあらざる時節の二段から入る、入門に読まれる一篇です。
+          </p>
+          <a class="stretched" href="volumes/75-01/index.html">現成公案の読解ページ →</a>
+        </article>
+        <article class="card">
+          <span class="tag">対話</span>
           <h3>問答 Bot</h3>
-          <p>巻を指定して質問できます。出典表示と免責を前提に、バックエンド接続を進めています。</p>
+          <p>巻スコープを指定して質問できます。出典表示と免責を前提に設計しています。</p>
           <a class="stretched" href="chat/index.html">Bot ページへ →</a>
+        </article>
+        <article class="card">
+          <span class="tag">索引</span>
+          <h3>巻一覧・用語</h3>
+          <p>七十五巻・十二巻・辨道話へのリンクと、用語辞典からの入口です。</p>
+          <a class="stretched" href="volumes/index.html">巻一覧へ →</a>
+          <p style="margin-top: 0.65rem; font-size: 0.82rem">
+            <a href="glossary/index.html">用語辞典</a> から用語へ入る
+          </p>
         </article>
       </div>
 
-      <h2 class="section-title">思想の核（優先して読む巻）</h2>
+      <!-- 6. 優先整備巻（一覧のみ・説明は各ページへ） -->
+      <h2 class="section-title" id="priority-volumes">優先して手が入っている巻</h2>
       <p class="prose" style="max-width: var(--max); margin: 0 auto 1rem">
-        研究・教育で繰り返し参照される篇から、サイト上で<strong>語彙・抜粋・図・採点つきクイズ</strong>を優先整備しています。
+        研究・教育で参照されやすい篇から、<strong>語彙・抜粋・図・採点つきクイズ</strong>を優先しています。詳細は各巻の紹介ページで読んでください。
       </p>
-      <ul class="prose" style="max-width: var(--max); margin: 0 auto 2rem">
-        <li><a href="volumes/75-01/index.html">第一　現成公案</a> — 諸法と萬法の二段、草木の喩。</li>
-        <li><a href="volumes/75-03/index.html">第三　佛性</a> — 悉有と時節因緣。</li>
-        <li><a href="volumes/75-20/index.html">第二十　有時</a> — 有と時の相即（道元時間論の中核）。</li>
-        <li><a href="volumes/75-25/index.html">第二十五　谿聲山色</a> — 声色・山水と仏法。</li>
-        <li><a href="volumes/75-02/index.html">第二　摩訶般若波羅蜜</a> — 般若を枚数と身体で読む。</li>
-        <li><a href="volumes/75-04/index.html">第四　身心學道</a> — 心學道と身學道、平常心・古佛心。</li>
+      <ul class="prose home-priority-list" style="max-width: var(--max); margin: 0 auto 2rem">
+        <li><a href="volumes/75-01/index.html">第一　現成公案</a> — 諸法と萬法、草木の喩。</li>
+        <li><a href="volumes/75-02/index.html">第二　摩訶般若波羅蜜</a> — 枚数としての般若、虚空に学ぶ。</li>
+        <li><a href="volumes/75-03/index.html">第三　佛性</a> — 悉有、時節因緣。</li>
+        <li><a href="volumes/75-04/index.html">第四　身心學道</a> — 心學道・身學道、平常心・古佛心。</li>
         <li><a href="volumes/75-05/index.html">第五　卽心是佛</a> — 保任、一心一切法、不染汚。</li>
-        <li><a href="volumes/75-46/index.html">第四十六　無情説法</a> — 諸聖得聞、洞山・雲巖、眼處聞聲。</li>
+        <li><a href="volumes/75-20/index.html">第二十　有時</a> — 有と時の相即。</li>
+        <li><a href="volumes/75-25/index.html">第二十五　谿聲山色</a> — 声色・山水と仏法。</li>
+        <li><a href="volumes/75-46/index.html">第四十六　無情説法</a> — 諸聖得聞、眼處聞聲。</li>
       </ul>
 
-      <h2 id="concept-manga-top" class="section-title">概念マンガ</h2>
-      <p class="prose" style="max-width: var(--max); margin: 0 0 0.5rem">
-        各巻末に 4〜8 コマ程度の<strong>概念マンガ</strong>を置く計画です。比喩・場面の視覚化用であり、教義の唯一の根拠にはしません。下はリポジトリ内の<strong>SVG 4コマ</strong>（拡大しても劣化しません）。手描き風のラスタ画像は、制作ツールや画像生成サービスで作成し <code>web/img/</code> に置く運用も可能です。
+      <!-- 7. 概念マンガ（補助表象の明示） -->
+      <h2 id="concept-manga-top" class="section-title">概念マンガ（補助）</h2>
+      <p class="prose" style="max-width: var(--max); margin: 0 0 0.75rem">
+        比喩・場面の視覚化用です。<strong>教義の唯一の根拠にはしません。</strong>下は拡大しても劣化しない SVG の例です。
       </p>
       <div class="card" style="max-width: var(--max-wide); overflow-x: auto">
         <h3 style="margin-top: 0">『現成公案』導入 — SVG 4コマ（学習用）</h3>
