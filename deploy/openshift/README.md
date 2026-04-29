@@ -18,12 +18,14 @@
    oc start-build dogen-api --from-archive=/tmp/dogen-api-binary.zip --follow --wait -n dogen
    ```
 
-6. **Web イメージ**:
+6. **Web イメージ**（`web/` 配下の HTML・`web/img/` の PNG・`doc/glossary_ai_cache.json` をコミットしたうえで反映する場合も同じ）:
 
    ```bash
    zip -qr /tmp/dogen-web-binary.zip web deploy/openshift/Dockerfile.web
    oc start-build dogen-web --from-archive=/tmp/dogen-web-binary.zip --follow --wait -n dogen
    ```
+
+   用語辞典や巻紹介を **OpenShift 上の dogen-api** で再生成した結果だけをサイトに載せる場合は、`doc/RECENT_CHANGES.md` と `deploy/README.md` の用語節を参照。
 
 7. `oc apply -f 05-dogen-api.yaml -f 06-dogen-web.yaml -n dogen`（未適用なら）
 8. `./07-patch-web-api-url.sh` … チャット UI 用に API の HTTPS Route を `runtime-config.js` に書き込み

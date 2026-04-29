@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+_jq_first_client='(if type == "array" and length > 0 then .[0] elif type == "object" and ((.clients | type) == "array") and ((.clients | length) > 0) then .clients[0] elif type == "object" and (.id | strings) then . else empty end)'
+
 NS="${NS:-dogen}"
 SLUGS="${SLUGS:-}"
 FORCE="${FORCE:-0}"
@@ -25,7 +27,7 @@ ADMIN_TOKEN="$(
 )"
 CLIENT_UUID="$(
   curl -ksS "${CURL_ARGS[@]}" -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-    "https://${KC_HOST}/admin/realms/${NS}/clients?clientId=dogen-web" | jq -r '.[0].id'
+    "https://${KC_HOST}/admin/realms/${NS}/clients?clientId=dogen-web" | jq -r "${_jq_first_client} | .id // empty"
 )"
 
 cleanup() {
@@ -42,7 +44,7 @@ cleanup() {
       --data-binary @/tmp/dogen-web-client-off.json || continue
     FLAG="$(
       curl -ksS "${CURL_ARGS[@]}" -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-        "https://${KC_HOST}/admin/realms/${NS}/clients?clientId=dogen-web" | jq -r '.[0].directAccessGrantsEnabled'
+        "https://${KC_HOST}/admin/realms/${NS}/clients?clientId=dogen-web" | jq -r "${_jq_first_client} | .directAccessGrantsEnabled // empty"
     )"
     [[ "${FLAG}" == "false" ]] && break
   done

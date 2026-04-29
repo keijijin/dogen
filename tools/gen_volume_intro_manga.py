@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""各巻紹介用の4コマ漫画画像を OpenAI Images API (DALL-E 3) で生成する。
+"""各巻紹介用の4コマ漫画画像を OpenAI **Responses API**（``image_generation`` ツール）で生成する。
+
+会話モデルは既定で **gpt-4.1-mini**（環境変数 ``DOGEN_IMAGE_RESPONSE_MODEL`` で変更可）。
+ラスタ本体は OpenAI 側の GPT Image 系が描画する（Chat Completions の ``model`` 欄に DALL-E を
+指定する方式ではない）。
 
 各巻の ``doc/正法眼蔵.txt`` から**冒頭の原文（漢文・長めの抜粋）**をプロンプトに埋め込む。
-OpenAI の安全判定で漢文が拒否された場合は、``doc/modern_translations.json`` の
+安全判定で漢文が拒否された場合は、``doc/modern_translations.json`` の
 **現代語訳**（HTML を平文化した冒頭）で再試行する。
 
 出力: ``web/img/{slug}-manga-4panel.png``。その後 ``python3 tools/gen_web_volumes.py`` で
@@ -21,7 +25,6 @@ OpenAI の安全判定で漢文が拒否された場合は、``doc/modern_transl
 from __future__ import annotations
 
 import argparse
-import base64
 import html as html_module
 import json
 import os
@@ -29,11 +32,10 @@ import random
 import re
 import sys
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
 import gen_web_volumes as gv
+from openai_chat import openai_image_png_via_responses
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG_DIR = ROOT / "web" / "img"
@@ -180,45 +182,21 @@ def build_image_prompt_safe(slug: str, title: str) -> str:
     )[:1200]
 
 
-def openai_dalle3_png(prompt: str, api_key: str, quality: str) -> bytes:
-    body = {
-        "model": "dall-e-3",
-        "prompt": prompt,
-        "n": 1,
-        "size": "1792x1024",
-        "response_format": "b64_json",
-        "quality": quality,
-    }
-    data = json.dumps(body).encode("utf-8")
-    req = urllib.request.Request(
-        "https://api.openai.com/v1/images/generations",
-        data=data,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=180) as resp:
-            payload = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        err = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {e.code}: {err}") from e
-    b64 = payload["data"][0].get("b64_json")
-    if not b64:
-        raise RuntimeError("missing b64_json in response")
-    return base64.standard_b64decode(b64)
-
-
 def openai_dalle3_png_retry(
-    prompt: str, api_key: str, quality: str, transient_retries: int = 3
+    prompt: str,
+    api_key: str,
+    quality: str,
+    transient_retries: int = 3,
+    *,
+    image_model: str | None = None,
 ) -> bytes:
-    """502/503 などの一時障害で数回まで再試行する。"""
+    """Responses API + image_generation。502/503 等は数回まで再試行。"""
     last: Exception | None = None
     for attempt in range(transient_retries):
         try:
-            return openai_dalle3_png(prompt, api_key, quality)
+            return openai_image_png_via_responses(
+                prompt, api_key=api_key, quality=quality, model=image_model
+            )
         except RuntimeError as e:
             last = e
             msg = str(e)
@@ -281,7 +259,9 @@ def patch_bendowa_index() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate volume intro 4-panel manga via DALL-E 3.")
+    parser = argparse.ArgumentParser(
+        description="Generate volume intro 4-panel manga via OpenAI Responses API (gpt-4.1-mini + image_generation)."
+    )
     parser.add_argument("--slug", help="Process only this slug (e.g. 75-06 or bendowa)")
     parser.add_argument("--max", type=int, default=0, help="Max volumes to generate (0 = no limit)")
     parser.add_argument("--force", action="store_true", help="Overwrite existing PNG")
@@ -299,7 +279,13 @@ def main() -> None:
         "--quality",
         choices=("hd", "standard"),
         default="hd",
-        help="DALL-E 3 quality (default: hd)",
+        help="画像ツールの品質の目安: hd→high, standard→medium（OpenAI 側の解釈）",
+    )
+    parser.add_argument(
+        "--image-model",
+        default="",
+        metavar="ID",
+        help="Responses API の model（既定: 環境変数 DOGEN_IMAGE_RESPONSE_MODEL または gpt-4.1-mini）",
     )
     args = parser.parse_args()
 
@@ -339,13 +325,15 @@ def main() -> None:
             continue
         excerpt_kanbun = volume_source_excerpt(lines, s1, s2, args.max_chars)
         prompt0 = build_image_prompt(slug, title, excerpt_kanbun, body_mode="kanbun")
+        img_model = args.image_model.strip() or None
         print(
-            f"generating {slug} ({title}) … (prompt {len(prompt0)} chars, quality={args.quality})",
+            f"generating {slug} ({title}) … (prompt {len(prompt0)} chars, quality={args.quality}, "
+            f"model={img_model or os.environ.get('DOGEN_IMAGE_RESPONSE_MODEL') or 'gpt-4.1-mini'})",
             flush=True,
         )
         png: bytes | None = None
         try:
-            png = openai_dalle3_png_retry(prompt0, api_key, args.quality)
+            png = openai_dalle3_png_retry(prompt0, api_key, args.quality, image_model=img_model)
         except Exception as e:
             err_s = str(e)
             print(f"WARN {slug}: {e}", file=sys.stderr)
@@ -365,6 +353,7 @@ def main() -> None:
                         build_image_prompt(slug, title, excerpt_modern, body_mode="modern"),
                         api_key,
                         args.quality,
+                        image_model=img_model,
                     )
                 except Exception as e_mod:
                     print(f"WARN {slug} (modern excerpt): {e_mod}", file=sys.stderr)
@@ -375,7 +364,7 @@ def main() -> None:
                 prompt_short_k = build_image_prompt(slug, title, excerpt_short_k, body_mode="kanbun")
                 print(f"  retry {slug} with shorter kanbun ({len(excerpt_short_k)} chars) …", flush=True)
                 try:
-                    png = openai_dalle3_png_retry(prompt_short_k, api_key, args.quality)
+                    png = openai_dalle3_png_retry(prompt_short_k, api_key, args.quality, image_model=img_model)
                 except Exception as e2:
                     err2 = str(e2)
                     print(f"WARN {slug} (short kanbun): {e2}", file=sys.stderr)
@@ -395,6 +384,7 @@ def main() -> None:
                                     ),
                                     api_key,
                                     args.quality,
+                                    image_model=img_model,
                                 )
                             except Exception as e2m:
                                 print(f"WARN {slug} (short modern): {e2m}", file=sys.stderr)
@@ -406,7 +396,10 @@ def main() -> None:
                         print(f"  retry {slug} with abstract safe prompt …", flush=True)
                         try:
                             png = openai_dalle3_png_retry(
-                                build_image_prompt_safe(slug, title), api_key, args.quality
+                                build_image_prompt_safe(slug, title),
+                                api_key,
+                                args.quality,
+                                image_model=img_model,
                             )
                         except Exception as e3:
                             print(f"ERROR {slug} (all retries failed): {e3}", file=sys.stderr)

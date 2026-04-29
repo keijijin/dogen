@@ -75,6 +75,19 @@ python3 tools/gen_web_volumes.py
 
 - `tools/gen_ai_modern_translations_openshift.sh` は Keycloak の `dogen-web` クライアントで `directAccessGrantsEnabled` を一時的に有効化してトークン取得し、終了時に自動で無効化する。
 
+### 用語辞典の事前生成（OpenShift の問答 API 経由）
+
+- `tools/gen_glossary_from_corpus.py` は、環境変数 **`DOGEN_CHAT_API_BASE`** が設定されているとき（例: OpenShift Route の `https://…`）、**OpenAI 直ではなく `POST /api/v1/chat`**（dogen-api → Llama Stack、RAG 含む）で用語の抽出・解説を行う。
+- OpenShift から一発で回す例（`oc` ログイン済み・名前空間 `dogen`）:
+
+```bash
+chmod +x tools/gen_glossary_openshift.sh
+MAX_CHUNKS=12 MAX_TERMS=36 FORCE=1 tools/gen_glossary_openshift.sh
+```
+
+- ローカルの dogen-api（匿名）だけで試す例: `DOGEN_CHAT_API_BASE=http://127.0.0.1:8081 DOGEN_CHAT_BEARER='Bearer fake' python3 tools/gen_glossary_from_corpus.py --max-terms 12`
+- キャッシュは `doc/glossary_ai_cache.json`、HTML は `tools/gen_glossary_from_corpus.py` が `web/glossary/index.html` を更新する。詳細はスクリプト先頭の docstring を参照。
+
 ### サービス一覧（`deploy/local/compose.yaml`）
 
 | サービス | 役割 |

@@ -12,12 +12,10 @@ import html
 import json
 import os
 import sys
-import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
 import gen_web_volumes as gv
+from dogen_chat_client import call_chat
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,39 +65,6 @@ def split_chunks(paragraphs: list[str], max_chars: int) -> list[str]:
     if cur:
         chunks.append("\n\n".join(cur))
     return chunks
-
-
-def call_chat(api_base: str, bearer: str, prompt: str, model: str | None, retries: int = 3) -> str:
-    body: dict[str, object] = {"messages": [{"role": "user", "content": prompt}]}
-    if model:
-        body["model"] = model
-    req = urllib.request.Request(
-        url=api_base.rstrip("/") + "/api/v1/chat",
-        method="POST",
-        data=json.dumps(body).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": bearer,
-        },
-    )
-    last_err: Exception | None = None
-    for n in range(1, retries + 1):
-        try:
-            with urllib.request.urlopen(req, timeout=180) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            content = (((data or {}).get("choices") or [{}])[0].get("message") or {}).get("content")
-            if not isinstance(content, str) or not content.strip():
-                raise RuntimeError("empty response content")
-            return content.strip().strip("`")
-        except urllib.error.HTTPError as e:
-            detail = e.read().decode("utf-8", errors="replace")
-            last_err = RuntimeError(f"HTTP {e.code}: {detail[:500]}")
-        except Exception as e:
-            last_err = e
-        if n < retries:
-            time.sleep(min(8, 2 * n))
-    raise RuntimeError(str(last_err))
 
 
 def to_html_block(text: str) -> str:
@@ -163,7 +128,9 @@ def main() -> int:
                 "出力は言い換え本文のみ。\n\n"
                 f"--- 原文({i}/{len(chunks)}) ---\n{ch}"
             )
-            txt = call_chat(args.api_base, args.bearer, prompt, args.model or None, retries=args.retries)
+            txt = call_chat(args.api_base, args.bearer, prompt, args.model or None, retries=args.retries).strip(
+                "`"
+            )
             out_chunks.append(txt)
             print(f"  done {i}/{len(chunks)}")
         merged = "\n\n".join(out_chunks)

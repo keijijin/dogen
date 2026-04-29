@@ -26,11 +26,20 @@
 
 ---
 
-## 2.1 巻紹介 AI 4コマ（DALL-E 3）
+## 2.1 巻紹介 AI 4コマ（Responses API・gpt-4.1-mini）
 
-- **生成**: `tools/gen_volume_intro_manga.py` が `OPENAI_API_KEY` で OpenAI Images API（`dall-e-3`）を呼び、`web/img/{slug}-manga-4panel.png` を出力する。各巻の **冒頭原文を長めに抜粋**しプロンプトに含め、「わかりやすく4コマ漫画で」と同趣旨の**日本語指示**を与える。既定は `quality=hd`。``--max-chars`` で抜粋長を調整可。既に手元イラストがある巻は `SKIP_SLUGS` で除外。
+- **生成**: `tools/gen_volume_intro_manga.py` が `OPENAI_API_KEY` で OpenAI **Responses API**（`POST /v1/responses`）を呼び、会話モデル **`gpt-4.1-mini`**（環境変数 `DOGEN_IMAGE_RESPONSE_MODEL` で変更可）に **`image_generation`** ツールを付与して `web/img/{slug}-manga-4panel.png` を得る。ラスタ描画自体は API 側の GPT Image 系が担当する。各巻の **冒頭原文を長めに抜粋**しプロンプトに含め、「わかりやすく4コマ漫画で」と同趣旨の**日本語指示**を与える。``--quality`` は `hd`→高品質相当、`standard`→中程度（ツールの `quality` に写す）。``--max-chars`` で抜粋長を調整可。既に手元イラストがある巻は `SKIP_SLUGS` で除外。
 - **埋め込み**: `python3 tools/gen_web_volumes.py` 実行時、上記 PNG が存在する自動生成巻の `index.html` に `intro_manga_block` が差し込まれる。**辨道話**は `bendowa/index.html` をスクリプトがパッチする（手編集ファイル）。
 - **安全フィルタ**: 漢文が拒否された場合は ``doc/modern_translations.json`` の **現代語訳**（冒頭を平文化してプロンプト化）で再試行し、続けて短文の漢文・短文の現代語訳、最後に **抽象プロンプト**へ順にリトライする。
+
+## 2.2 用語辞典（原文コーパス＋AI / OpenShift 問答 API）
+
+| 項目 | 内容 |
+|------|------|
+| ページ | `web/glossary/index.html`（手編集ブロックの下に AI 補助索引） |
+| 生成 | `tools/gen_glossary_from_corpus.py` … `doc/正法眼蔵.txt` をチャンクし、**OpenAI 直**（`OPENAI_API_KEY`）または **`DOGEN_CHAT_API_BASE` 指定時は dogen-api**（`POST /api/v1/chat`、Llama Stack・RAG 経路）で抽出・解説。キャッシュは `doc/glossary_ai_cache.json`（`backend` フィールドで由来を記録）。 |
+| OpenShift | `tools/gen_glossary_openshift.sh` … `oc` で Route / Secret を解決し、Keycloak で一時 direct grant のうえ `DOGEN_CHAT_*` を渡して Python を実行（`deploy/README.md` の用語節を参照）。cleanup の `jq` は Keycloak の clients 応答が配列／オブジェクトどちらでも動くよう共通化済み。 |
+| 共有クライアント | `tools/dogen_chat_client.py` … 現代語訳生成（`gen_ai_modern_translations.py`）からも利用。 |
 
 ## 3. 巻紹介ページへのラスタイラスト（PNG）
 

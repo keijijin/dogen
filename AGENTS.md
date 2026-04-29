@@ -20,6 +20,7 @@
 |------|------|
 | `doc/PLAN.md` | 方針・サイトマップ案・フェーズ |
 | `doc/WEB_DELIVERABLES.md` | 静的 Web の実装成果（イラスト埋め込み・ファビコン・問答ドック・OpenShift 反映手順） |
+| `doc/RECENT_CHANGES.md` | ツール・静的 Web・OpenShift 周りの変更メモ（運用向け） |
 | `doc/CHAT_GUARDRAILS_PLAN.md` | 問答の無関係入力ガードレール計画・ユーザ視点の機能リスト（案） |
 | `doc/DESIGN.md` | API・DB・Quarkus/Camel/Llama Stack の設計 |
 | `doc/正法眼蔵.txt` | 訳文テキスト（目次・各巻・辨道話等） |
@@ -28,7 +29,12 @@
 | `deploy/README.md` | 起動手順・OpenShift メモ |
 | `web/` | 静的ホームページ（HTML / CSS / JS） |
 | `tools/gen_web_volumes.py` | 巻一覧・巻ページ再生成（`doc/正法眼蔵.txt` 冒頭抜粋＋手編集スラッグはスキップ） |
-| `tools/gen_volume_intro_manga.py` | 巻紹介用 AI 4コマ PNG（DALL-E 3）生成・辨道話 HTML パッチ。詳細は `doc/WEB_DELIVERABLES.md` 2.1 |
+| `tools/gen_volume_intro_manga.py` | 巻紹介用 AI 4コマ PNG（Responses API / gpt-4.1-mini + image_generation）生成・辨道話 HTML パッチ。詳細は `doc/WEB_DELIVERABLES.md` 2.1 |
+| `tools/dogen_chat_client.py` | dogen-api `POST /api/v1/chat` の薄いクライアント（現代語訳・用語生成などから利用） |
+| `tools/gen_glossary_openshift.sh` | 用語辞典生成を OpenShift の Route + Keycloak トークンで実行（`deploy/README.md` 参照） |
+| `tools/gen_glossary_from_corpus.py` | 用語辞典 HTML・`doc/glossary_ai_cache.json`（OpenAI 直または `DOGEN_CHAT_API_BASE` で dogen-api） |
+| `tools/regen_volume_intro_from_corpus.py` | 巻紹介の導入・語彙・クイズ等をコーパス＋OpenAI で再生成（手編集巻はスキップ） |
+| `tools/openai_chat.py` | Chat / JSON パース強化・Responses 画像生成の共通ヘルパ |
 | `backend/` | Quarkus + Camel（`doc/DESIGN.md` 4 章の想定。未作成の場合あり） |
 
 ## 技術スタック（要約）
