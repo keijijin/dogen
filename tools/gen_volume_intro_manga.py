@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """各巻紹介用の4コマ漫画画像を OpenAI Images API (DALL-E 3) で生成する。
 
-各巻の ``doc/正法眼蔵.txt`` から**冒頭の原文（長めの抜粋）**を取り、画像生成 API の
-プロンプトに埋め込み、「添付の内容をわかりやすく4コマで」と同趣旨の依頼を日本語で
-与える（Chat への添付と同様に、モデルはプロンプト内の原文を読んで構成する）。
+各巻の ``doc/正法眼蔵.txt`` から**冒頭の原文（漢文・長めの抜粋）**をプロンプトに埋め込む。
+OpenAI の安全判定で漢文が拒否された場合は、``doc/modern_translations.json`` の
+**現代語訳**（HTML を平文化した冒頭）で再試行する。
 
 出力: ``web/img/{slug}-manga-4panel.png``。その後 ``python3 tools/gen_web_volumes.py`` で
 自動生成 ``index.html`` に ``intro_manga_block`` が差し込まれる。
@@ -22,9 +22,11 @@ from __future__ import annotations
 
 import argparse
 import base64
+import html as html_module
 import json
 import os
 import random
+import re
 import sys
 import time
 import urllib.error
@@ -56,6 +58,11 @@ MANGA_SUFFIX = gv.MANGA_4PANEL_SUFFIX
 DALLE3_PROMPT_MAX = 3900
 
 
+def is_content_policy_error(message: str) -> bool:
+    m = message.lower()
+    return "content_policy" in m or "safety system" in m
+
+
 def try_load_local_openai_key() -> None:
     envp = ROOT / "deploy" / "local" / ".env"
     if not envp.is_file():
@@ -69,6 +76,27 @@ def try_load_local_openai_key() -> None:
             if v and "OPENAI_API_KEY" not in os.environ:
                 os.environ["OPENAI_API_KEY"] = v
             break
+
+
+def html_block_to_plain(html: str) -> str:
+    """modern_translations.json の modern_html をプロンプト用の平文にする。"""
+    t = re.sub(r"(?is)<script[^>]*>.*?</script>", " ", html)
+    t = re.sub(r"(?is)<style[^>]*>.*?</style>", " ", t)
+    t = re.sub(r"<[^>]+>", "\n", t)
+    t = html_module.unescape(t)
+    t = re.sub(r"[ \t\r\f\v　]+", " ", t)
+    t = re.sub(r"\n\s*\n+", "\n\n", t)
+    return t.strip()
+
+
+def modern_plain_excerpt(slug: str, modern_html_by_slug: dict[str, str], max_chars: int) -> str:
+    raw = modern_html_by_slug.get(slug, "")
+    if not raw.strip():
+        return ""
+    plain = html_block_to_plain(raw)
+    if not plain:
+        return ""
+    return plain[:max_chars].strip()
 
 
 def volume_source_excerpt(lines: list[str], start_1b: int, next_1b: int, max_chars: int) -> str:
@@ -92,23 +120,44 @@ def volume_source_excerpt(lines: list[str], start_1b: int, next_1b: int, max_cha
     return "\n\n".join(parts).strip()[:max_chars]
 
 
-def _instruction_block(title: str, slug: str) -> str:
+def _instruction_block(title: str, slug: str, *, body_mode: str) -> str:
+    if body_mode == "modern":
+        intro = (
+            "【依頼】次に示すは同巻の**現代語訳**（学習用の疏通文）の冒頭です。"
+            "漢文原文がプロンプトに載せられない場合の代替として用い、内容を汲んで"
+            "学習者に伝わるよう4コマ漫画で表現してください。\n"
+        )
+        cap = "・吹き出しや短いキャプションは**日本語**でよい（現代語訳の長文を画像内に写し取らないこと。要約レベルの短い文のみ）。\n"
+        body_heading = "【現代語訳（冒頭・抜粋。これに基づいて構成すること）】\n"
+    else:
+        intro = (
+            "【依頼】次に示す『正法眼蔵』一巻の冒頭原文の内容を、学習者に伝わるよう、"
+            "わかりやすく4コマ漫画で表現してください。\n"
+        )
+        cap = "・吹き出しや短いキャプションは**日本語**でよい（原文の長文を画像内に写し取らないこと。要約・解説レベルの短い文のみ）。\n"
+        body_heading = "【原文（冒頭・抜粋。これに基づいて構成すること）】\n"
     return (
-        "【依頼】次に示す『正法眼蔵』一巻の冒頭原文の内容を、学習者に伝わるよう、"
-        "わかりやすく4コマ漫画で表現してください。\n"
-        "・横長（ランドスケープ）の1枚の画像の中に、左から右へ4つのコマを**幅がほぼ等しい**縦長の区画として並べること。\n"
-        "・白黒の日本の学習漫画または墨絵調。各コマで話・比喩が順に進むこと。\n"
-        "・吹き出しや短いキャプションは**日本語**でよい（原文の長文を画像内に写し取らないこと。要約・解説レベルの短い文のみ）。\n"
-        "・写実的な特定人物の肖像は避け、比喩・山水・道場の情景・象徴的な人物の後ろ姿などで表現すること。\n\n"
-        f"【巻題】{title.strip()[:200]}\n"
-        f"【識別子】{slug}\n\n"
-        "【原文（冒頭・抜粋。これに基づいて構成すること）】\n"
+        intro
+        + "・横長（ランドスケープ）の1枚の画像の中に、左から右へ4つのコマを**幅がほぼ等しい**縦長の区画として並べること。\n"
+        + "・白黒の日本の学習漫画または墨絵調。各コマで話・比喩が順に進むこと。\n"
+        + cap
+        + "・写実的な特定人物の肖像は避け、比喩・山水・道場の情景・象徴的な人物の後ろ姿などで表現すること。\n\n"
+        + f"【巻題】{title.strip()[:200]}\n"
+        + f"【識別子】{slug}\n\n"
+        + body_heading
     )
 
 
-def build_image_prompt(slug: str, title: str, excerpt: str, max_total: int = DALLE3_PROMPT_MAX) -> str:
-    """原文抜粋を含む日本語中心プロンプト（DALL-E 3 文字数上限内に収める）。"""
-    head = _instruction_block(title, slug)
+def build_image_prompt(
+    slug: str,
+    title: str,
+    excerpt: str,
+    max_total: int = DALLE3_PROMPT_MAX,
+    *,
+    body_mode: str = "kanbun",
+) -> str:
+    """漢文または現代語訳の抜粋を含むプロンプト（DALL-E 3 文字数上限内）。"""
+    head = _instruction_block(title, slug, body_mode=body_mode)
     body = excerpt.replace("\r", "").strip()
     room = max_total - len(head)
     if room < 400:
@@ -278,6 +327,8 @@ def main() -> None:
         )
         sys.exit(1)
 
+    modern_html_by_slug = gv.load_modern_cache()
+
     done = 0
     for slug, title, s1, s2 in jobs:
         if args.max and done >= args.max:
@@ -286,30 +337,73 @@ def main() -> None:
         if out.is_file() and not args.force:
             print(f"skip existing {out.name}", flush=True)
             continue
-        excerpt = volume_source_excerpt(lines, s1, s2, args.max_chars)
-        prompt = build_image_prompt(slug, title, excerpt)
+        excerpt_kanbun = volume_source_excerpt(lines, s1, s2, args.max_chars)
+        prompt0 = build_image_prompt(slug, title, excerpt_kanbun, body_mode="kanbun")
         print(
-            f"generating {slug} ({title}) … (prompt {len(prompt)} chars, quality={args.quality})",
+            f"generating {slug} ({title}) … (prompt {len(prompt0)} chars, quality={args.quality})",
             flush=True,
         )
         png: bytes | None = None
         try:
-            png = openai_dalle3_png_retry(prompt, api_key, args.quality)
+            png = openai_dalle3_png_retry(prompt0, api_key, args.quality)
         except Exception as e:
             err_s = str(e)
             print(f"WARN {slug}: {e}", file=sys.stderr)
-            if "content_policy" in err_s.lower() or "safety system" in err_s.lower():
-                short_n = max(600, min(args.max_chars // 2, 1500))
-                excerpt2 = volume_source_excerpt(lines, s1, s2, short_n)
-                prompt2 = build_image_prompt(slug, title, excerpt2)
-                print(f"  retry {slug} with shorter excerpt ({len(excerpt2)} chars) …", flush=True)
+            if not is_content_policy_error(err_s):
+                if args.fail_fast:
+                    sys.exit(1)
+                continue
+            short_n = max(600, min(args.max_chars // 2, 1500))
+            excerpt_modern = modern_plain_excerpt(slug, modern_html_by_slug, args.max_chars)
+            if excerpt_modern:
+                print(
+                    f"  retry {slug} with modern Japanese excerpt ({len(excerpt_modern)} chars) …",
+                    flush=True,
+                )
                 try:
-                    png = openai_dalle3_png_retry(prompt2, api_key, args.quality)
+                    png = openai_dalle3_png_retry(
+                        build_image_prompt(slug, title, excerpt_modern, body_mode="modern"),
+                        api_key,
+                        args.quality,
+                    )
+                except Exception as e_mod:
+                    print(f"WARN {slug} (modern excerpt): {e_mod}", file=sys.stderr)
+                    if not is_content_policy_error(str(e_mod)) and args.fail_fast:
+                        sys.exit(1)
+            if png is None:
+                excerpt_short_k = volume_source_excerpt(lines, s1, s2, short_n)
+                prompt_short_k = build_image_prompt(slug, title, excerpt_short_k, body_mode="kanbun")
+                print(f"  retry {slug} with shorter kanbun ({len(excerpt_short_k)} chars) …", flush=True)
+                try:
+                    png = openai_dalle3_png_retry(prompt_short_k, api_key, args.quality)
                 except Exception as e2:
                     err2 = str(e2)
-                    print(f"WARN {slug} (short excerpt): {e2}", file=sys.stderr)
-                    if "content_policy" in err2.lower() or "safety system" in err2.lower():
-                        print(f"  retry {slug} with abstract title-only prompt …", flush=True)
+                    print(f"WARN {slug} (short kanbun): {e2}", file=sys.stderr)
+                    if is_content_policy_error(err2) and excerpt_modern:
+                        excerpt_short_m = modern_plain_excerpt(
+                            slug, modern_html_by_slug, short_n
+                        )
+                        if excerpt_short_m:
+                            print(
+                                f"  retry {slug} with shorter modern ({len(excerpt_short_m)} chars) …",
+                                flush=True,
+                            )
+                            try:
+                                png = openai_dalle3_png_retry(
+                                    build_image_prompt(
+                                        slug, title, excerpt_short_m, body_mode="modern"
+                                    ),
+                                    api_key,
+                                    args.quality,
+                                )
+                            except Exception as e2m:
+                                print(f"WARN {slug} (short modern): {e2m}", file=sys.stderr)
+                                if not is_content_policy_error(str(e2m)) and args.fail_fast:
+                                    sys.exit(1)
+                    elif not is_content_policy_error(err2) and args.fail_fast:
+                        sys.exit(1)
+                    if png is None:
+                        print(f"  retry {slug} with abstract safe prompt …", flush=True)
                         try:
                             png = openai_dalle3_png_retry(
                                 build_image_prompt_safe(slug, title), api_key, args.quality
@@ -319,14 +413,6 @@ def main() -> None:
                             if args.fail_fast:
                                 sys.exit(1)
                             continue
-                    else:
-                        if args.fail_fast:
-                            sys.exit(1)
-                        continue
-            else:
-                if args.fail_fast:
-                    sys.exit(1)
-                continue
         if png is None:
             continue
         IMG_DIR.mkdir(parents=True, exist_ok=True)

@@ -30,7 +30,7 @@
 
 - **生成**: `tools/gen_volume_intro_manga.py` が `OPENAI_API_KEY` で OpenAI Images API（`dall-e-3`）を呼び、`web/img/{slug}-manga-4panel.png` を出力する。各巻の **冒頭原文を長めに抜粋**しプロンプトに含め、「わかりやすく4コマ漫画で」と同趣旨の**日本語指示**を与える。既定は `quality=hd`。``--max-chars`` で抜粋長を調整可。既に手元イラストがある巻は `SKIP_SLUGS` で除外。
 - **埋め込み**: `python3 tools/gen_web_volumes.py` 実行時、上記 PNG が存在する自動生成巻の `index.html` に `intro_manga_block` が差し込まれる。**辨道話**は `bendowa/index.html` をスクリプトがパッチする（手編集ファイル）。
-- **安全フィルタ**: 本文入りプロンプトが拒否された場合は **短い抜粋に差し替えて再試行**し、それでも拒否なら **抽象プロンプト**へ自動リトライする。
+- **安全フィルタ**: 漢文が拒否された場合は ``doc/modern_translations.json`` の **現代語訳**（冒頭を平文化してプロンプト化）で再試行し、続けて短文の漢文・短文の現代語訳、最後に **抽象プロンプト**へ順にリトライする。
 
 ## 3. 巻紹介ページへのラスタイラスト（PNG）
 
