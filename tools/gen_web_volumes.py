@@ -19,19 +19,40 @@ MODERN_CACHE_PATH = ROOT / "doc" / "modern_translations.json"
 
 # `tools/gen_volume_intro_manga.py` が出力する AI 4コマ（ファイルが無ければ何も出さない）
 MANGA_4PANEL_SUFFIX = "-manga-4panel.png"
+# 巻ごとに別名 PNG を使う（手元イラスト等）。値は `web/img/` 直下のファイル名。
+MANGA_IMAGE_OVERRIDES: dict[str, str] = {
+    "12-01": "出家功徳.png",
+}
+
+
+def _png_pixel_size(path: Path) -> tuple[int, int] | None:
+    """PNG の IHDR から幅・高さを読む（Pillow 不要）。"""
+    try:
+        data = path.read_bytes()[:32]
+    except OSError:
+        return None
+    if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    if data[12:16] != b"IHDR":
+        return None
+    w = int.from_bytes(data[16:20], "big")
+    h = int.from_bytes(data[20:24], "big")
+    return (w, h) if w > 0 and h > 0 else None
 
 
 def intro_manga_block(slug: str) -> str:
-    """紹介ページ用: `web/img/{slug}-manga-4panel.png` があれば図解ブロックを返す。"""
-    fname = f"{slug}{MANGA_4PANEL_SUFFIX}"
+    """紹介ページ用: `web/img/{slug}-manga-4panel.png`（または MANGA_IMAGE_OVERRIDES）があれば図解ブロックを返す。"""
+    fname = MANGA_IMAGE_OVERRIDES.get(slug) or f"{slug}{MANGA_4PANEL_SUFFIX}"
     path = ROOT / "web" / "img" / fname
     if not path.is_file():
         return ""
+    dims = _png_pixel_size(path) or (1792, 1024)
+    mw, mh = dims
     alt = html.escape(f"{slug}: 冒頭をテーマにした4コマ（学習用・AI生成）")
     return f"""        <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は本文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/{html.escape(fname)}" width="1792" height="1024" alt="{alt}" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/{html.escape(fname)}" width="{mw}" height="{mh}" alt="{alt}" loading="lazy" style="width:min(100%,{mw}px);height:auto;display:block;margin:0 auto" />
         </div>
 """
 
