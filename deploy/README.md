@@ -69,8 +69,8 @@ API がトークンを検証するには別途 **`QUARKUS_PROFILE=compose,oidc`*
 # 例: 辨道話 + 第1/2巻のみ更新（SLUGS 未指定なら全巻）
 SLUGS="bendowa,75-01,75-02" FORCE=1 tools/gen_ai_modern_translations_openshift.sh
 
-# 全文ページを書き出し
-DOGEN_GENERATE_FULLTEXT=1 python3 tools/gen_web_volumes.py
+# 巻紹介 index + 全文ページ（既定で full.html も生成。省略する場合のみ DOGEN_GENERATE_FULLTEXT=0）
+python3 tools/gen_web_volumes.py
 ```
 
 - `tools/gen_ai_modern_translations_openshift.sh` は Keycloak の `dogen-web` クライアントで `directAccessGrantsEnabled` を一時的に有効化してトークン取得し、終了時に自動で無効化する。

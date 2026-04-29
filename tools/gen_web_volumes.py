@@ -757,7 +757,8 @@ def index_html() -> str:
 
 def main() -> None:
     lines = load_doc_lines()
-    generate_full = os.environ.get("DOGEN_GENERATE_FULLTEXT", "").strip() == "1"
+    # 既定で全文ページを生成し、紹介 index に「（ローカル生成の全文: …）」を出す。無効化は DOGEN_GENERATE_FULLTEXT=0
+    generate_full = os.environ.get("DOGEN_GENERATE_FULLTEXT", "1").strip() != "0"
     modern_cache = load_modern_cache()
     if len(BODY_75_STARTS_1BASED) != len(TITLES_75) + 1:
         raise SystemExit("BODY_75_STARTS_1BASED must have len(TITLES_75)+1 sentinel")

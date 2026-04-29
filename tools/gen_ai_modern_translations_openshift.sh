@@ -84,4 +84,4 @@ DOGEN_CHAT_BEARER="Bearer ${ACCESS}" \
 PYTHONUNBUFFERED=1 python3 tools/gen_ai_modern_translations.py "${ARGS[@]}"
 
 echo "[5/5] complete (cleanup via trap)"
-echo "AI translation cache generated. Next: DOGEN_GENERATE_FULLTEXT=1 python3 tools/gen_web_volumes.py"
+echo "AI translation cache generated. Next: python3 tools/gen_web_volumes.py（全文は既定で生成。省略は DOGEN_GENERATE_FULLTEXT=0）"
