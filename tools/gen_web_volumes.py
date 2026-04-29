@@ -23,6 +23,7 @@ MANGA_4PANEL_SUFFIX = "-manga-4panel.png"
 MANGA_IMAGE_OVERRIDES: dict[str, str] = {
     "12-01": "出家功徳.png",
     "12-02": "受戒.png",
+    "12-03": "袈裟功徳.png",
 }
 
 
