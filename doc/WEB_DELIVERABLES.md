@@ -28,9 +28,9 @@
 
 ## 2.1 巻紹介 AI 4コマ（DALL-E 3）
 
-- **生成**: `tools/gen_volume_intro_manga.py` が `OPENAI_API_KEY` で OpenAI Images API（`dall-e-3`）を呼び、`web/img/{slug}-manga-4panel.png` を出力する。既に手元イラストがある巻は `SKIP_SLUGS` で除外。
+- **生成**: `tools/gen_volume_intro_manga.py` が `OPENAI_API_KEY` で OpenAI Images API（`dall-e-3`）を呼び、`web/img/{slug}-manga-4panel.png` を出力する。各巻の **冒頭原文を長めに抜粋**しプロンプトに含め、「わかりやすく4コマ漫画で」と同趣旨の**日本語指示**を与える。既定は `quality=hd`。``--max-chars`` で抜粋長を調整可。既に手元イラストがある巻は `SKIP_SLUGS` で除外。
 - **埋め込み**: `python3 tools/gen_web_volumes.py` 実行時、上記 PNG が存在する自動生成巻の `index.html` に `intro_manga_block` が差し込まれる。**辨道話**は `bendowa/index.html` をスクリプトがパッチする（手編集ファイル）。
-- **安全フィルタ**: 一部巻は本文抜粋入りプロンプトが拒否されるため、**抽象プロンプトへの自動リトライ**あり。
+- **安全フィルタ**: 本文入りプロンプトが拒否された場合は **短い抜粋に差し替えて再試行**し、それでも拒否なら **抽象プロンプト**へ自動リトライする。
 
 ## 3. 巻紹介ページへのラスタイラスト（PNG）
 
@@ -89,4 +89,4 @@ API 用の別イメージ（`dogen-api`）や OIDC パッチは本書の対象�
 | 日付 | 内容 |
 |------|------|
 | 2026-04-28 | トップ再編（表紙・五段階・`正法眼蔵.png`）。SVG マンガ撤去、`正法眼蔵.png` を `--max-wide` 幅に拡大。 |
-| 2026-04-29 | `gen_volume_intro_manga.py` による巻紹介 AI 4コマ（DALL-E 3）80 枚と自動 `index` 埋め込み。 |
+| 2026-04-29 | 巻紹介 AI 4コマ: 冒頭原文を長めにプロンプトへ埋め込み・日本語で「4コマで表現」指示、`quality=hd`、拒否時は短文抜粋→英語抽象プロンプトの段階リトライ、502/503 の再試行。PNG 再生成と `dogen-web` 反映。 |
