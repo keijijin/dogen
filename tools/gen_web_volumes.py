@@ -17,6 +17,25 @@ DOC = ROOT / "doc" / "正法眼蔵.txt"
 SOURCE_URL = "https://shomonji.or.jp/zazen/doc/genzou.html"
 MODERN_CACHE_PATH = ROOT / "doc" / "modern_translations.json"
 
+# `tools/gen_volume_intro_manga.py` が出力する AI 4コマ（ファイルが無ければ何も出さない）
+MANGA_4PANEL_SUFFIX = "-manga-4panel.png"
+
+
+def intro_manga_block(slug: str) -> str:
+    """紹介ページ用: `web/img/{slug}-manga-4panel.png` があれば図解ブロックを返す。"""
+    fname = f"{slug}{MANGA_4PANEL_SUFFIX}"
+    path = ROOT / "web" / "img" / fname
+    if not path.is_file():
+        return ""
+    alt = html.escape(f"{slug}: 冒頭をテーマにした4コマ（学習用・AI生成）")
+    return f"""        <h2>図解（4コマ・AI生成）</h2>
+        <p class="notice" style="font-size:0.88rem">教義の根拠は本文・出典に従い、漫画は比喩の補助に留めてください。</p>
+        <div style="overflow-x:auto;margin:1rem 0">
+          <img src="../../img/{html.escape(fname)}" width="1792" height="1024" alt="{alt}" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+        </div>
+"""
+
+
 # 手編集サンプル・優先整備済み（再生成で上書きしない）
 HAND_SLUGS = frozenset(
     {
@@ -463,6 +482,7 @@ def rich_volume_html(
           出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
         </p>
         {excerpt_block}
+{intro_manga_block(slug)}
 
         <h2>深掘り（読解のコツ）</h2>
         <ul>

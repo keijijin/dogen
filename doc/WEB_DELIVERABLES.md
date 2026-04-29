@@ -26,6 +26,12 @@
 
 ---
 
+## 2.1 巻紹介 AI 4コマ（DALL-E 3）
+
+- **生成**: `tools/gen_volume_intro_manga.py` が `OPENAI_API_KEY` で OpenAI Images API（`dall-e-3`）を呼び、`web/img/{slug}-manga-4panel.png` を出力する。既に手元イラストがある巻は `SKIP_SLUGS` で除外。
+- **埋め込み**: `python3 tools/gen_web_volumes.py` 実行時、上記 PNG が存在する自動生成巻の `index.html` に `intro_manga_block` が差し込まれる。**辨道話**は `bendowa/index.html` をスクリプトがパッチする（手編集ファイル）。
+- **安全フィルタ**: 一部巻は本文抜粋入りプロンプトが拒否されるため、**抽象プロンプトへの自動リトライ**あり。
+
 ## 3. 巻紹介ページへのラスタイラスト（PNG）
 
 各巻の **手編集** `web/volumes/<slug>/index.html` に「図解（イラスト）」ブロックを追加。既存の SVG 図解・漫画ブロックは維持。画像は **`web/img/` を Git に含める**こと（未追跡のまま OpenShift の Git ビルドだけに頼ると 404 になる）。

@@ -28,6 +28,7 @@
 | `deploy/README.md` | 起動手順・OpenShift メモ |
 | `web/` | 静的ホームページ（HTML / CSS / JS） |
 | `tools/gen_web_volumes.py` | 巻一覧・巻ページ再生成（`doc/正法眼蔵.txt` 冒頭抜粋＋手編集スラッグはスキップ） |
+| `tools/gen_volume_intro_manga.py` | 巻紹介用 AI 4コマ PNG（DALL-E 3）生成・辨道話 HTML パッチ。詳細は `doc/WEB_DELIVERABLES.md` 2.1 |
 | `backend/` | Quarkus + Camel（`doc/DESIGN.md` 4 章の想定。未作成の場合あり） |
 
 ## 技術スタック（要約）
