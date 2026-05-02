@@ -2,7 +2,7 @@
 """Generate web/volumes/index.html and volume pages for 七十五巻・十二巻.
 
 手編集で上書きしないスラッグは HAND_SLUGS。それ以外は doc/正法眼蔵.txt から
-冒頭を抜粋した読解ページ（語彙・深掘り・クイズ付き）を再生成する。
+各巻の紹介ページ（原文の要点抜粋・語彙・深掘り・クイズ付き）を再生成する。
 """
 from __future__ import annotations
 
@@ -51,9 +51,9 @@ def intro_manga_block(slug: str) -> str:
         return ""
     dims = _png_pixel_size(path) or (1792, 1024)
     mw, mh = dims
-    alt = html.escape(f"{slug}: 冒頭をテーマにした4コマ（学習用・AI生成）")
+    alt = html.escape(f"{slug}: 抜粋をテーマにした4コマ（学習用・AI生成）")
     return f"""        <h2>図解（4コマ・AI生成）</h2>
-        <p class="notice" style="font-size:0.88rem">教義の根拠は本文・出典に従い、漫画は比喩の補助に留めてください。</p>
+        <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
           <img src="../../img/{html.escape(fname)}" width="{mw}" height="{mh}" alt="{alt}" loading="lazy" style="width:min(100%,{mw}px);height:auto;display:block;margin:0 auto" />
         </div>
@@ -276,8 +276,13 @@ def load_doc_lines() -> list[str]:
     return text.splitlines()
 
 
-def excerpt_paragraphs(lines: list[str], start_1b: int, next_start_1b: int, max_lines: int = 72) -> str:
-    """start_1b 行から次見出しの直前まで。空行は詰め、先頭の巻見出し行は本文に含めない。"""
+# 紹介ページに載せる原文は短い抜粋に留める（全文は full.html）
+INTRO_EXCERPT_MAX_LINES = 12
+
+
+def excerpt_paragraphs(lines: list[str], start_1b: int, next_start_1b: int, max_lines: int | None = None) -> str:
+    """start_1b 行から次見出しの直前まで。空行は詰め、先頭の巻見出し行は除く。紹介ページ用に行数上限あり。"""
+    lim = INTRO_EXCERPT_MAX_LINES if max_lines is None else max_lines
     a = start_1b - 1
     b = next_start_1b - 1
     chunk = lines[a:b]
@@ -289,12 +294,12 @@ def excerpt_paragraphs(lines: list[str], start_1b: int, next_start_1b: int, max_
         if s.startswith("正法眼藏第") and "　" in s and len(s) < 40:
             continue
         out.append(html.escape(s))
-        if len(out) >= max_lines:
+        if len(out) >= lim:
             break
     if not out:
-        return "<p>（この巻の冒頭を自動抽出できませんでした。<code>doc/正法眼蔵.txt</code> を直接参照してください。）</p>"
+        return "<p>（この巻の原文を自動抽出できませんでした。<code>doc/正法眼蔵.txt</code> を直接参照してください。）</p>"
     inner = "</p>\n          <p>".join(out)
-    return f"<blockquote>\n          <p>{inner}</p>\n        </blockquote>"
+    return f"        <blockquote>\n          <p>{inner}</p>\n        </blockquote>"
 
 
 def extract_volume_paragraphs(lines: list[str], start_1b: int, next_start_1b: int) -> list[list[str]]:
@@ -450,7 +455,9 @@ def rich_volume_html(
     anchor = "#75" if kind == "75" else "#12"
     slug = f"{kind}-{num:02d}"
     esc_title = html.escape(title)
-    meta = html.escape(f"正法眼蔵第{num}　{title}。語彙・本文冒頭・クイズ（自動生成ページ）。")
+    meta = html.escape(
+        f"正法眼蔵第{num}　{title}。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。"
+    )
     return f"""<!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -483,12 +490,12 @@ def rich_volume_html(
         <h1>正法眼藏第{num}　{esc_title}</h1>
 
         <p class="notice">
-          本ページは <code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から冒頭を抜粋して生成しています。図・詳細解説は今後の手編集で拡張できます。
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
           出典（原文）: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
         </p>
-        {f'<p class=\"notice\">（ローカル生成の全文: <a href=\"full.html\">全文ページ</a>）</p>' if fulltext_link else ''}
+        {f'<p class=\"notice\"><strong>原文・現代語訳の全文</strong>は <a href=\"full.html\">全文ページ</a>を参照してください。</p>' if fulltext_link else ''}
 
-        <h2>この巻の位置づけ（学習メモ）</h2>
+        <h2>この巻の紹介（概要）</h2>
         <p>
           道元『正法眼蔵』{label}の第{num}篇「{esc_title}」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
           Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
@@ -496,14 +503,14 @@ def rich_volume_html(
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>題名語</strong>：巻題「{esc_title}」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、本文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>題名語</strong>：巻題「{esc_title}」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
           <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
-          <li><strong>学び方</strong>：冒頭だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
 
-        <h2>本文（冒頭・自動抜粋）</h2>
+        <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
         </p>
         {excerpt_block}
 {intro_manga_block(slug)}
@@ -517,7 +524,7 @@ def rich_volume_html(
         <h2>確認（形成評価）</h2>
         <fieldset class="quiz" data-correct-index="0">
           <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
-          <label><input type="radio" name="{slug}-q1" value="0" /> 本文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="{slug}-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
           <label><input type="radio" name="{slug}-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
           <label><input type="radio" name="{slug}-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
@@ -686,7 +693,7 @@ def fulltext_page_html(
           出典: <code>doc/正法眼蔵.txt</code>。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a>
         </p>
         <h1>{html.escape(heading)}</h1>
-        <p><a href="{back_link}">抜粋ページへ戻る</a> · <a href="{index_link}">巻一覧</a> · <a href="{home_link}">ホーム</a></p>
+        <p><a href="{back_link}">紹介ページへ戻る</a> · <a href="{index_link}">巻一覧</a> · <a href="{home_link}">ホーム</a></p>
         <div class="reading-toggle" data-reading-toggle>
           <button type="button" class="reading-toggle__btn is-active" data-reading-tab="original" aria-selected="true">原文</button>
           <button type="button" class="reading-toggle__btn" data-reading-tab="modern" aria-selected="false">現代語訳</button>
@@ -752,7 +759,7 @@ def index_html() -> str:
     <main>
       <article class="prose">
         <h1>巻一覧</h1>
-        <p>七十五巻・十二巻・辨道話への導線です。多くの巻はスクリプトが <code>doc/正法眼蔵.txt</code> から冒頭を抜粋したページを生成しています。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a></p>
+        <p>七十五巻・十二巻・辨道話への導線です。多くの巻は<strong>紹介ページ</strong>として <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文は各巻の全文ページ）。原文の参照元: <a href="{SOURCE_URL}">{SOURCE_URL}</a></p>
         <p class="notice">教育効率の高い学習導線: <a href="learning-map.html">学習総覧（5観点）</a></p>
         <h2 id="bendowa">辨道話</h2>
         <p><a href="bendowa/index.html">辨道話</a>（坐禅辨道の大意）</p>

@@ -17,6 +17,8 @@
 
 ``tools/gen_web_volumes.py`` 実行後は ``HAND_SLUGS`` 以外の index が汎用テンプレに戻るため、
 必要なら **その後に** 本スクリプトを再実行する。
+
+紹介ページの用語・抜粋長を既存 HTML に揃えるだけの場合は ``tools/patch_intro_page_wording.py`` を参照。
 """
 from __future__ import annotations
 
@@ -79,7 +81,7 @@ _OFFLINE_SCAN: tuple[str, ...] = (
 )
 
 
-def _opening_plain(lines: list[str], start_1b: int, next_start_1b: int, max_chars: int = 4800) -> str:
+def _opening_plain(lines: list[str], start_1b: int, next_start_1b: int, max_chars: int = 2400) -> str:
     paras = gw.extract_volume_paragraphs(lines, start_1b, next_start_1b)
     if not paras:
         return ""
@@ -136,11 +138,11 @@ def _volume_page_html(
     anchor = "#75" if kind == "75" else "#12"
     esc_title = gw.html.escape(title)
     meta = gw.html.escape(
-        f"正法眼蔵第{num}　{title}。語彙・冒頭本文・クイズ（{slug}）。"
+        f"正法眼蔵第{num}　{title}。紹介ページ（語彙・原文の要点抜粋・クイズ・{slug}）。"
     )
     manga = gw.intro_manga_block(slug)
     full_notice = (
-        '<p class="notice">（ローカル生成の全文: <a href="full.html">全文ページ</a>）</p>'
+        '<p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>'
         if fulltext_link
         else ""
     )
@@ -181,7 +183,7 @@ def _volume_page_html(
         </p>
         {full_notice}
 
-        <h2>この巻の位置（導入）</h2>
+        <h2>この巻の紹介（導入）</h2>
 {intro_block}
 
         <h2>語彙の足場</h2>
@@ -189,9 +191,9 @@ def _volume_page_html(
           {vocab_ul}
         </ul>
 
-        <h2>本文（冒頭・抜粋）</h2>
+        <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="{gw.SOURCE_URL}">{gw.SOURCE_URL}</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="{gw.SOURCE_URL}">{gw.SOURCE_URL}</a>
         </p>
         {excerpt_block}
 {manga}
@@ -329,7 +331,7 @@ def _build_blocks_from_ai(data: dict, slug: str) -> tuple[str, str, str, str, st
                     f"{html_module.escape(gloss.strip())}</li>"
                 )
     if len(lis) < 2:
-        lis.append("<li><strong>巻題</strong>：本文中の用例で意味を確かめてください。</li>")
+        lis.append("<li><strong>巻題</strong>：原文中の用例で意味を確かめてください。</li>")
     vocab_ul = "\n          ".join(lis)
 
     dbs = data.get("deep_bullets")
@@ -348,7 +350,7 @@ def _build_blocks_from_ai(data: dict, slug: str) -> tuple[str, str, str, str, st
         q1 = {
             "question": "この巻の読み方として、まず避けたいのはどれか。",
             "options": [
-                "本文を読まず要約だけで満足する",
+                "原文を読まず要約だけで満足する",
                 "語の照応を丁寧に追う",
                 "分からない箇所に印を付ける",
             ],
@@ -395,8 +397,8 @@ def _process_volume_ai(
     data = _call_openai_volume_block(slug=slug, title=title, opening=opening, model=model)
     intro_b, vocab_ul, deep_ul, q1h, q2h = _build_blocks_from_ai(data, slug)
     note = (
-        "本ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が "
-        "OpenAI API で生成したものです（入力は当巻冒頭原文の抜粋）。"
+        "本ページは各巻の<strong>紹介ページ</strong>です。導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が "
+        "OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。"
         "内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。"
     )
     page = _volume_page_html(
@@ -446,7 +448,7 @@ def _process_volume_offline(
         </p>"""
     lis = [f"<li><strong>巻題</strong>：「{esc_title}」</li>"]
     for t in top[:4]:
-        lis.append(f"<li><strong>{html_module.escape(t)}</strong>：本文冒頭の用例で確認。</li>")
+        lis.append(f"<li><strong>{html_module.escape(t)}</strong>：原文冒頭の用例で確認。</li>")
     vocab_ul = "\n          ".join(lis)
     deep_ul = (
         f"<li>巻題「{esc_title}」を目印に、引用と道元の按配を追ってください。</li>"
@@ -456,7 +458,7 @@ def _process_volume_offline(
         slug,
         "q1",
         "オフライン簡易: 学ぶ姿勢としてまず避けたいのは？",
-        ["本文を読まず要約だけで満足する", "語の照応を追う", "印を付けて後で問う"],
+        ["原文を読まず要約だけで満足する", "語の照応を追う", "印を付けて後で問う"],
         0,
     )
     q2 = _fieldset_quiz(
@@ -472,7 +474,7 @@ def _process_volume_offline(
         0,
     )
     note = (
-        "本ページは <code>tools/regen_volume_intro_from_corpus.py --offline</code> の簡易出力です。"
+        "本ページは各巻の<strong>紹介ページ</strong>の簡易出力です（<code>tools/regen_volume_intro_from_corpus.py --offline</code>）。"
     )
     page = _volume_page_html(
         kind,

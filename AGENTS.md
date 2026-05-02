@@ -29,6 +29,7 @@
 | `deploy/README.md` | 起動手順・OpenShift メモ |
 | `web/` | 静的ホームページ（HTML / CSS / JS） |
 | `tools/gen_web_volumes.py` | 巻一覧・巻ページ再生成（`doc/正法眼蔵.txt` 冒頭抜粋＋手編集スラッグはスキップ） |
+| `tools/patch_intro_page_wording.py` | 紹介ページの用語統一・原文抜粋の短縮（`HAND_SLUGS` は blockquote 除外） |
 | `tools/gen_volume_intro_manga.py` | 巻紹介用 AI 4コマ PNG（Responses API / gpt-4.1-mini + image_generation）生成・辨道話 HTML パッチ。詳細は `doc/WEB_DELIVERABLES.md` 2.1 |
 | `tools/dogen_chat_client.py` | dogen-api `POST /api/v1/chat` の薄いクライアント（現代語訳・用語生成などから利用） |
 | `tools/gen_glossary_openshift.sh` | 用語辞典生成を OpenShift の Route + Keycloak トークンで実行（`deploy/README.md` 参照） |
