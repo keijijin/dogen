@@ -25,6 +25,7 @@ MANGA_IMAGE_OVERRIDES: dict[str, str] = {
     "12-01": "出家功徳.png",
     "12-02": "受戒.png",
     "12-03": "袈裟功徳.png",
+    "12-04": "發菩提心.png",
 }
 
 
