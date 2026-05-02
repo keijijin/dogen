@@ -243,8 +243,8 @@ def patch_bendowa_index() -> None:
     text = p.read_text(encoding="utf-8")
     if "bendowa-manga-4panel.png" in text:
         return
-    # 手元イラスト（弁道話.png）を参照している場合は二重挿入しない
-    if "弁道話.png" in text:
+    # 手元イラスト（辨道話.png／旧弁道話.png）を参照している場合は二重挿入しない
+    if "辨道話.png" in text or "弁道話.png" in text:
         return
     insert = """        <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は本文・出典に従い、漫画は比喩の補助に留めてください。</p>

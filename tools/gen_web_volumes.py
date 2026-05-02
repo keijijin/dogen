@@ -21,7 +21,7 @@ MODERN_CACHE_PATH = ROOT / "doc" / "modern_translations.json"
 MANGA_4PANEL_SUFFIX = "-manga-4panel.png"
 # 巻ごとに別名 PNG を使う（手元イラスト等）。値は `web/img/` 直下のファイル名。
 MANGA_IMAGE_OVERRIDES: dict[str, str] = {
-    "bendowa": "弁道話.png",
+    "bendowa": "辨道話.png",
     "75-06": "行佛威儀.png",
     "75-07": "一顆明珠.png",
     "75-08": "心不可得.png",
