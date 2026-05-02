@@ -22,6 +22,7 @@ MANGA_4PANEL_SUFFIX = "-manga-4panel.png"
 # 巻ごとに別名 PNG を使う（手元イラスト等）。値は `web/img/` 直下のファイル名。
 MANGA_IMAGE_OVERRIDES: dict[str, str] = {
     "bendowa": "弁道話.png",
+    "75-07": "一顆明珠.png",
     "12-01": "出家功徳.png",
     "12-02": "受戒.png",
     "12-03": "袈裟功徳.png",
