@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第11　一百八法明門 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第11　一百八法明門。紹介ページ。語彙・原文の要点抜粋・クイズ（12-11）。" />
+    <meta name="description" content="正法眼蔵第11　一百八法明門。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第11　一百八法明門</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>護明菩薩が兜率陀の宮で法要を説くために集まった天衆に向けて、一法明門を説くことを告げる。</p>
-        <p>菩薩は一百八法明門を宣暢することが重要であるとし、天衆にその内容を心して聴くように促す。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』十二巻の第11篇「一百八法明門」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>護明菩薩</strong>：護明菩薩は、法を説くために天界に現れた菩薩であり、特に人間界に生まれ変わるための教えを伝える役割を持つ。</li>
-          <li><strong>法明門</strong>：法明門とは、菩薩が教える法の入口を示し、修行者が悟りに至るための道を示す重要な教えである。</li>
-          <li><strong>兜率陀</strong>：兜率陀は、天界の一つであり、菩薩が法を説くために集まる場所として描かれている。</li>
-          <li><strong>一百八法明門</strong>：一百八法明門は、菩薩が説く具体的な教えの数を示し、それぞれが修行者にとって重要な指針となる。</li>
-          <li><strong>安坐</strong>：安坐は、菩薩が静かに座ることを指し、法を説くための準備を整える行為である。</li>
+          <li><strong>題名語</strong>：巻題「一百八法明門」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>爾時護明菩薩、觀生家已。時兜率陀有一天宮、名曰高幢、縱廣正等六十由旬。菩薩時時上彼宮中、爲兜率天説於法要。是時菩薩、上於彼宮、安坐訖已、告於兜率諸天子言、汝等諸天、應來聚集、我身不久下於人間。我今欲説一法明門、名入諸法相方便門。留教化汝最後。汝等憶念我故、汝等若聞此法門者、應生歡喜（爾の時に護明菩薩、生家を觀じ已りぬ。時に兜率陀に一天宮有り、名を高幢と曰ふ、縱廣正等六十由旬なり。菩薩時時に彼の宮の中に上り、兜率天の爲に法要を説けり。是の時に菩薩、彼の宮に上りて、安坐し訖已りて、兜率諸天子に告げて言く、汝等諸天、應に來り聚集るべし、我が身久しからずして人間に下るべし。我れ今一の法明門を説かんと欲ふ、入諸法相方便門と名づく。教を留めて汝を化すること最後なり。汝等我れを憶念するが故に、汝等若し此の法門を聞かば、應に歡喜を生ずべし）。</p>
           <p>時兜率陀諸天大衆、聞於菩薩如此語已、及天玉女、一切眷屬、皆來聚集、上於彼宮（時に兜率陀諸天の大衆、菩薩の此の如く語るを聞き已りて、天の玉女、一切の眷屬に及ぶまで、皆な來り聚集りて、彼の宮に上りぬ）。</p>
           <p>護明菩薩、見彼天衆聚會畢已、欲爲説法、卽時更化作一天宮、在彼高幢本天宮上。高大廣闊、覆四天下、可喜微妙、端正少雙、威徳巍巍、衆寶莊餝。一切欲界天宮殿中、無匹喩者。色界諸天、見彼化殿、於自宮殿、生如是心、如塚墓相（護明菩薩、彼の天衆の聚會り畢已れるを見て、爲に法を説かんと欲ひて、卽時更に一天宮を化作して、彼の高幢を本天宮の上に在けり。高大廣闊にして四天下を覆ひ、喜ぶべき微妙、端正雙び少く威徳巍巍たり、衆寶もて莊餝せり。一切欲界の天宮殿の中に、匹喩すべき者無し。色界の諸天、彼の化殿を見て、自が宮殿に於て是の如くの心を生ぜり、塚墓の相の如しと）。</p>
@@ -67,7 +69,6 @@
           <p>愛樂是法明門、令心淸淨故（愛樂是れ法明門なり、心をして淸淨ならしむるが故に）。</p>
           <p>身行正行是法明門、三業淨故（身行正行是れ法明門なり、三業淨きが故に）。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
@@ -75,27 +76,24 @@
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>護明菩薩は、法を説くために天衆を集める重要な役割を果たす。</li>
-          <li>一百八法明門は、菩薩が人間界に生まれ変わる前に宣揚されるべき教えである。</li>
-          <li>天衆は、菩薩の教えを聴くことで、心の準備を整え、菩薩の意志を理解する。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>護明菩薩が説こうとしている法の名称は何ですか？</legend>
-          <label><input type="radio" name="12-11-q1" value="0" /> 一百八法明門</label>
-          <label><input type="radio" name="12-11-q1" value="1" /> 法明門</label>
-          <label><input type="radio" name="12-11-q1" value="2" /> 安坐</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="12-11-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="12-11-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="12-11-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="12-11-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="12-11-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="12-11-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="12-11-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="12-11-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="12-11-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../12-10/index.html">← 第10巻</a> · <a href="../12-12/index.html">第12巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

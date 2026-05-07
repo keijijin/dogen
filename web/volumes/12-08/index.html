@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第8　三時業 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第8　三時業。紹介ページ。語彙・原文の要点抜粋・クイズ（12-08）。" />
+    <meta name="description" content="正法眼蔵第8　三時業。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第8　三時業</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>第十九祖鳩摩羅多尊者が中天竺国に至り、大士闍夜多に問うた。彼は自身の父母が三宝を信じているにもかかわらず、病に苦しみ、事がうまくいかないことを嘆いた。一方、隣家の者は善行を積んで元気であることを不思議に思った。</p>
-        <p>尊者は、善悪の報いには三時があることを説明し、因果の法則を理解しないことが誤解を招くと述べた。闍夜多はこの教えを聞いて疑いを解いた。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』十二巻の第8篇「三時業」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>因果</strong>：因果とは、行為（因）とその結果（果）の関係を指し、善行には善の結果が、悪行には悪の結果が伴うという仏教の基本的な教えである。</li>
-          <li><strong>三時</strong>：三時は、因果の報いが現れる時期を指し、順現法受、順次生受、順後次受の三つに分けられる。</li>
-          <li><strong>業</strong>：業とは、個人の行為や思考が未来に影響を与えるという概念で、善悪の行為がそれぞれの結果を生むとされる。</li>
-          <li><strong>菩薩</strong>：菩薩は、他者を救うために修行を続ける存在であり、悟りを求めながらも、衆生のために働くことを選んだ者を指す。</li>
-          <li><strong>善悪</strong>：善悪は、行為や思考の道徳的評価を指し、善は良い結果をもたらし、悪は悪い結果をもたらすとされる。</li>
+          <li><strong>題名語</strong>：巻題「三時業」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>第十九祖鳩摩羅多尊者、至中天竺國、有大士、名闍夜多。問曰、我家父母、素信三寶。而甞縈疾瘵、凡所營事、皆不如意。而我鄰家、久爲栴陀羅行、而身常勇健、所作和合。彼何幸、而我何辜（第十九祖鳩摩羅多尊者、中天竺國に至るに、大士有り、闍夜多と名づく。問うて曰く、我が家の父母、素三寶を信ず。而も甞より疾瘵に縈はれ、凡そ營む所の事、皆な不如意なり。而も我が鄰家、久しく栴陀羅の行を爲して、而も身は常に勇健なり、所作和合す。彼れ何の幸かある、而も我れ何の辜かある）。</p>
           <p>尊者曰、何足疑乎、且善惡之報有三時焉。凡人但見仁夭、暴壽、逆吉義凶、便謂亡因果虛罪福。殊不知、影響相隨、毫釐靡忒。縱經百千萬劫、亦不磨滅（尊者曰く、何ぞ疑ふに足らんや、且く善惡の報に三時有り。凡そ人、但だ仁は夭に、暴は壽く、逆は吉く義は凶なりとのみ見て、便ち因果を亡じ、罪福虛しと謂へり。殊に知らず、影響相隨ひて、毫釐も忒ふこと靡きを。縱ひ百千萬劫を經とも、亦た磨滅せず）。</p>
           <p>時闍夜多、聞是語已、頓釋所疑（時に闍夜多、是の語を聞き已りて、頓に所疑を釋せり）。</p>
@@ -67,7 +69,6 @@
           <p>いはく、人ありて、あるいは善にもあれ、あるいは惡にもあれ、この生につくりて、すなはちこの生にその報をうくるを、順現報受業といふ。</p>
           <p>惡をつくりて、この生にうけたる例。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
@@ -75,27 +76,24 @@
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>善悪の報いには三つの時期があり、それぞれ異なる結果をもたらす。</li>
-          <li>因果の法則を理解しないことが、誤解や邪見を生む原因となる。</li>
-          <li>闍夜多は尊者の教えを聞いて疑いを解き、仏法を修習することを決意した。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>鳩摩羅多尊者が闍夜多に教えたことは何ですか？</legend>
-          <label><input type="radio" name="12-08-q1" value="0" /> 善悪の報いには三時がある</label>
-          <label><input type="radio" name="12-08-q1" value="1" /> 父母が病に苦しんでいる</label>
-          <label><input type="radio" name="12-08-q1" value="2" /> 隣家の者が元気である理由</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="12-08-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="12-08-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="12-08-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="12-08-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="12-08-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="12-08-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="12-08-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="12-08-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="12-08-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../12-07/index.html">← 第7巻</a> · <a href="../12-09/index.html">第9巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

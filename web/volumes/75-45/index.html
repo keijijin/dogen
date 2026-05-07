@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第45　密語 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第45　密語。紹介ページ。語彙・原文の要点抜粋・クイズ（75-45）。" />
+    <meta name="description" content="正法眼蔵第45　密語。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第45　密語</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>この巻では、世尊の密語と迦葉の不覆藏についての問答が展開され、密語の重要性とその理解の難しさが強調されている。</p>
-        <p>密語は単なる言葉ではなく、深い意味を持ち、正しい理解には長い修行と努力が必要であることが示されている。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第45篇「密語」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>密語</strong>：密語とは、仏教における深い教えや真理を表す言葉であり、一般には理解しにくい内容を含む。世尊が持つ密語は、特に重要視され、信徒がそれを理解することは修行の一環とされる。</li>
-          <li><strong>迦葉</strong>：迦葉は、釈迦の弟子であり、密語を理解した人物として知られる。彼は世尊の教えを受け継ぎ、仏教の教義を広める役割を果たした。</li>
-          <li><strong>不覆藏</strong>：不覆藏とは、隠さずに教えを伝えることを意味し、密語の理解を深めるためには、隠された真理を明らかにする必要があることを示している。</li>
-          <li><strong>參學</strong>：參學は、仏教の教えを学び、実践することを指し、特に密語の理解には多くの努力と時間が必要であるとされる。</li>
-          <li><strong>釈迦牟尼</strong>：釈迦牟尼は、仏教の創始者であり、彼の教えは密語を含む深い真理を伝えるものである。彼の教えを正しく理解することが、信徒にとって重要である。</li>
+          <li><strong>題名語</strong>：巻題「密語」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>諸佛之所護念の大道を見成公案するに、汝亦如是、吾亦如是、善自護持、いまに證契せり。</p>
           <p>雲居山弘覺大師、因官人送供問曰、世尊有密語有、迦葉不覆藏。如何是世尊密語（雲居山弘覺大師、因みに官人、供を送りて問うて曰く、世尊に密語有り、迦葉覆藏せずと。如何ならんか是れ世尊の密語）。</p>
           <p>大師召云、尚書。</p>
@@ -67,35 +69,31 @@
           <p>なんぢもし不會なるは世尊の密語なりといふ、いまの茫然とあるを不會といふにあらず、不知を不會といふにあらず。なんじもし不會といふ道理、しづかに參學すべき處分を聽許するなり。功夫辨道すべし。さらにまた、なんぢもし會ならんはと道取する、いますでに會なるとにはあらず。</p>
           <p>佛法を參學するに多途あり。そのなかに、佛法を會し、佛法を不會する關棙子あり。正師をみざれば、ありとだにもしらず、いたづらに絶見聞の眼處耳處におほせて、密語ありと亂會せり。なんぢもし會なるゆゑに迦葉不覆藏なるといふにあらず、不會の不覆藏もあるなり。不覆藏はたれ人も見聞すべしと學すべからず。すでにこれ不覆藏なり、無處不覆藏ならん正恁麼時、こころみに參究すべし。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-45-manga-4panel.png" width="1792" height="1024" alt="75-45: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-45-manga-4panel.png" width="1536" height="1024" alt="75-45: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>密語は、世尊と迦葉の関係を通じて、仏教の教えの深さを伝える重要な要素である。</li>
-          <li>理解することが難しい密語は、修行を通じて明らかにされるべきであり、単なる言葉以上の意味を持つ。</li>
-          <li>世尊の教えは、他の仏たちにも共通するものであり、密語の理解は仏教徒にとっての共通の課題である。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
-        <fieldset class="quiz" data-correct-index="1">
-          <legend>世尊の密語と迦葉の関係について、正しい説明はどれか。</legend>
-          <label><input type="radio" name="75-45-q1" value="0" /> 世尊の密語は、迦葉によって隠されている。</label>
-          <label><input type="radio" name="75-45-q1" value="1" /> 迦葉は世尊の密語を理解し、不覆藏を実践している。</label>
-          <label><input type="radio" name="75-45-q1" value="2" /> 密語は世尊の教えを伝えるためにのみ存在する。</label>
+        <fieldset class="quiz" data-correct-index="0">
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-45-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-45-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-45-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>密語の理解に必要なものは何か。</legend>
-          <label><input type="radio" name="75-45-q2" value="0" /> 長い修行と努力</label>
-          <label><input type="radio" name="75-45-q2" value="1" /> 他人の教えを聞くこと</label>
-          <label><input type="radio" name="75-45-q2" value="2" /> 単なる知識の蓄積</label>
-          <label><input type="radio" name="75-45-q2" value="3" /> 特別な才能</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-45-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
+          <label><input type="radio" name="75-45-q2" value="1" /> 検索上位の無名要約のみ</label>
+          <label><input type="radio" name="75-45-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-44/index.html">← 第44巻</a> · <a href="../75-46/index.html">第46巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第2　受戒 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第2　受戒。紹介ページ。語彙・原文の要点抜粋・クイズ（12-02）。" />
+    <meta name="description" content="正法眼蔵第2　受戒。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第2　受戒</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>禪苑淸規に云く、三世諸佛、皆な出家成道と曰ふ。</p>
-        <p>西天二十八祖、唐土六祖、佛心印を傳ふる、盡く是れ沙門なり。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』十二巻の第2篇「受戒」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>受戒</strong>：仏教において戒律を受けること。これは修行者が仏の教えに従い、道を歩むための重要な儀式である。</li>
-          <li><strong>戒律</strong>：仏教徒が守るべき規則や道徳的な指針。戒律は、修行者が心を清め、正しい行いをするために必要とされる。</li>
-          <li><strong>沙門</strong>：仏教における出家者のこと。修行を通じて悟りを目指す者を指す。</li>
-          <li><strong>菩薩戒</strong>：菩薩としての行動を規定する戒律。これは他者を助けることを目的とした戒律である。</li>
-          <li><strong>三聚淸淨戒</strong>：仏教における三つの清浄な戒律のこと。これにより、修行者は心を清め、正しい行動を促進する。</li>
+          <li><strong>題名語</strong>：巻題「受戒」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>禪苑淸規云、三世諸佛、皆曰出家成道。西天二十八祖、唐土六祖、傳佛心印、盡是沙門。蓋以嚴淨毘尼、方能洪範三界。然則參禪問道、戒律爲先。既非離過防非、何以成佛作祖（禪苑淸規に云く、三世諸佛、皆な出家成道と曰ふ。西天二十八祖、唐土六祖、佛心印を傳ふる、盡く是れ沙門なり。蓋し以て毘尼を嚴淨して方に能く三界に洪範たり。然あれば則ち參禪問道は戒律爲先なり。既に過を離れ非を防ぐに非ずは、何を以てか成佛作祖せん）。</p>
           <p>受戒之法、應備三衣鉢具并新淨衣物。如無新衣、浣洗令淨。入壇受戒、不得借賃衣鉢。一心專注、愼勿異緣。像佛形儀、具佛戒律、得佛受用、此非小事。豈可輕心。若借賃衣鉢、雖登壇受戒、竝不得戒。若不曾受、一生爲無戒之人。濫廁空門、虛消信施。初心入道、法律未諳、師匠不言、陷人於此。今茲苦口、敢望銘心（受戒の法は、應に三衣鉢具并びに新淨の衣物を備ふべし。新衣無きが如きは、浣洗して淨からしむべし。入壇受戒には、衣鉢を借賃すること得ざれ。一心專注して、愼んで異緣あること勿れ。佛の形儀に像り、佛の戒律を具す、佛受用を得る、此れ小事に非ず。豈に輕心なるべけんや。若し衣鉢を借賃せば、登壇受戒すと雖も、竝びに得戒せず。若し曾受せずは、一生無戒の人爲らん。濫りに空門に廁り、虛しく信施を消せん。初心の入道は、法律未だ諳んぜず、師匠言はずは、人を此に陷れん。今茲に苦口す、敢て望すらくは心に銘ずべし）。</p>
           <p>既受聲聞戒、應受菩薩戒。此入法之漸也（既に聲聞戒を受くれば、應に菩薩戒を受くべし。此れ入法の漸なり）。</p>
@@ -67,36 +69,31 @@
           <p>歸依佛竟、歸依法竟、歸依僧竟。</p>
           <p>如來至眞無上正等覺是我大師。我今歸依、從今已後、更不歸依邪魔外道。慈愍故。［三説。第三疊慈愍故三遍］（如來至眞無上正等覺は是れ我が大師なり。我れ今歸依したてまつる、今より已後、更に邪魔外道に歸依せじ。慈愍したまふが故に。［三説。第三には慈愍故三遍を疊す］）</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/受戒.png" width="1254" height="1254" alt="受戒: 抜粋をテーマにした4コマ（学習用）" loading="lazy" style="width:min(100%,1254px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/受戒.png" width="1254" height="1254" alt="12-02: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1254px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>受戒は仏教の修行の出発点であり、戒律を守ることが求められる。</li>
-          <li>戒律を受けることで、修行者は仏の教えに従うことができる。</li>
-          <li>戒律を守らない場合、仏の弟子として認められないことがある。</li>
-          <li>菩薩戒は特に他者を助けることに焦点を当てている。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>受戒の重要性は何ですか？</legend>
-          <label><input type="radio" name="12-02-q1" value="0" /> 戒律を守るため</label>
-          <label><input type="radio" name="12-02-q1" value="1" /> 他者を助けるため</label>
-          <label><input type="radio" name="12-02-q1" value="2" /> 出家するため</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="12-02-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="12-02-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="12-02-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="12-02-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="12-02-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="12-02-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="12-02-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="12-02-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="12-02-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../12-01/index.html">← 第1巻</a> · <a href="../12-03/index.html">第3巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

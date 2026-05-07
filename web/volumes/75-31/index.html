@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第31　諸惡莫作 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第31　諸惡莫作。紹介ページ。語彙・原文の要点抜粋・クイズ（75-31）。" />
+    <meta name="description" content="正法眼蔵第31　諸惡莫作。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第31　諸惡莫作</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>古佛云、諸惡莫作、衆善奉行、自淨其意、是諸佛教（諸惡を作すこと莫れ、衆善奉行すべし、自ら其の意を淨む、是れ諸佛の教なり）。これ七佛祖宗の通戒として、前佛より後佛に正傳す、後佛は前佛に相嗣せり。</p>
-        <p>善惡は時なり、時は善惡にあらず。善惡は法なり、法は善惡にあらず。法等惡等なり、法等善等なり。しかあるに、阿耨多羅三藐三菩提を學するに、聞教し、修行し、證果するに、深なり、遠なり、妙なり。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第31篇「諸惡莫作」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>諸惡莫作</strong>：「諸惡莫作」とは、すべての悪を作ってはならないという教えであり、仏教において重要な戒律の一つである。これは、自己の行動を正し、他者に対しても善を行うことを促すものである。</li>
-          <li><strong>衆善奉行</strong>：「衆善奉行」とは、多くの善を行うことを意味し、仏教の実践において善行を重視する姿勢を表している。これは、個人の修行だけでなく、社会全体の調和をも目指すものである。</li>
-          <li><strong>自淨其意</strong>：「自淨其意」とは、自らの心を清めることを指し、内面的な浄化を通じて真の理解と行動を得ることを目的とする。これは、仏教の修行において不可欠な要素である。</li>
-          <li><strong>因果</strong>：「因果」とは、原因と結果の関係を示す仏教の基本的な教えであり、行動が結果を生むことを理解することで、善悪の選択を促すものである。</li>
-          <li><strong>無上菩提</strong>：「無上菩提」とは、最高の悟りや真理を指し、仏教における究極の目標である。これは、すべての存在が持つ本質的な真理を理解することを意味する。</li>
+          <li><strong>題名語</strong>：巻題「諸惡莫作」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>古佛云、諸惡莫作、衆善奉行、自淨其意、是諸佛教（諸惡を作すこと莫れ、衆善奉行すべし、自ら其の意を淨む、是れ諸佛の教なり）。</p>
           <p>これ七佛祖宗の通戒として、前佛より後佛に正傳す、後佛は前佛に相嗣せり。ただ七佛のみにあらず、是諸佛教なり。この道理を功夫參究すべし。いはゆる七佛の法道、かならず七佛の法道のごとし。相傳相嗣、なほ箇裡の通消息なり。すでに是諸佛教なり、百千萬佛の教行證なり。</p>
           <p>いまいふところの諸惡者、善性惡性無記性のなかに惡性あり。その性これ無生なり。善性無記性等もまた無生なり、無漏なり、實相なりといふとも、この三性の箇裡に、許多般の法あり。諸惡は、此界の惡と他界の惡と同不同あり、先時と後時と同不同あり、天上の惡と人間の惡と同不同なり。いはんや佛道と世間と、道惡道善道無記、はるかに殊異あり。善惡は時なり、時は善惡にあらず。善惡は法なり、法は善惡にあらず。法等惡等なり、法等善等なり。</p>
@@ -67,36 +69,31 @@
           <p>しかあれば、莫作にあらばつくらまじと趣向するは、あゆみをきたにして越にいたらんとまたんがごとし。諸惡莫作は、井の驢をみるのみにあらず、井の井をみるなり。驢の驢をみるなり、人の人をみるなり、山の山をみるなり。説箇の應底道理あるゆゑに、諸惡莫作なり。佛眞法身、猶若虛空、應物現形、如水中月（佛の眞法身は、猶し虛空のごとし、物に應じて形を現はすこと、水中の月の如し）なり。應物の莫作なるゆゑに、現形の莫作あり、猶若虛空、左拍右拍なり。如水中月、被水月礙（水月に礙へらる）なり。これらの莫作、さらにうたがふべからざる現成なり。</p>
           <p>衆善奉行。この衆善は、三性のなかの善性なり。善性のなかに衆善ありといへども、さきより現成して行人をまつ衆善いまだあらず。作善の正當恁麼時、きたらざる衆善なし。萬善は無象なりといへども、作善のところに計會すること、磁鐵よりも速疾なり。そのちから、毘嵐風よりもつよきなり。大地山河、世界國土、業増上力、なほ善の計會を罣礙することあたはざるなり。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-31-manga-4panel.png" width="1792" height="1024" alt="75-31: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-31-manga-4panel.png" width="1536" height="1024" alt="75-31: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>諸悪を作らないことは、仏教の教えの根幹であり、修行者にとって重要な戒律である。</li>
-          <li>善を行うことは、自己の成長だけでなく、他者への影響をも考慮した行動である。</li>
-          <li>自らの心を清めることは、真理を理解するための第一歩であり、仏教の修行において不可欠である。</li>
-          <li>因果の法則を理解することで、行動の結果を見据えた選択が可能になる。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>諸惡莫作の教えの目的は何ですか？</legend>
-          <label><input type="radio" name="75-31-q1" value="0" /> 悪を作らないこと</label>
-          <label><input type="radio" name="75-31-q1" value="1" /> 善を行うこと</label>
-          <label><input type="radio" name="75-31-q1" value="2" /> 心を清めること</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-31-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-31-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-31-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>衆善奉行とは何を意味しますか？</legend>
-          <label><input type="radio" name="75-31-q2" value="0" /> 多くの善を行うこと</label>
-          <label><input type="radio" name="75-31-q2" value="1" /> 悪を避けること</label>
-          <label><input type="radio" name="75-31-q2" value="2" /> 心を清めること</label>
-          <label><input type="radio" name="75-31-q2" value="3" /> 因果を理解すること</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-31-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
+          <label><input type="radio" name="75-31-q2" value="1" /> 検索上位の無名要約のみ</label>
+          <label><input type="radio" name="75-31-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-30/index.html">← 第30巻</a> · <a href="../75-32/index.html">第32巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

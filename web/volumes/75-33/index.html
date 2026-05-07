@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第33　道得 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第33　道得。紹介ページ。語彙・原文の要点抜粋・クイズ（75-33）。" />
+    <meta name="description" content="正法眼蔵第33　道得。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,27 +33,29 @@
         <h1>正法眼藏第33　道得</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>諸佛諸祖は道得なり。このゆゑに、佛祖の佛祖を選するには、かならず道得也未と問取するなり。この問取、こころにても問取す、身にても問取す。</p>
-        <p>佛祖にあらざれば問取なし、道得なし、そのところなきがゆゑに。その道得は、他人にしたがひてうるにあらず、わがちからの能にあらず、ただまさに佛祖の究辨あれば、佛祖の道得あるなり。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第33篇「道得」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>道得</strong>：仏教において、真理や悟りを得ることを指し、特に仏や菩薩の教えに基づく理解を含む。</li>
-          <li><strong>問取</strong>：何かを尋ねたり、確認したりする行為。ここでは、道得についての問いかけを指す。</li>
-          <li><strong>功夫</strong>：修行や努力を意味し、特に禅宗においては、悟りを得るための実践や修練を指す。</li>
-          <li><strong>見得</strong>：物事の本質を理解すること、または悟りの状態を表す。</li>
+          <li><strong>題名語</strong>：巻題「道得」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>諸佛諸祖は道得なり。このゆゑに、佛祖の佛祖を選するには、かならず道得也未と問取するなり。この問取、こころにても問取す、身にても問取す。拄杖拂子にても問取す、露柱燈籠にても問取するなり。佛祖にあらざれば問取なし、道得なし、そのところなきがゆゑに。</p>
           <p>その道得は、他人にしたがひてうるにあらず、わがちからの能にあらず、ただまさに佛祖の究辨あれば、佛祖の道得あるなり。かの道得のなかに、むかしも修行し證究す、いまも功夫し辨道す。佛祖の佛祖を功夫して、佛祖の道得を辨肯するとき、この道得、おのづから三年、八年、三十年、四十年の功夫となりて、盡力道得するなり。</p>
           <p>［裡書云、三十年、二十年は、みな道得のなれる年月なり。この年月、ちからをあはせて道得せしむるなり。］</p>
@@ -66,35 +69,31 @@
           <p>しかあればすなはち、佛祖の道得底は、一生不離叢林なり。たとひ啞漢なりとも、道得底あるべし、啞漢は道得なかるべしと學することなかれ。道得あるもの、かならずしも啞漢にあらざるにあらず。啞漢また道得あるなり。啞聲きこゆべし、啞語きくべし。啞にあらずは、いかでか啞と相見せん、いかでか啞と相談せん。すでにこれ啞漢なり、作麼生相見、作麼生相談。かくのごとく參學して、啞漢を辨究すべし。</p>
           <p>雪峰の眞覺大師の會に一僧ありて、やまのほとりにゆきて、草をむすびて庵を卓す。としつもりぬれど、かみをそらざりけり。庵裡の活計たれかしらん、山中の消息悄然なり。みづから一柄の木杓をつくりて、溪のほとりにゆきて水をくみてのむ。まことにこれ飮溪のたぐひなるべし。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-33-manga-4panel.png" width="1792" height="1024" alt="75-33: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-33-manga-4panel.png" width="1536" height="1024" alt="75-33: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>道得は他人の助けによって得られるものではなく、自らの力によるものである。</li>
-          <li>道得と見得は一体であり、過去の修行の成果が現在の道得に反映される。</li>
-          <li>道得の実現には長い年月の修行が必要であり、その間に道得の間隙は存在しない。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
-        <fieldset class="quiz" data-correct-index="1">
-          <legend>道得はどのように得られると述べられているか？</legend>
-          <label><input type="radio" name="75-33-q1" value="0" /> 他人の助けによって</label>
-          <label><input type="radio" name="75-33-q1" value="1" /> 自らの力によって</label>
-          <label><input type="radio" name="75-33-q1" value="2" /> 偶然に得られる</label>
+        <fieldset class="quiz" data-correct-index="0">
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-33-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-33-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-33-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="75-33-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-33-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="75-33-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="75-33-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="75-33-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="75-33-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-32/index.html">← 第32巻</a> · <a href="../75-34/index.html">第34巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

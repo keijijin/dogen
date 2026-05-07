@@ -485,6 +485,7 @@ def rich_volume_html(
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -622,6 +623,7 @@ def learning_map_html() -> str:
           <a href="../themes/index.html">テーマ</a>
           <a href="../glossary/index.html">用語</a>
           <a href="../chat/index.html">問答 Bot</a>
+          <a href="../media/notebooklm/index.html">NotebookLM</a>
           <a href="../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -688,6 +690,7 @@ def fulltext_page_html(
           <a href="{script_prefix}themes/index.html">テーマ</a>
           <a href="{script_prefix}glossary/index.html">用語</a>
           <a href="{script_prefix}chat/index.html">問答 Bot</a>
+          <a href="{script_prefix}media/notebooklm/index.html">NotebookLM</a>
           <a href="{script_prefix}site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -758,6 +761,7 @@ def index_html() -> str:
           <a href="../themes/index.html">テーマ</a>
           <a href="../glossary/index.html">用語</a>
           <a href="../chat/index.html">問答 Bot</a>
+          <a href="../media/notebooklm/index.html">NotebookLM</a>
           <a href="../site/index.html">サイト情報</a>
         </nav>
       </div>

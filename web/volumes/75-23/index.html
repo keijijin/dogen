@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第23　都機 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第23　都機。紹介ページ。語彙・原文の要点抜粋・クイズ（75-23）。" />
+    <meta name="description" content="正法眼蔵第23　都機。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第23　都機</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>この巻では、仏の真法身とその表現について論じられており、月の比喩を通じて、仏道の本質を探求しています。</p>
-        <p>特に、月の形や存在が人間の理解にどのように影響するかを考察し、心と月の関係を深く掘り下げています。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第23篇「都機」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>仏眞法身</strong>：仏の本質的な存在を指し、虚空のように無限であり、物事に応じて形を現すとされる。</li>
-          <li><strong>心月</strong>：心と月を同一視し、心の状態が月のように変化することを示す比喩。</li>
-          <li><strong>呑却</strong>：何かを受け入れたり、取り込んだりすることを意味し、特に心の状態や理解が他のものを包み込む様を表す。</li>
-          <li><strong>吐却</strong>：何かを放出したり、表現したりすることを示し、心の状態が外に現れる様子を表す。</li>
-          <li><strong>圓成</strong>：完全に成就することを意味し、特に仏道においては真理の実現を指す。</li>
+          <li><strong>題名語</strong>：巻題「都機」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>諸月の圓成すること、前三三のみにあらず、後三三のみにあらず。圓成の諸月なる、前三三のみにあらず、後三三のみにあらず。このゆゑに、</p>
           <p>釋迦牟尼佛言く、佛眞法身、猶若虛空。應物現形、如水中月（佛の眞法身は、猶し虛空の若し。物に應じて形を現はす、水中の月の如し）。</p>
           <p>いはゆる如水中月の如如は水月なるべし。水如、月如、如中、中如なるべし。相似を如と道取するにあらず、如は是なり。佛眞法身は虛空の猶若なり。この虛空は、猶若の佛眞法身なり。佛眞法身なるがゆゑに、盡地盡界、盡法盡現、みづから虛空なり。現成せる百草萬像の猶若なる、しかしながら佛眞法身なり、如水如月なり。月のときはかならず夜にあらず、夜かならずしも暗にあらず。ひとへに人間の小量にかかはることなかれ。日月なきところにも晝夜あるべし、日月は晝夜のためにあらず。日月ともに如如なるがゆゑに、一月兩月にあらず、千月萬月にあらず。月の自己、たとひ一月兩月の見解を保任すといふとも、これは月の見解なり、かならずしも佛道の道取にあらず、佛道の知見にあらず。しかあれば、昨夜たとひ月ありといふとも、今夜の月は昨月にあらず、今夜の月は初中後ともに今夜の月なりと參究すべし。月は月に相嗣するがゆゑに、月ありといへども新舊にあらず。</p>
@@ -67,35 +69,31 @@
           <p>師云、吐却七箇八箇（七箇八箇を吐却す）。</p>
           <p>いま參究するところは、未圓なり、圓後なり、ともにそれ月の造次なり。月に三箇四箇あるなかに、未圓の一枚あり。月に七箇八箇あるなかに、圓後の一枚あり。呑却は三箇四箇なり。このとき、月未圓時の見成なり。吐却は七箇八箇なり。このとき、圓後の見成なり。月の月を呑却するに、三箇四箇なり。呑却に月ありて現成す、月は呑却の見成なり。月の月を吐却するに、七箇八箇あり。吐却に月ありて現成す。月は吐却の現成なり。このゆゑに、呑却盡なり、吐却盡なり。盡地盡天吐却なり、蓋天蓋地呑却なり。呑自呑他すべし、吐自吐他すべし。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-23-manga-4panel.png" width="1792" height="1024" alt="75-23: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-23-manga-4panel.png" width="1536" height="1024" alt="75-23: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>仏の真法身は虚空のようであり、物に応じて形を変える。</li>
-          <li>月の比喩を用いて、心と仏道の関係を探求する。</li>
-          <li>心と月は相互に依存し、どちらも存在するためには他を必要とする。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>仏眞法身は何に例えられていますか？</legend>
-          <label><input type="radio" name="75-23-q1" value="0" /> 虚空</label>
-          <label><input type="radio" name="75-23-q1" value="1" /> 水</label>
-          <label><input type="radio" name="75-23-q1" value="2" /> 月</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-23-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-23-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-23-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="75-23-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-23-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="75-23-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="75-23-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="75-23-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="75-23-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-22/index.html">← 第22巻</a> · <a href="../75-24/index.html">第24巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

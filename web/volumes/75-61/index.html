@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第61　龍吟 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第61　龍吟。紹介ページ。語彙・原文の要点抜粋・クイズ（75-61）。" />
+    <meta name="description" content="正法眼蔵第61　龍吟。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第61　龍吟</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>この巻では、枯木と龍吟の関係についての問答が展開され、外道と仏道の理解の違いが示されています。</p>
-        <p>師が髑髏に師子吼があると述べることで、枯木の中に潜む真理が語られています。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第61篇「龍吟」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>枯木</strong>：枯れた木を指し、外道の理解とは異なる仏道の枯木が存在することを示す象徴的な存在。</li>
-          <li><strong>龍吟</strong>：枯木の中にある深い真理や教えを象徴する音声であり、悟りの表現とも解釈される。</li>
-          <li><strong>師子吼</strong>：仏道の真理を力強く表現することを示す言葉で、髑髏の中にもその真理が存在することを意味する。</li>
-          <li><strong>血脈</strong>：教えの伝承や継承を表すもので、道が途絶えないことを示す重要な概念である。</li>
-          <li><strong>海枯</strong>：海が干上がることを指し、枯木が持つ生命力や再生の可能性を示唆する。</li>
+          <li><strong>題名語</strong>：巻題「龍吟」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>舒州投子山慈濟大師、因僧問、枯木裏還有龍吟也無（枯木裏還龍吟有りや無や）。</p>
           <p>師曰、我道、髑髏裏有師子吼（我が道は、髑髏裏に師子吼有り）。</p>
           <p>枯木死灰の談は、もとより外道の所教なり。しかあれども、外道のいふところの枯木と、佛祖のいふところの枯木と、はるかにことなるべし。外道は枯木を談ずといへども枯木をしらず、いはんや龍吟をきかんや。外道は枯木は朽木ならんとおもへり、不可逢春（春に逢ふべからず）と學せり。佛祖道の枯木は海枯の參學なり。海枯は木枯なり、木枯は逢春なり。木の不動著は枯なり。いまの山木、海木、空木等、これ枯木なり。萌芽も枯木龍吟なり。百千萬圍とあるも、枯木の兒孫なり。枯の相、性、體、力は、佛祖道の枯樁なり。非枯樁なり。山谷木あり、田里木あり。山谷木、よのなかに松栢と稱ず。田里木、よのなかに人天と稱ず。依根葉分布（根に依つて葉分布す）、これを佛祖と稱ず。本末須歸宗（本末須らく宗に歸すべし）、すなはち參學なり。かくのごとくなる、枯木の長法身なり、枯木の短法身なり。もし枯木にあらざればいまだ龍吟せず、いまだ枯木にあらざれば龍吟を打失せず。幾度逢春不變心（幾度か春に逢ひて心を變ぜず）は、渾枯の龍吟なり。宮商角徴羽に不群なりといへども、宮商角徴羽は龍吟の前後二三子なり。</p>
@@ -67,36 +69,31 @@
           <p>霜云、猶帶喜在（猶喜を帶すること在り）。</p>
           <p>僧曰、如何是髑髏裏眼睛（如何ならんか是れ髑髏裏の眼睛）。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-61-manga-4panel.png" width="1792" height="1024" alt="75-61: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-61-manga-4panel.png" width="1536" height="1024" alt="75-61: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>外道は枯木を理解できず、龍吟を聞くことができないとされる。</li>
-          <li>仏道の枯木は、春に再生する可能性を秘めていると解釈される。</li>
-          <li>髑髏の中に眼があることは、真理の存在を示す象徴である。</li>
-          <li>枯木と龍吟の関係は、内外や自他を超えた深い教えを表現している。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>外道は枯木についてどのように理解しているか？</legend>
-          <label><input type="radio" name="75-61-q1" value="0" /> 枯木は朽木であると考えている。</label>
-          <label><input type="radio" name="75-61-q1" value="1" /> 枯木は生きていると考えている。</label>
-          <label><input type="radio" name="75-61-q1" value="2" /> 枯木は春に再生する可能性があると考えている。</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-61-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-61-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-61-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="75-61-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-61-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="75-61-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="75-61-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="75-61-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="75-61-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-60/index.html">← 第60巻</a> · <a href="../75-62/index.html">第62巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

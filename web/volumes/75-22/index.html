@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第22　全機 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第22　全機。紹介ページ。語彙・原文の要点抜粋・クイズ（75-22）。" />
+    <meta name="description" content="正法眼蔵第22　全機。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,27 +33,29 @@
         <h1>正法眼藏第22　全機</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>諸佛の大道、その究盡するところ、透脱なり、現成なり。その透脱といふは、あるいは生も生を透脱し、死も死を透脱するなり。このゆゑに、出生死あり、入生死あり。ともに究盡の大道なり。</p>
-        <p>生は來にあらず、生は去にあらず。生は現にあらず、生は成にあらざるなり。しかあれども、生は全機現なり、死は全機現なり。しるべし、自己に無量の法あるなかに、生あり、死あるなり。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第22篇「全機」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>透脱</strong>：物事の本質を見抜き、執着から解放されること。生や死を超えた状態を指す。</li>
-          <li><strong>現成</strong>：物事がそのままの形で現れること。生や死が現れる様子を示す。</li>
-          <li><strong>機關</strong>：生や死の状態を生じさせる根本的な要因や条件。</li>
-          <li><strong>全機現</strong>：生や死の全ての側面が同時に現れること。</li>
+          <li><strong>題名語</strong>：巻題「全機」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>諸佛の大道、その究盡するところ、透脱なり、現成なり。その透脱といふは、あるいは生も生を透脱し、死も死を透脱するなり。このゆゑに、出生死あり、入生死あり。ともに究盡の大道なり。捨生死あり、度生死あり。ともに究盡の大道なり。現成これ生なり、生これ現成なり。その現成のとき、生の全現成にあらずといふことなし、死の全現成にあらずといふことなし。</p>
           <p>この機關、よく生ならしめよく死ならしむ。この機關の現成する正當恁麼時、かならずしも大にあらず、かならずしも小にあらず。遍界にあらず、局量にあらず。長遠にあらず、短促にあらず。いまの生はこの機關にあり、この機關はいまの生にあり。</p>
           <p>生は來にあらず、生は去にあらず。生は現にあらず、生は成にあらざるなり。しかあれども、生は全機現なり、死は全機現なり。しるべし、自己に無量の法あるなかに、生あり、死あるなり。</p>
@@ -65,35 +68,31 @@
           <p>于時仁治三年壬寅十二月十七日在雍州六波羅蜜寺側前雲州刺史幕下示衆</p>
           <p>同四年癸卯正月十九日書寫之　懷弉</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-22-manga-4panel.png" width="1792" height="1024" alt="75-22: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-22-manga-4panel.png" width="1536" height="1024" alt="75-22: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>生と死は互いに影響を与えず、独立して存在する。</li>
-          <li>生は現在の状態であり、過去や未来に依存しない。</li>
-          <li>全機現は生と死の両方において成立する概念である。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>生と死はどのように関係しているか？</legend>
-          <label><input type="radio" name="75-22-q1" value="0" /> 互いに影響を与えない</label>
-          <label><input type="radio" name="75-22-q1" value="1" /> 生が死を支配する</label>
-          <label><input type="radio" name="75-22-q1" value="2" /> 死が生を支配する</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-22-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-22-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-22-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>透脱とは何を意味するか？</legend>
-          <label><input type="radio" name="75-22-q2" value="0" /> 生や死を超えること</label>
-          <label><input type="radio" name="75-22-q2" value="1" /> 生を強調すること</label>
-          <label><input type="radio" name="75-22-q2" value="2" /> 死を強調すること</label>
-          <label><input type="radio" name="75-22-q2" value="3" /> 生と死を無視すること</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-22-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
+          <label><input type="radio" name="75-22-q2" value="1" /> 検索上位の無名要約のみ</label>
+          <label><input type="radio" name="75-22-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-21/index.html">← 第21巻</a> · <a href="../75-23/index.html">第23巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

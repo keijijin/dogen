@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第57　遍參 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第57　遍參。紹介ページ。語彙・原文の要点抜粋・クイズ（75-57）。" />
+    <meta name="description" content="正法眼蔵第57　遍參。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,27 +33,29 @@
         <h1>正法眼藏第57　遍參</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>佛祖の大道は、究竟參徹なり。足下無絲去なり。足下雲生なり、花開世界起なり、吾常於此切なり。</p>
-        <p>このゆゑに甜瓜徹蔕甜なり、苦瓠連根苦なり。甜甜徹蔕甜なり。かくのごとく參學しきたれり。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第57篇「遍參」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>遍參</strong>：あらゆるものを参見し、理解を深めることを指す。道元の教えにおいては、単なる形式的な参拝ではなく、真実の理解を追求する行為を意味する。</li>
-          <li><strong>達磨</strong>：禅宗の初祖とされる人物で、東方における禅の教えを広めたとされる。彼の教えは、直接的な体験を重視する。</li>
-          <li><strong>曹谿古佛</strong>：禅宗の伝承において重要な存在であり、道元が参じたとされる古い仏の教えを象徴する。</li>
-          <li><strong>南嶽大慧禪師</strong>：中国の禅僧で、禅宗の重要な教えを伝えた人物。彼の教えは、悟りの実践において深い影響を与えた。</li>
+          <li><strong>題名語</strong>：巻題「遍參」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>佛祖の大道は、究竟參徹なり。足下無絲去なり。足下雲生なり。しかもかくのごとくなりといへども、花開世界起なり、吾常於此切なり。このゆゑに甜瓜徹蔕甜なり、苦瓠連根苦なり。甜甜徹蔕甜なり。かくのごとく參學しきたれり。</p>
           <p>玄沙山宗一大師、因雪峰召師曰、備頭陀、何不遍參去（備頭陀、何ぞ遍參し去らざる）。</p>
           <p>師云、達磨不來東土、二祖不往西天。</p>
@@ -66,35 +69,31 @@
           <p>これ遍參現成なり、八年現成なり。</p>
           <p>曹谿古佛とふ、還假修證否（還た修證を假るや否や）。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-57-manga-4panel.png" width="1792" height="1024" alt="75-57: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-57-manga-4panel.png" width="1536" height="1024" alt="75-57: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>遍參は、ただの形式的な行為ではなく、真実の理解を求めるプロセスである。</li>
-          <li>達磨の教えは、直接的な体験を重視し、理論よりも実践を重んじる。</li>
-          <li>曹谿古佛の教えは、道元の禅の実践において重要な指針となった。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>遍參の意味は何ですか？</legend>
-          <label><input type="radio" name="75-57-q1" value="0" /> あらゆるものを参見し、理解を深めること</label>
-          <label><input type="radio" name="75-57-q1" value="1" /> 単なる形式的な参拝</label>
-          <label><input type="radio" name="75-57-q1" value="2" /> 特定の教義に従うこと</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-57-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-57-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-57-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="75-57-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-57-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="75-57-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="75-57-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="75-57-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="75-57-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-56/index.html">← 第56巻</a> · <a href="../75-58/index.html">第58巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

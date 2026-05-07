@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第14　空華 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第14　空華。紹介ページ。語彙・原文の要点抜粋・クイズ（75-14）。" />
+    <meta name="description" content="正法眼蔵第14　空華。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,28 +33,29 @@
         <h1>正法眼藏第14　空華</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>高祖道、一花開五葉、結果自然成。この華開の時節、および光明色相を參學すべし。</p>
-        <p>一華の重は五葉なり、五葉の開は一華なり。一華の道理の通ずるところ、吾本來此土、傳法救迷情なり。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』七十五巻の第14篇「空華」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>空華</strong>：空華とは、物事の本質が空であることを示す言葉であり、実体がないことを意味します。</li>
-          <li><strong>自然成</strong>：自然成は、物事が自然に成り立つことを指し、無理なく結果が生じる様を表します。</li>
-          <li><strong>優鉢羅華</strong>：優鉢羅華は、特定の花の名であり、象徴的に真理や悟りを表すことがあります。</li>
-          <li><strong>翳眼</strong>：翳眼は、真実を見通すことができない状態を指し、迷いや誤解を象徴しています。</li>
-          <li><strong>因果</strong>：因果とは、原因と結果の関係を表し、物事の成り立ちを理解するための基本的な概念です。</li>
+          <li><strong>題名語</strong>：巻題「空華」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>高祖道、一花開五葉、結果自然成。</p>
           <p>この華開の時節、および光明色相を參學すべし。一華の重は五葉なり、五葉の開は一華なり。一華の道理の通ずるところ、吾本來此土、傳法救迷情なり。光色の尋處は、この參學なるべきなり。結果任儞結果なり、自然成をいふ。自然成といふは、修因感果なり。公界の因あり、公界の果あり。この公界の因果を修し、公界の因果を感ずるなり。自は己なり、己は必定これ儞なり、四大五蘊をいふ。使得無位眞人のゆゑに、われにあらず、たれにあらず。このゆゑに不必なるを自といふなり。然は聽許なり。自然成すなはち華開結果の時節なり、傳法救迷の時節なり。たとへば、優鉢羅華の開敷の時處は、火裏火時なるがごとし。鑽火焰火みな優鉢羅華の開敷處なり、開敷時なり。もし優鉢羅華の時處にあらざれば、一星火の出生するなし、一星火の活計なきなり。しるべし、一星火に百千朶の優鉢羅花ありて、空に開敷し、地に開敷するなり。過去に開敷し、現在に開敷するなり。火の現時現處を見聞するは、優鉢羅花を見聞するなり。優鉢羅華の時處をすごさず見聞すべきなり。</p>
           <p>古先いはく、優鉢羅華火裏開。</p>
@@ -67,36 +69,31 @@
           <p>しるべし、佛道の翳人といふは本覺人なり、妙覺人なり、諸佛人なり、三界人なり、佛向上人なり。おろかに翳を妄法なりとして、このほかに眞法ありと學することなかれ。しかあらんは小量の見なり。翳花もし妄法ならんは、これを妄法と邪執する能作所作、みな妄法なるべし。ともに妄法ならんがごときは、道理の成立すべきなし。成立する道理なくは、翳華の妄法なること、しかあるべからざるなり。悟の翳なるには、悟の衆法、ともに翳莊嚴の法なり。迷の翳なるには、迷の衆法、ともに翳莊嚴の法なり。しばらく道取すべし、翳眼平等なれば空花平等なり、翳眼無生なれば空華無生なり、諸法實相なれば翳花實相なり。過現來を論ずべからず、初中後にはかかはれず。生滅に罣礙せざるゆゑに、よく生滅をして生滅せしむるなり。空中に生じ、空中に滅す。翳中に生じ、翳中に滅す。華中に生じ、花中に滅す。乃至諸餘の時處もまたまたかくのごとし。</p>
           <p>空華を學せんこと、まさに衆品あるべし。翳眼の所見あり、明眼の所見あり。佛眼の所見あり、祖眼の所見あり。道眼の所見あり、瞎眼の所見あり。三千年の所見あり、八百年の所見あり。百劫の所見あり、無量劫の所見あり。これらともにみな空花をみるといへども、空すでに品品なり、華また重重なり。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
-          <img src="../../img/75-14-manga-4panel.png" width="1792" height="1024" alt="75-14: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1792px);height:auto;display:block;margin:0 auto" />
+          <img src="../../img/75-14-manga-4panel.png" width="1536" height="1024" alt="75-14: 抜粋をテーマにした4コマ（学習用・AI生成）" loading="lazy" style="width:min(100%,1536px);height:auto;display:block;margin:0 auto" />
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>一華の開は五葉であり、五葉の開は一華であるという関係が示されている。</li>
-          <li>空華の概念は、物事の本質が空であることを理解するための重要な教えである。</li>
-          <li>自然成は、修因感果の考え方に基づき、物事が自然に展開することを強調している。</li>
-          <li>翳眼を持つ者は、真実を見通すことができず、空華の本質を理解できない。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>一華の重は何とされているか？</legend>
-          <label><input type="radio" name="75-14-q1" value="0" /> 五葉</label>
-          <label><input type="radio" name="75-14-q1" value="1" /> 三葉</label>
-          <label><input type="radio" name="75-14-q1" value="2" /> 七葉</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="75-14-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="75-14-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="75-14-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="75-14-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="75-14-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="75-14-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="75-14-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="75-14-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="75-14-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../75-13/index.html">← 第13巻</a> · <a href="../75-15/index.html">第15巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>第10　四禪比丘 — 正法眼蔵読解</title>
-    <meta name="description" content="正法眼蔵第10　四禪比丘。紹介ページ。語彙・原文の要点抜粋・クイズ（12-10）。" />
+    <meta name="description" content="正法眼蔵第10　四禪比丘。紹介ページ（語彙・原文の要点抜粋・クイズ・自動生成）。" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/app-icon-dogen-32.png" />
     <link rel="icon" href="../../favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
@@ -21,6 +21,7 @@
           <a href="../../themes/index.html">テーマ</a>
           <a href="../../glossary/index.html">用語</a>
           <a href="../../chat/index.html">問答 Bot</a>
+          <a href="../../media/notebooklm/index.html">NotebookLM</a>
           <a href="../../site/index.html">サイト情報</a>
         </nav>
       </div>
@@ -32,27 +33,29 @@
         <h1>正法眼藏第10　四禪比丘</h1>
 
         <p class="notice">
-          本紹介ページの導入・語彙・深掘り・クイズは <code>tools/regen_volume_intro_from_corpus.py</code> が OpenAI API で生成したものです（入力は当巻の原文からの<strong>短い抜粋</strong>のみ）。内容はモデル出力のため、重要箇所は必ず原文・教本と照合してください。
-          出典: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          本ページは各巻の<strong>紹介ページ</strong>です。<code>tools/gen_web_volumes.py</code> が <code>doc/正法眼蔵.txt</code> から<strong>要点の短い抜粋</strong>を載せています（全文の引用ではありません）。
+          出典（原文）: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
         <p class="notice"><strong>原文・現代語訳の全文</strong>は <a href="full.html">全文ページ</a>を参照してください。</p>
 
-        <h2>この巻の紹介（導入）</h2>
-        <p>第十四祖龍樹祖師言、佛弟子中有一比丘、得第四禪、生増上慢、謂得四果。</p>
-        <p>初得初禪、謂得須陀洹。得第二禪時、謂是斯陀含果、得第三禪時、謂是阿那含果、得第四禪時、謂是阿羅漢。</p>
+        <h2>この巻の紹介（概要）</h2>
+        <p>
+          道元『正法眼蔵』十二巻の第10篇「四禪比丘」です。禅籍・経典への引用や語の行間が重なりやすいので、<strong>一度ですべてを要約に還元しない</strong>読み方を推奨します。問答
+          Bot では巻スコープにこの題名を含めると応答が安定しやすいことがあります。
+        </p>
 
         <h2>語彙の足場</h2>
         <ul>
-          <li><strong>四禪</strong>：仏教における瞑想の段階の一つで、心の静寂と集中を深めることを目的とする。</li>
-          <li><strong>比丘</strong>：仏教において出家した僧侶のこと。特に、戒律を守りながら修行する者を指す。</li>
-          <li><strong>邪見</strong>：正しい理解や見解から外れた誤った見解のこと。特に、仏教においては、真理を誤解することを指す。</li>
-          <li><strong>涅槃</strong>：仏教における最終的な解脱の状態。煩悩から解放され、苦しみのない境地を指す。</li>
+          <li><strong>題名語</strong>：巻題「四禪比丘」は、道元が本章で特に扱う論点の看板です。辞書義だけに固定せず、原文中の<strong>用例</strong>で意味を確かめます。</li>
+          <li><strong>引用と典故</strong>：公案・経文の引用は、一字一句の<strong>照応</strong>（何に答えているか）を押さえると全体が見えやすくなります。</li>
+          <li><strong>学び方</strong>：抜粋だけでも<strong>音読</strong>し、分からない箇所は印を付けて後から問うとよいです。</li>
         </ul>
+
         <h2>原文（要点の抜粋）</h2>
         <p class="notice">
-          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。 全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
+          当巻の<strong>冒頭付近からの短い抜粋</strong>です。長い引用は載せていません。全文は<strong>全文ページ</strong>を参照してください。出典はリポジトリ内 <code>doc/正法眼蔵.txt</code> です。原文の参照元: <a href="https://shomonji.or.jp/zazen/doc/genzou.html">https://shomonji.or.jp/zazen/doc/genzou.html</a>
         </p>
-        <blockquote>
+                <blockquote>
           <p>第十四祖龍樹祖師言、佛弟子中有一比丘、得第四禪、生増上慢、謂得四果。初得初禪、謂得須陀洹。得第二禪時、謂是斯陀含果、得第三禪時、謂是阿那含果、得第四禪時、謂是阿羅漢。恃是自高、不復求進。命欲盡時、見有四禪中陰相來、便生邪見、謂無涅槃、佛爲欺我。惡邪見故、失四禪中陰、便見阿毘泥梨中陰相、命終卽生阿毘泥梨中（第十四祖龍樹祖師言く、佛弟子の中に一の比丘有りき、第四禪を得て、増上慢を生じ、四果を得たりと謂へり。初め初禪を得ては、須陀洹を得たりと謂へり。第二禪を得し時、是れを斯陀含果と謂ひ、第三禪を得し時、是れを阿那含果と謂ひ、第四禪を得し時、是れを阿羅漢と謂へり。是れを恃んで自ら高ぶり、復た進まんことを求めず。命盡きなんとする時、四禪の中陰の相有りて來るを見て、便ち邪見を生じ、涅槃無し、佛、爲に我を欺くと謂へり。惡邪見の故に、四禪の中陰を失ひ、便ち阿毘泥梨の中陰の相を見、命終して卽ち阿毘泥梨中に生ぜり）。</p>
           <p>諸比丘問佛、阿蘭若比丘、命終生何處（諸の比丘、佛に問ひたてまつらく、阿蘭若比丘、命終して何れの處にか生ぜし）。</p>
           <p>佛言、是人生阿毘泥梨中（是の人は阿毘泥梨中に生ぜり）。</p>
@@ -66,7 +69,6 @@
           <p>墮獄由謗佛（墮獄は謗佛に由る）、</p>
           <p>非關第四禪（第四禪は關るに非ず）。</p>
         </blockquote>
-
         <h2>図解（4コマ・AI生成）</h2>
         <p class="notice" style="font-size:0.88rem">教義の根拠は原文・出典に従い、漫画は比喩の補助に留めてください。</p>
         <div style="overflow-x:auto;margin:1rem 0">
@@ -74,27 +76,24 @@
         </div>
 
 
-        <h2>深掘り（読解の手掛かり）</h2>
+        <h2>深掘り（読解のコツ）</h2>
         <ul>
-          <li>比丘は第四禪を得たことで増上慢に陥った。</li>
-          <li>臨命終時に邪見を生じ、涅槃を否定することが問題視されている。</li>
-          <li>四禪を得た比丘が四果を得たと誤解することが、教えに反することを示している。</li>
+          <li>道元文は<strong>定義の羅列</strong>に見えても、多くの場合<strong>誤解への遮断</strong>と<strong>正伝の姿勢</strong>が背骨になっています。</li>
+          <li>「当体」「現成」「即」などの語が出たら、その巻独自の<strong>差別相</strong>にどう接続しているかをメモしておくとよいです。</li>
         </ul>
 
         <h2>確認（形成評価）</h2>
-        <p class="notice" style="font-size:0.88rem">各設問の下の「採点」で正誤を表示します（ブラウザ内のみ。ログは送りません）。</p>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>第四禪を得た比丘は何を誤解したか？</legend>
-          <label><input type="radio" name="12-10-q1" value="0" /> 四果を得たと謂った</label>
-          <label><input type="radio" name="12-10-q1" value="1" /> 初禪を得たと謂った</label>
-          <label><input type="radio" name="12-10-q1" value="2" /> 第二禪を得たと謂った</label>
+          <legend>1. 道元の文章を学ぶ姿勢として、まず避けたいのはどれか。</legend>
+          <label><input type="radio" name="12-10-q1" value="0" /> 原文を読まずに要約だけで満足する</label>
+          <label><input type="radio" name="12-10-q1" value="1" /> 語の行間と引用の照応を丁寧に追う</label>
+          <label><input type="radio" name="12-10-q1" value="2" /> 分からない箇所に印を付けて後で問う</label>
         </fieldset>
         <fieldset class="quiz" data-correct-index="0">
-          <legend>出典として優先すべきなのはどれか。</legend>
-          <label><input type="radio" name="12-10-q2" value="0" /> 権利処理済みの訳文テキストと自分の読解</label>
+          <legend>2. 出典として最優先すべきなのはどれか。</legend>
+          <label><input type="radio" name="12-10-q2" value="0" /> 権利処理済みの訳文テキスト（本サイトの正本）と自分の批評</label>
           <label><input type="radio" name="12-10-q2" value="1" /> 検索上位の無名要約のみ</label>
-          <label><input type="radio" name="12-10-q2" value="2" /> 推測のみで穴埋めする読み</label>
-          <label><input type="radio" name="12-10-q2" value="3" /> 巻題だけを断定的に解釈する</label>
+          <label><input type="radio" name="12-10-q2" value="2" /> 推測で穴埋めする読み</label>
         </fieldset>
 
         <p><a href="../12-09/index.html">← 第9巻</a> · <a href="../12-11/index.html">第11巻 →</a> · <a href="../index.html">巻一覧</a> · <a href="../../index.html">ホーム</a></p>
